@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Exchange\Nobitex\NobitexService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->app->bind('ExchangeService',function (){
+            return new NobitexService();
+        });
     }
 }
