@@ -4,30 +4,36 @@ namespace App\Services\Exchange\Nobitex;
 
 use App\Services\Exchange\Nobitex\Responses\AllOrdersResponse;
 use App\Services\Exchange\Nobitex\Responses\OrderResponse;
+use App\Services\Exchange\Nobitex\Responses\StatsResponse;
+use App\Services\Exchange\Requests\MarketStatsRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Responses\AllOrdersResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\StatsResponseContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 
-class NobitexService implements OrderRequestContract
+class NobitexService implements OrderRequestContract, MarketStatsRequestContract
 {
     /**
      * @throws GuzzleException
      */
     public function orders(): AllOrdersResponseContract
     {
-        $request = $this->request('GET', 'orderbook/all');
+        $request = $this->request('GET', 'v2/orderbook/all');
 
         return new AllOrdersResponse(json_decode($request->getBody()->getContents(), true));
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function order(string $coinName): OrderResponseContract
     {
-        $request = $this->request('GET', "orderbook/$coinName");
+        $request = $this->request('GET', "v2/orderbook/$coinName");
 
         return new OrderResponse(json_decode($request->getBody()->getContents(), true));
     }
@@ -35,7 +41,19 @@ class NobitexService implements OrderRequestContract
     /**
      * @throws GuzzleException
      */
-    protected function request(string $method, string $path): ResponseInterface
+    public function marketStats(string $srcCurrency, string $dstCurrency): StatsResponseContract
+    {
+        $request = $this->request('GET','market/stats',['srcCurrency' => $srcCurrency, 'dstCurrency' => $dstCurrency]);
+
+        $response = json_decode($request->getBody()->getContents(),true);
+
+        return new StatsResponse($response['stats']["$srcCurrency-$dstCurrency"]);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    protected function request(string $method, string $path, array|null $queryParams = null): ResponseInterface
     {
         $baseUri = Config::get('exchange.exchanges.nobitex.base_url');
 
@@ -60,6 +78,10 @@ class NobitexService implements OrderRequestContract
                 'Content-Type' => 'application/json',
             ],
         ];
+
+        if ($queryParams){
+            $options['query'] = $queryParams;
+        }
 
         return $client->request(Str::upper($method), $uri, $options);
     }
