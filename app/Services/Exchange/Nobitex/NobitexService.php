@@ -10,17 +10,19 @@ use App\Services\Exchange\Nobitex\Responses\StatsResponse;
 use App\Services\Exchange\Requests\MarketStatsRequestContract;
 use App\Services\Exchange\Requests\OHLCRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
+use App\Services\Exchange\Requests\UserRequestContract;
 use App\Services\Exchange\Responses\AllOrdersResponseContract;
 use App\Services\Exchange\Responses\OHLCResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
 use App\Services\Exchange\Responses\StatsResponseContract;
+use App\Services\Exchange\Responses\UserResponseContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 
-class NobitexService implements OrderRequestContract, MarketStatsRequestContract, OHLCRequestContract
+class NobitexService implements OrderRequestContract, MarketStatsRequestContract, OHLCRequestContract, UserRequestContract
 {
     /**
      * @throws GuzzleException
@@ -69,6 +71,16 @@ class NobitexService implements OrderRequestContract, MarketStatsRequestContract
         ]);
 
         return new OHLCResponse(json_decode($request->getBody()->getContents(), true));
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function user(): UserResponseContract
+    {
+        $request = $this->request('GET','users/profile');
+
+
     }
 
     /**
