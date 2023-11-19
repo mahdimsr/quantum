@@ -15,16 +15,21 @@ class OrderResponse implements OrderResponseContract
 
     public function lastUpdate(): int
     {
-        // TODO: Implement lastUpdate() method.
+        return $this->response['lastUpdate'];
+    }
+
+    public function lastTradePrice(): int
+    {
+        return $this->response['lastTradePrice'];
     }
 
     public function bids(): array
     {
-        // TODO: Implement bids() method.
+        return $this->response['bids'];
     }
 
     public function asks(): array
     {
-        // TODO: Implement asks() method.
+        return $this->response['asks'];
     }
 }
