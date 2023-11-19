@@ -6,5 +6,5 @@ interface AllOrdersResponseContract
 {
     public function all(): array;
 
-    public function coin(string $coinName): OrderResponseContract;
+    public function coin(string $coinName): GetOrderResponseContract;
 }

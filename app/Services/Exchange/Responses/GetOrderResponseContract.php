@@ -2,7 +2,7 @@
 
 namespace App\Services\Exchange\Responses;
 
-interface OrderResponseContract
+interface GetOrderResponseContract
 {
     public function lastUpdate(): int;
 

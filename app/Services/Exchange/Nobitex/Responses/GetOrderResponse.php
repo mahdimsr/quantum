@@ -2,9 +2,9 @@
 
 namespace App\Services\Exchange\Nobitex\Responses;
 
-use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\GetOrderResponseContract;
 
-class OrderResponse implements OrderResponseContract
+class GetOrderResponse implements GetOrderResponseContract
 {
     protected array $response;
 

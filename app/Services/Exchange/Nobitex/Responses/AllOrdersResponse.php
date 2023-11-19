@@ -3,7 +3,7 @@
 namespace App\Services\Exchange\Nobitex\Responses;
 
 use App\Services\Exchange\Responses\AllOrdersResponseContract;
-use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\GetOrderResponseContract;
 
 class AllOrdersResponse implements AllOrdersResponseContract
 {
@@ -20,8 +20,8 @@ class AllOrdersResponse implements AllOrdersResponseContract
         return $this->response;
     }
 
-    public function coin(string $coinName): OrderResponseContract
+    public function coin(string $coinName): GetOrderResponseContract
     {
-        return new OrderResponse($this->response[$coinName]);
+        return new GetOrderResponse($this->response[$coinName]);
     }
 }

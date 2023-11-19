@@ -5,15 +5,15 @@ namespace App\Services\Exchange\Nobitex;
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Nobitex\Responses\AllOrdersResponse;
 use App\Services\Exchange\Nobitex\Responses\OHLCResponse;
-use App\Services\Exchange\Nobitex\Responses\OrderResponse;
+use App\Services\Exchange\Nobitex\Responses\GetOrderResponse;
 use App\Services\Exchange\Nobitex\Responses\StatsResponse;
 use App\Services\Exchange\Requests\MarketStatsRequestContract;
 use App\Services\Exchange\Requests\OHLCRequestContract;
-use App\Services\Exchange\Requests\OrderRequestContract;
+use App\Services\Exchange\Requests\GetOrderRequestContract;
 use App\Services\Exchange\Requests\UserRequestContract;
 use App\Services\Exchange\Responses\AllOrdersResponseContract;
 use App\Services\Exchange\Responses\OHLCResponseContract;
-use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\GetOrderResponseContract;
 use App\Services\Exchange\Responses\StatsResponseContract;
 use App\Services\Exchange\Responses\UserResponseContract;
 use GuzzleHttp\Client;
@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 
-class NobitexService implements OrderRequestContract, MarketStatsRequestContract, OHLCRequestContract, UserRequestContract
+class NobitexService implements GetOrderRequestContract, MarketStatsRequestContract, OHLCRequestContract, UserRequestContract
 {
     /**
      * @throws GuzzleException
@@ -37,11 +37,11 @@ class NobitexService implements OrderRequestContract, MarketStatsRequestContract
     /**
      * @throws GuzzleException
      */
-    public function order(string $coinName): OrderResponseContract
+    public function order(string $coinName): GetOrderResponseContract
     {
         $request = $this->request('GET', "v2/orderbook/$coinName");
 
-        return new OrderResponse(json_decode($request->getBody()->getContents(), true));
+        return new GetOrderResponse(json_decode($request->getBody()->getContents(), true));
     }
 
     /**
