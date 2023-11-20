@@ -3,17 +3,22 @@
 namespace App\Services\Exchange\Nobitex;
 
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
+use App\Services\Exchange\Enums\OrderExecutionEnum;
+use App\Services\Exchange\Enums\OrderTypeEnum;
 use App\Services\Exchange\Nobitex\Responses\AllOrdersResponse;
 use App\Services\Exchange\Nobitex\Responses\OHLCResponse;
 use App\Services\Exchange\Nobitex\Responses\GetOrderResponse;
+use App\Services\Exchange\Nobitex\Responses\SetOrderResponse;
 use App\Services\Exchange\Nobitex\Responses\StatsResponse;
+use App\Services\Exchange\Nobitex\Responses\UserResponse;
 use App\Services\Exchange\Requests\MarketStatsRequestContract;
 use App\Services\Exchange\Requests\OHLCRequestContract;
-use App\Services\Exchange\Requests\GetOrderRequestContract;
+use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\UserRequestContract;
 use App\Services\Exchange\Responses\AllOrdersResponseContract;
 use App\Services\Exchange\Responses\OHLCResponseContract;
 use App\Services\Exchange\Responses\GetOrderResponseContract;
+use App\Services\Exchange\Responses\SetOrderResponseContract;
 use App\Services\Exchange\Responses\StatsResponseContract;
 use App\Services\Exchange\Responses\UserResponseContract;
 use GuzzleHttp\Client;
@@ -22,7 +27,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 
-class NobitexService implements GetOrderRequestContract, MarketStatsRequestContract, OHLCRequestContract, UserRequestContract
+class NobitexService implements OrderRequestContract, MarketStatsRequestContract, OHLCRequestContract, UserRequestContract
 {
     /**
      * @throws GuzzleException
@@ -78,15 +83,40 @@ class NobitexService implements GetOrderRequestContract, MarketStatsRequestContr
      */
     public function user(): UserResponseContract
     {
-        $request = $this->request('GET','users/profile');
+        $request = $this->request('GET', 'users/profile');
 
-
+        return new UserResponse(json_decode($request->getBody()->getContents(), true));
     }
 
     /**
      * @throws GuzzleException
      */
-    protected function request(string $method, string $path, array|null $queryParams = null): ResponseInterface
+    public function setOrder(
+        OrderTypeEnum $orderBuyEnum,
+        OrderExecutionEnum $orderExecutionEnum,
+        string $srcCurrency,
+        string $dstCurrency,
+        string $amount,
+        string $price,
+        string $clientOrderId
+    ): SetOrderResponseContract {
+        $request = $this->request('POST', 'market/orders/add', null, [
+            'type'          => $orderBuyEnum->value,
+            'execution'     => $orderExecutionEnum->value,
+            'srcCurrency'   => $srcCurrency,
+            'dstCurrency'   => $dstCurrency,
+            'amount'        => $amount,
+            'price'         => $price,
+            'clientOrderId' => $clientOrderId
+        ]);
+
+        return new SetOrderResponse(json_decode($request->getBody()->getContents(), true));
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    protected function request(string $method, string $path, array|null $queryParams = null, array|null $bodyParams = null): ResponseInterface
     {
         $baseUri = Config::get('exchange.exchanges.nobitex.base_url');
 
@@ -114,6 +144,10 @@ class NobitexService implements GetOrderRequestContract, MarketStatsRequestContr
 
         if ($queryParams) {
             $options['query'] = $queryParams;
+        }
+
+        if ($bodyParams) {
+            $options['json'] = $bodyParams;
         }
 
         return $client->request(Str::upper($method), $uri, $options);
