@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('low');
             $table->string('open');
             $table->string('close');
+            $table->string('volume');
+            $table->string('time');
             $table->timestamps();
             $table->softDeletes();
         });

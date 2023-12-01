@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string low
  * @property string open
  * @property string close
+ * @property string volume
+ * @property string time
  * @property Carbon created_at
  * @property Carbon updated_at
  * @property Carbon deleted_at
