@@ -8,5 +8,7 @@ interface OHLCListResponseContract
 
     public function ohlc(mixed $index): OHLCResponseContract;
 
+    public function count(): int;
+
     public function error(): string;
 }
