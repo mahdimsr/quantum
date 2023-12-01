@@ -6,7 +6,7 @@ use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Enums\OrderExecutionEnum;
 use App\Services\Exchange\Enums\OrderTypeEnum;
 use App\Services\Exchange\Nobitex\Responses\AllOrdersResponse;
-use App\Services\Exchange\Nobitex\Responses\OHLCResponse;
+use App\Services\Exchange\Nobitex\Responses\OHLCListResponse;
 use App\Services\Exchange\Nobitex\Responses\GetOrderResponse;
 use App\Services\Exchange\Nobitex\Responses\SetOrderResponse;
 use App\Services\Exchange\Nobitex\Responses\StatsResponse;
@@ -16,6 +16,7 @@ use App\Services\Exchange\Requests\OHLCRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\UserRequestContract;
 use App\Services\Exchange\Responses\AllOrdersResponseContract;
+use App\Services\Exchange\Responses\OHLCListResponseContract;
 use App\Services\Exchange\Responses\OHLCResponseContract;
 use App\Services\Exchange\Responses\GetOrderResponseContract;
 use App\Services\Exchange\Responses\SetOrderResponseContract;
@@ -64,7 +65,7 @@ class NobitexService implements OrderRequestContract, MarketStatsRequestContract
     /**
      * @throws GuzzleException
      */
-    public function ohlc(string $symbol, ExchangeResolutionEnum $resolutionEnum, int $to, int $from, int $countBack, int $page = 1): OHLCResponseContract
+    public function ohlc(string $symbol, ExchangeResolutionEnum $resolutionEnum, int $to, int $from, int $countBack, int $page = 1): OHLCListResponseContract
     {
         $request = $this->request('GET', 'market/udf/history', [
             'symbol'     => $symbol,
@@ -75,7 +76,7 @@ class NobitexService implements OrderRequestContract, MarketStatsRequestContract
             'page'       => $page
         ]);
 
-        return new OHLCResponse(json_decode($request->getBody()->getContents(), true));
+        return new OHLCListResponse(json_decode($request->getBody()->getContents(), true));
     }
 
     /**
