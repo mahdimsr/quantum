@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Services\Indicator\Facade;
+
+use App\Services\Indicator\IndicatorService;
+use Illuminate\Support\Facades\Facade;
+
+/**
+ * @method static array RSI(array $data, int $period)
+ * @method static array EMA(array $data, int $period)
+ */
+class Indicator extends Facade
+{
+    protected static function getFacadeAccessor(): string
+    {
+        return IndicatorService::class;
+    }
+}
