@@ -18,32 +18,32 @@ class OHLCResponse implements OHLCResponseContract
         return 'Status Not implemented';
     }
 
-    public function time(): array
+    public function time(): mixed
     {
         return $this->response['time'];
     }
 
-    public function open(): array
+    public function open(): mixed
     {
         return $this->response['open'];
     }
 
-    public function high(): array
+    public function high(): mixed
     {
         return $this->response['high'];
     }
 
-    public function low(): array
+    public function low(): mixed
     {
         return $this->response['low'];
     }
 
-    public function close(): array
+    public function close(): mixed
     {
         return $this->response['close'];
     }
 
-    public function volume(): array
+    public function volume(): mixed
     {
         return $this->response['volume'];
     }

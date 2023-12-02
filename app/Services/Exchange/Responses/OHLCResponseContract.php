@@ -6,17 +6,17 @@ interface OHLCResponseContract
 {
     public function status(): string;
 
-    public function time(): array;
+    public function time(): mixed;
 
-    public function open(): array;
+    public function open(): mixed;
 
-    public function high(): array;
+    public function high(): mixed;
 
-    public function low(): array;
+    public function low(): mixed;
 
-    public function close(): array;
+    public function close(): mixed;
 
-    public function volume(): array;
+    public function volume(): mixed;
 
     public function error(): string;
 }
