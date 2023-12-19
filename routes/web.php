@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+
+    $now = now()->timestamp;
+    $twoDaysAgo = now()->subDays(2)->timestamp;
+
+    $response = \App\Services\Exchange\Facade\Exchange::ohlc('BTCUSDT',ExchangeResolutionEnum::EVERY_HOUR,$now,$twoDaysAgo,100);
+
+    dd($response->ohlc(0));
+
     return view('welcome');
 });

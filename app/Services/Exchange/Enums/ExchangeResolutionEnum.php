@@ -16,4 +16,9 @@ enum ExchangeResolutionEnum: string
     case DAILY = 'D';
     case TWO_DAYS = '2D';
     case THREE_DAYS = '3D';
+
+    public function toSeconds(): string
+    {
+        return $this->value * 60;
+    }
 }

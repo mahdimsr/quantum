@@ -2,6 +2,7 @@
 
 namespace App\Services\Exchange\Facade;
 
+use App\Services\Exchange\Coinex\CoinexService;
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Enums\OrderExecutionEnum;
 use App\Services\Exchange\Enums\OrderTypeEnum;
@@ -26,6 +27,6 @@ class Exchange extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'ExchangeService';
+        return CoinexService::class;
     }
 }
