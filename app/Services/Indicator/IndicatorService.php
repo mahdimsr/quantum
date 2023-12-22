@@ -16,7 +16,7 @@ class IndicatorService
         return RSI::period($period)->run($candlesArray);
     }
 
-    public function EMA(array $candlesArray, int $period): array
+    public function EMA(array $candlesArray, int $period): float|int
     {
         return EMA::period($period)->run($candlesArray);
     }
