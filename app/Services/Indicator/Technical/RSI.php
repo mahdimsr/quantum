@@ -2,9 +2,11 @@
 
 namespace App\Services\Indicator\Technical;
 
+use App\Services\Indicator\Exceptions\RSIException;
+
 class RSI
 {
-    protected static int $period = 9;
+    protected static int $period = 14;
 
     public static function period(int $period): static
     {
@@ -13,62 +15,63 @@ class RSI
         return new self();
     }
 
-    public static function run(array $data): array
+    /**
+     * @throws RSIException
+     */
+    public static function run(array $data): float|int
     {
-        $change_array = array();
+        $period = 14;
 
-        //loop data
-        foreach ($data as $key => $row) {
+        // Calculate price changes
+        $priceChanges = [];
+        foreach ($data as $key => $price) {
+            if ($key > 0) {
 
-            //need 2 points to get change
-            if ($key >= 1) {
-
-                $change = $data[$key]['close'] - $data[$key - 1]['close'];
-
-                //add to front
-                array_unshift($change_array, $change);
-
-                //pop back if too long
-                if (count($change_array) > self::$period) {
-                    array_pop($change_array);
-                }
-            }
-
-            //have enough data to calc rsi
-            if ($key > self::$period) {
-                //reduce change array getting sum loss and sum gains
-                $res = array_reduce($change_array, function ($result, $item) {
-
-                    if ($item >= 0) {
-                        $result['sum_gain'] += $item;
-                    }
-
-                    if ($item < 0) {
-                        $result['sum_loss'] += abs($item);
-                    }
-
-                    return $result;
-                }, array('sum_gain' => 0, 'sum_loss' => 0));
-
-
-                $avg_gain = $res['sum_gain'] / self::$period;
-                $avg_loss = $res['sum_loss'] / self::$period;
-
-                //check divide by zero
-                if ($avg_loss == 0) {
-                    $rsi = 100;
-                } else {
-                    //calc and normalize
-                    $rs  = $avg_gain / $avg_loss;
-                    $rsi = 100 - (100 / (1 + $rs));
+                if (!array_key_exists('close', $price)){
+                    throw RSIException::keyNotExists('close');
                 }
 
-                //save
-                $data[$key]['val'] = $rsi;
-
+                $priceChanges[] = $price['close'] - $data[$key - 1]['close'];
             }
         }
 
-        return $data;
+        // Calculate average gains and losses
+        $gains = [];
+        $losses = [];
+        for ($i = 0; $i < $period; $i++) {
+            if ($priceChanges[$i] > 0) {
+                $gains[] = $priceChanges[$i];
+            } elseif ($priceChanges[$i] < 0) {
+                $losses[] = abs($priceChanges[$i]);
+            }
+        }
+
+        $averageGain = array_sum($gains) / $period;
+        $averageLoss = array_sum($losses) / $period;
+
+        // Calculate initial RS and RSI
+        $rs = ($averageGain > 0) ? $averageGain / $averageLoss : 0;
+        $rsi = 100 - (100 / (1 + $rs));
+
+        // Calculate RSI for the remaining data
+        for ($i = $period; $i < count($data); $i++) {
+            $priceChange = $data[$i]['close'] - $data[$i - 1]['close'];
+
+            if ($priceChange > 0) {
+                $averageGain = ($averageGain * ($period - 1) + $priceChange) / $period;
+                $averageLoss = $averageLoss * ($period - 1) / $period;
+            } elseif ($priceChange < 0) {
+                $averageLoss = ($averageLoss * ($period - 1) + abs($priceChange)) / $period;
+                $averageGain = $averageGain * ($period - 1) / $period;
+            }
+
+            $rs = ($averageGain > 0) ? $averageGain / $averageLoss : 0;
+            $rsi = 100 - (100 / (1 + $rs));
+        }
+
+        return $rsi;
     }
+
 }
+
+

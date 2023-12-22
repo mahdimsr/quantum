@@ -2,12 +2,16 @@
 
 namespace App\Services\Indicator;
 
+use App\Services\Indicator\Exceptions\RSIException;
 use App\Services\Indicator\Technical\EMA;
 use App\Services\Indicator\Technical\RSI;
 
 class IndicatorService
 {
-    public function RSI(array $candlesArray, int $period): array
+    /**
+     * @throws RSIException
+     */
+    public function RSI(array $candlesArray, int $period): float|int
     {
         return RSI::period($period)->run($candlesArray);
     }
