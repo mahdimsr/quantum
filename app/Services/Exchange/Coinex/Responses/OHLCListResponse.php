@@ -24,8 +24,6 @@ class OHLCListResponse implements OHLCListResponseContract
     {
         $candleData = $this->response['data'][$index];
 
-        dd($candleData);
-
         return new OHLCResponse($candleData);
     }
 
