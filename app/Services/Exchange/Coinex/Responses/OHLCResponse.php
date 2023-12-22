@@ -25,27 +25,27 @@ class OHLCResponse implements OHLCResponseContract
 
     public function open(): mixed
     {
-        // TODO: Implement open() method.
+        return $this->data[1];
     }
 
     public function high(): mixed
     {
-        // TODO: Implement high() method.
+        return $this->data[3];
     }
 
     public function low(): mixed
     {
-        // TODO: Implement low() method.
+        return $this->data[4];
     }
 
     public function close(): mixed
     {
-        // TODO: Implement close() method.
+        return $this->data[2];
     }
 
     public function volume(): mixed
     {
-        // TODO: Implement volume() method.
+        return $this->data[5];
     }
 
     public function error(): string
