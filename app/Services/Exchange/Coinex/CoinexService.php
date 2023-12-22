@@ -28,7 +28,7 @@ class CoinexService implements OHLCRequestContract
                 'market'     => $symbol,
                 'start_time' => $from,
                 'end_time'   => $to,
-                'interval'   => $resolutionEnum->value,
+                'interval'   => $resolutionEnum->toSeconds(),
             ]
         ]);
 
