@@ -14,13 +14,15 @@ class TelegramBotChannel
         $client = new Client();
 
         $token = Config::get('notification.telegram.bot_token');
-        $chatId = Config::get('notification.telegram.chatId');
+        $chatId = $notifiable->telegram_chat_id;
 
         try {
 
             $request = $client->post("https://api.telegram.org/bot$token/sendMessage", [
-                'chat_id' => $chatId,
-                'message' => $notification->toTelegramBot()
+                'json' => [
+                    'chat_id' => $chatId,
+                    'text' => $notification->toTelegramBot()
+                ]
             ]);
 
         } catch (GuzzleException $e) {
