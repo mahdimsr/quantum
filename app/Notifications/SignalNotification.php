@@ -16,11 +16,13 @@ class SignalNotification extends Notification implements TelegramBotNotification
 
     protected string $symbol;
     protected string $position;
+    protected mixed $rsi;
 
-    public function __construct(string $symbol, string $position)
+    public function __construct(string $symbol, string $position, mixed $rsi)
     {
         $this->symbol = $symbol;
         $this->position = $position;
+        $this->rsi = $rsi;
     }
 
 
@@ -50,6 +52,7 @@ class SignalNotification extends Notification implements TelegramBotNotification
     {
         $message = "Symbol: $this->symbol \n";
         $message .= "Position: $this->position";
+        $message .= "RSI: $this->rsi";
 
         return $message;
     }
