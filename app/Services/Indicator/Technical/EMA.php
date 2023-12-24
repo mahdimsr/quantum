@@ -37,7 +37,7 @@ class EMA
                     $previous_EMA = $sma;
                 }else{
                     //ema formula
-                    $ema = ($data[$key]['close'] - $previous_EMA) * $smoothing_constant + $previous_EMA;
+                    $ema = ($row['close'] - $previous_EMA) * $smoothing_constant + $previous_EMA;
 
                     //save
                     $data[$key]['val'] = $ema;
