@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static GetOrderResponseContract order(string $coinName)
  * @method static SetOrderResponseContract setOrder(OrderTypeEnum $orderBuyEnum, OrderExecutionEnum $orderExecutionEnum, string $srcCurrency, string $dstCurrency, string $amount, string $price, string $clientOrderId)
  * @method static StatsResponseContract marketStats(string $srcCurrency, string $dstCurrency)
- * @method static OHLCListResponseContract ohlc(string $symbol, ExchangeResolutionEnum $resolutionEnum, int $to,int $from, int $countBack, int $page = 1)
+ * @method static OHLCListResponseContract ohlc(string $symbol, mixed $timeframe, int $to,int $from, int $countBack, int $page = 1)
  * @method static UserResponseContract user()
  */
 class Exchange extends Facade

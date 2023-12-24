@@ -8,5 +8,5 @@ use App\Services\Exchange\Responses\OHLCResponseContract;
 
 interface OHLCRequestContract
 {
-    public function ohlc(string $symbol, ExchangeResolutionEnum $resolutionEnum, int $to,int $from, int $countBack, int $page = 1): OHLCListResponseContract;
+    public function ohlc(string $symbol, mixed $timeframe, int $to,int $from, int $countBack, int $page = 1): OHLCListResponseContract;
 }

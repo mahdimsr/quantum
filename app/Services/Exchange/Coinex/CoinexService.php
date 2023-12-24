@@ -15,7 +15,7 @@ class CoinexService implements OHLCRequestContract
     /**
      * @throws GuzzleException
      */
-    public function ohlc(string $symbol, ExchangeResolutionEnum $resolutionEnum, int $to, int $from, int $countBack, int $page = 1): OHLCListResponseContract
+    public function ohlc(string $symbol, mixed $timeframe, int $to, int $from, int $countBack, int $page = 1): OHLCListResponseContract
     {
         // https://www.coinex.com/res/contract/market/kline?market=LRCUSDT&start_time=1702900800&end_time=1702906285&interval=3600
 
@@ -28,7 +28,7 @@ class CoinexService implements OHLCRequestContract
                 'market'     => $symbol,
                 'start_time' => $from,
                 'end_time'   => $to,
-                'interval'   => $resolutionEnum->toSeconds(),
+                'interval'   => $timeframe,
             ]
         ]);
 
