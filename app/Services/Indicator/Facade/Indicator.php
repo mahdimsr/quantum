@@ -6,8 +6,8 @@ use App\Services\Indicator\IndicatorService;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static float|int RSI(array $data, int $period)
- * @method static array EMA(array $data, int $period)
+ * @method static float|int RSI(array $data, int $period = 14)
+ * @method static array EMA(array $data, int $period = 9)
  */
 class Indicator extends Facade
 {
