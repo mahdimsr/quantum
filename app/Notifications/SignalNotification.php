@@ -14,15 +14,13 @@ class SignalNotification extends Notification implements TelegramBotNotification
 {
     use Queueable;
 
-    protected SymbolEnum $symbol;
+    protected string $symbol;
     protected string $position;
-    protected mixed $currentPrice;
 
-    public function __construct(SymbolEnum $symbol, string $position, mixed $currentPrice)
+    public function __construct(string $symbol, string $position)
     {
         $this->symbol = $symbol;
         $this->position = $position;
-        $this->currentPrice = $currentPrice;
     }
 
 
@@ -50,10 +48,9 @@ class SignalNotification extends Notification implements TelegramBotNotification
 
     public function toTelegramBot(): string
     {
-        return "position: $this->position
-        \n
-        token: {$this->symbol->value}
-        \n
-        currentPrice: $this->currentPrice";
+        $message = "Symbol: $this->symbol \n";
+        $message .= "Position: $this->position";
+
+        return $message;
     }
 }
