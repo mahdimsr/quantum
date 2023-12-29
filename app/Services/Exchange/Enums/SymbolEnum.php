@@ -10,6 +10,9 @@ enum SymbolEnum : string
     case KSM = 'KSM';
     case SCRT = 'SCRT';
     case MINA = 'MINA';
+    case BONK = 'BONK';
+    case MOVR = 'MOVR';
+    case SEI = 'SEI';
 
     public function toUSDT(): string
     {

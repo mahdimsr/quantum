@@ -23,9 +23,9 @@ class Kernel extends ConsoleKernel
 
             foreach (SymbolEnum::cases() as $case) {
 
-                Artisan::call('signal:simple', [
+                Artisan::call('signal:simple-triple', [
                     'symbol'    => $case->toUSDT(),
-                    'timeframe' => ExchangeResolutionEnum::EVERY_THIRTY_MINUTES->toSeconds(),
+                    'timeframe' => ExchangeResolutionEnum::EVERY_FIVE_MINUTES->toSeconds(),
                     'from'      => $yesterday->timestamp,
                     'to'        => $now->timestamp
                 ]);
