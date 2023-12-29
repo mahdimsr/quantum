@@ -27,11 +27,8 @@ class RSI
         foreach ($data as $key => $price) {
             if ($key > 0) {
 
-                if (!array_key_exists('close', $price)){
-                    throw RSIException::keyNotExists('close');
-                }
 
-                $priceChanges[] = $price['close'] - $data[$key - 1]['close'];
+                $priceChanges[] = $price - $data[$key - 1];
             }
         }
 
@@ -55,7 +52,7 @@ class RSI
 
         // Calculate RSI for the remaining data
         for ($i = $period; $i < count($data); $i++) {
-            $priceChange = $data[$i]['close'] - $data[$i - 1]['close'];
+            $priceChange = $data[$i] - $data[$i - 1];
 
             if ($priceChange > 0) {
                 $averageGain = ($averageGain * ($period - 1) + $priceChange) / $period;
