@@ -13,32 +13,38 @@ class EMA
         return new self();
     }
 
-    public static function run(array $data): float|int
+    public static function run(array $data): array
     {
+        $smoothing_constant = 2 / (self::$period + 1);
+        $previous_EMA = null;
 
-        // You might want to adjust the period based on your analysis
-        $period = self::$period;
+        //loop data
+        foreach($data as $key => $row){
 
-        // Calculate the multiplier
-        $multiplier = 2 / ($period + 1);
+            //skip init rows
+            if ($key >= self::$period){
 
-        // Get the closing prices as an array
-        $closingPrices = collect($data)->pluck('close')->toArray();
+                //first
+                if(!isset($previous_EMA)){
+                    $sum = 0;
+                    for ($i = $key - (self::$period-1); $i <= $key; $i ++)
+                        $sum += $data[$i]['close'];
+                    //calc sma
+                    $sma = $sum / self::$period;
 
-        // Calculate the initial SMA (Simple Moving Average)
-        $sma = array_slice($closingPrices, 0, $period);
-        $sma = array_sum($sma) / $period;
+                    //save
+                    $data[$key]['val'] = $sma;
+                    $previous_EMA = $sma;
+                }else{
+                    //ema formula
+                    $ema = ($row['close'] - $previous_EMA) * $smoothing_constant + $previous_EMA;
 
-        // Calculate the initial EMA
-        $ema = $sma;
-
-        // Calculate EMA for the remaining data
-        for ($i = $period; $i < count($closingPrices); $i++) {
-            $ema = ($closingPrices[$i] - $ema) * $multiplier + $ema;
-            // Store or use $ema as needed for your application
+                    //save
+                    $data[$key]['val'] = $ema;
+                    $previous_EMA = $ema;
+                }
+            }
         }
-
-        return $ema;
+        return $data;
     }
-
 }
