@@ -15,36 +15,14 @@ class EMA
 
     public static function run(array $data): array
     {
-        $smoothing_constant = 2 / (self::$period + 1);
-        $previous_EMA = null;
+        $multiplier = 2 / (self::$period + 1);
+        $ema = [];
+        $ema[0] = $data[0];
 
-        //loop data
-        foreach($data as $key => $row){
-
-            //skip init rows
-            if ($key >= self::$period){
-
-                //first
-                if(!isset($previous_EMA)){
-                    $sum = 0;
-                    for ($i = $key - (self::$period-1); $i <= $key; $i ++)
-                        $sum += $data[$i]['close'];
-                    //calc sma
-                    $sma = $sum / self::$period;
-
-                    //save
-                    $data[$key]['val'] = $sma;
-                    $previous_EMA = $sma;
-                }else{
-                    //ema formula
-                    $ema = ($row['close'] - $previous_EMA) * $smoothing_constant + $previous_EMA;
-
-                    //save
-                    $data[$key]['val'] = $ema;
-                    $previous_EMA = $ema;
-                }
-            }
+        for ($i = 1; $i < count($data); $i++) {
+            $ema[$i] = ($data[$i] - $ema[$i - 1]) * $multiplier + $ema[$i - 1];
         }
-        return $data;
+
+        return $ema;
     }
 }
