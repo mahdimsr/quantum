@@ -19,19 +19,19 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
 
             $now       = Carbon::now();
-            $yesterday = Carbon::now()->subHours(72);
+            $yesterday = Carbon::now()->subHours(120);
 
             foreach (SymbolEnum::cases() as $case) {
 
-                Artisan::call('signal:simple-triple', [
+                Artisan::call('signal:rsi-compare', [
                     'symbol'    => $case->toUSDT(),
-                    'timeframe' => ExchangeResolutionEnum::EVERY_FIVE_MINUTES->toSeconds(),
+                    'timeframe' => ExchangeResolutionEnum::EVERY_THIRTY_MINUTES->toSeconds(),
                     'from'      => $yesterday->timestamp,
                     'to'        => $now->timestamp
                 ]);
             }
 
-        })->everyFiveMinutes();
+        })->everyThirtyMinutes();
     }
 
     /**
