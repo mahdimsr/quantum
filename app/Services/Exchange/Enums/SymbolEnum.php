@@ -2,17 +2,13 @@
 
 namespace App\Services\Exchange\Enums;
 
-enum SymbolEnum : string
+enum SymbolEnum: string
 {
     case BTC = 'BTC';
     case ETH = 'ETH';
     case FTM = 'FTM';
-    case KSM = 'KSM';
-    case SCRT = 'SCRT';
-    case MINA = 'MINA';
-    case BONK = 'BONK';
-    case MOVR = 'MOVR';
-    case SEI = 'SEI';
+    case AAVE = 'AAVE';
+    case ADA = 'ADA';
 
     public function toUSDT(): string
     {
