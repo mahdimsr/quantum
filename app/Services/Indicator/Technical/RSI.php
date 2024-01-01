@@ -20,7 +20,7 @@ class RSI
      */
     public static function run(array $data): float|int
     {
-        $period = 14;
+        $period = self::$period;
 
         // Calculate price changes
         $priceChanges = [];
