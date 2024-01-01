@@ -4,6 +4,7 @@ namespace App\Services\Exchange\Coinex\Responses;
 
 use App\Services\Exchange\Responses\OHLCListResponseContract;
 use App\Services\Exchange\Responses\OHLCResponseContract;
+use Illuminate\Support\Collection;
 
 class OHLCListResponse implements OHLCListResponseContract
 {
@@ -35,5 +36,18 @@ class OHLCListResponse implements OHLCListResponseContract
     public function error(): string
     {
         return 'Something Wrong,...';
+    }
+
+    public function all(): Collection
+    {
+        $candles = [];
+
+        for ($i = 0; $i < $this->count(); $i++) {
+            $candle = $this->ohlc($i);
+
+            $candles[] = $candle;
+        }
+
+        return collect($candles);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Services\Exchange\Responses;
 
+use Illuminate\Support\Collection;
+
 interface OHLCListResponseContract
 {
     public function status(): string;
@@ -11,4 +13,6 @@ interface OHLCListResponseContract
     public function count(): int;
 
     public function error(): string;
+
+    public function all(): Collection;
 }
