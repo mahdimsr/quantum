@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Notifications\SignalNotification;
 use App\Services\Exchange\Facade\Exchange;
 use App\Services\Indicator\Facade\Indicator;
+use App\Services\OrderService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
 
@@ -18,6 +19,9 @@ class RSIComparisonCommand extends Command
     protected $description = 'Compare two rsi and signal';
 
 
+    /**
+     * @throws \Exception
+     */
     public function handle()
     {
         $symbol = $this->argument('symbol');
@@ -29,25 +33,33 @@ class RSIComparisonCommand extends Command
 
         $closePriceArray = $response->all()->map(fn($item) => $item->close())->toArray();
 
-        $ema100 = Indicator::EMA($closePriceArray,100);
-        $ema25 = Indicator::EMA($closePriceArray,25);
-
-        $position = 'Long 🟢';
-
-        if ($ema25 < $ema100){
-            $position = 'Short 🔴';
-        }
-
         $rsi100 = Indicator::RSI($closePriceArray, 100);
         $rsi25 = Indicator::RSI($closePriceArray, 25);
 
         $compare = $rsi25 - $rsi100;
 
-        if (1 <= abs($compare) and abs($compare) <= 5 ){
+        if (1 <= abs($compare) and abs($compare) <= 3) {
 
             $user = User::find(1);
 
-            Notification::send($user, new SignalNotification($this->argument('symbol'), $position));
+            $ema100 = Indicator::EMA($closePriceArray, 100);
+            $ema25 = Indicator::EMA($closePriceArray, 25);
+
+            $lastPrice = collect($closePriceArray)->last();
+
+            if ($ema25 < $ema100) {
+
+                $orderDetails = OrderService::positionType('short')->priceCalculate($lastPrice,1,2);
+
+                Notification::send($user, new SignalNotification($this->argument('symbol'), 'short',$lastPrice,$orderDetails['takeProfit'], $orderDetails['stopLoss']));
+
+            } else {
+
+                $orderDetails = OrderService::positionType('long')->priceCalculate($lastPrice,1,2);
+
+                Notification::send($user, new SignalNotification($this->argument('symbol'), 'long',$lastPrice,$orderDetails['takeProfit'], $orderDetails['stopLoss']));
+
+            }
         }
 
 
