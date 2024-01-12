@@ -4,7 +4,7 @@ namespace App\Services\Indicator\Technical;
 
 use Illuminate\Support\Collection;
 
-class EMA extends Indicator
+class EMA extends IndicatorStructure
 {
     private array $closePriceArray;
 

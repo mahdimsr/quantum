@@ -6,7 +6,7 @@ use App\Services\Indicator\Entity\Candle;
 use Exception;
 use Illuminate\Support\Collection;
 
-abstract class Indicator
+abstract class IndicatorStructure
 {
     protected Collection $candlesCollection;
     protected int $period;

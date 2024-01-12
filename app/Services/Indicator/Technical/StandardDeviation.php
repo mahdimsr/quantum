@@ -2,7 +2,7 @@
 
 namespace App\Services\Indicator\Technical;
 
-class StandardDeviation extends Indicator
+class StandardDeviation extends IndicatorStructure
 {
 
     public function run(): array

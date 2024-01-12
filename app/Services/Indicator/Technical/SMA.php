@@ -2,7 +2,7 @@
 
 namespace App\Services\Indicator\Technical;
 
-class SMA extends Indicator
+class SMA extends IndicatorStructure
 {
     public function run(): array
     {

@@ -4,7 +4,7 @@ namespace App\Services\Indicator\Technical;
 
 use App\Services\Indicator\Exceptions\RSIException;
 
-class RSI extends Indicator
+class RSI extends IndicatorStructure
 {
     public function run(): int|float
     {
