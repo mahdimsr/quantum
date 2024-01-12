@@ -66,9 +66,16 @@ class IndicatorService
         return $bb->run();
     }
 
-    public function MACD(array $data, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
+    /**
+     * @throws \Exception
+     */
+    public function MACD(Collection $candlesCollection, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
     {
-        return MACD::shortPeriod($shortPeriod)->longPeriod($longPeriod)->signalPeriod($signalPeriod)->run($data);
+       $macd = new MACD($candlesCollection,$signalPeriod);
+       $macd->setLongPeriod($longPeriod);
+       $macd->setShortPeriod($shortPeriod);
+
+       return $macd->run();
     }
 
     public function superTrend(array $highPriceArray,array $lowPriceArray, array $closePriceArray, int $period = 14, float $multiplier = 1.5): array

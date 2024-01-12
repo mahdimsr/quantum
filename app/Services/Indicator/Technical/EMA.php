@@ -12,7 +12,7 @@ class EMA extends IndicatorStructure
     {
         parent::__construct($candlesCollection, $period);
 
-        $this->closePriceArray = $this->candlesCollection->map(fn($item) => $item->close())->toArray();
+        $this->closePriceArray = $this->candlesCollection->map(fn($item) => $item->getClose())->toArray();
     }
 
     public function run(): array
