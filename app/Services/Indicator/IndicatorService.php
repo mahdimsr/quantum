@@ -7,6 +7,7 @@ use App\Services\Indicator\Technical\EMA;
 use App\Services\Indicator\Technical\MACD;
 use App\Services\Indicator\Technical\RSI;
 use App\Services\Indicator\Technical\SMA;
+use App\Services\Indicator\Technical\StandardDeviation;
 use App\Services\Indicator\Technical\SuperTrend;
 use Illuminate\Support\Collection;
 
@@ -40,6 +41,16 @@ class IndicatorService
         $sma = new SMA($candlesCollection,$period);
 
         return $sma->run();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function StandardDeviation(Collection $candlesCollection, int $period = 5): array
+    {
+        $sd = new StandardDeviation($candlesCollection,$period);
+
+        return $sd->run();
     }
 
     public function MACD(array $data, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
