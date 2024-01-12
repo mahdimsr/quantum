@@ -34,7 +34,7 @@ class Candle
     /**
      * @throws IndicatorException
      */
-    public static function validateArrayKeys(array $data): void
+    private static function validateArrayKeys(array $data): void
     {
         if (!array_key_exists('time',$data)){
             throw IndicatorException::keyNotExist('time');
