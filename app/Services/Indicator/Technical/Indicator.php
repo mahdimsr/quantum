@@ -9,12 +9,15 @@ use Illuminate\Support\Collection;
 abstract class Indicator
 {
     protected Collection $candlesCollection;
+    protected int $period;
 
     /**
      * @throws Exception
      */
-    public function __construct(Collection $candlesCollection)
+    public function __construct(Collection $candlesCollection, int $period = 9)
     {
+        $this->period = $period;
+
         if (!is_a($candlesCollection->random(1)->first(), Candle::class)){
 
             throw new Exception('collection item should be instance of ' . Candle::class);
