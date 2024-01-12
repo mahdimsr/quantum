@@ -20,7 +20,7 @@ class OHLCResponse implements OHLCResponseContract
 
     public function time(): mixed
     {
-        // TODO: Implement time() method.
+        return $this->data[0];
     }
 
     public function open(): mixed
