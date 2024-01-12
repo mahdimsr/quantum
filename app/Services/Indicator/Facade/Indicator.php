@@ -3,11 +3,12 @@
 namespace App\Services\Indicator\Facade;
 
 use App\Services\Indicator\IndicatorService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static float|int RSI(array $data, int $period = 14)
- * @method static array EMA(array $data, int $period = 9)
+ * @method static float|int RSI(Collection $candlesCollection, int $period = 14)
+ * @method static array EMA(Collection $candlesCollection, int $period = 9)
  * @method static array MACD(array $data, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9)
  * @method static array superTrend(array $highPriceArray,array $lowPriceArray, array $closePriceArray, int $period = 14, float $multiplier = 1.5)
  */

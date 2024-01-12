@@ -7,20 +7,28 @@ use App\Services\Indicator\Technical\EMA;
 use App\Services\Indicator\Technical\MACD;
 use App\Services\Indicator\Technical\RSI;
 use App\Services\Indicator\Technical\SuperTrend;
+use Illuminate\Support\Collection;
 
 class IndicatorService
 {
     /**
-     * @throws RSIException
+     * @throws \Exception
      */
-    public function RSI(array $data, int $period = 14): float|int
+    public function RSI(Collection $candlesCollection, int $period = 14): float|int
     {
-        return RSI::period($period)->run($data);
+        $rsi = new RSI($candlesCollection, $period);
+
+        return $rsi->run();
     }
 
-    public function EMA(array $data, int $period = 9): array
+    /**
+     * @throws \Exception
+     */
+    public function EMA(Collection $candlesCollection, int $period = 9): array
     {
-        return EMA::period($period)->run($data);
+        $ema = new EMA($candlesCollection,$period);
+
+        return $ema->run();
     }
 
     public function MACD(array $data, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
