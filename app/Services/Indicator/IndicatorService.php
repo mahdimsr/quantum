@@ -6,6 +6,7 @@ use App\Services\Indicator\Exceptions\RSIException;
 use App\Services\Indicator\Technical\EMA;
 use App\Services\Indicator\Technical\MACD;
 use App\Services\Indicator\Technical\RSI;
+use App\Services\Indicator\Technical\SMA;
 use App\Services\Indicator\Technical\SuperTrend;
 use Illuminate\Support\Collection;
 
@@ -29,6 +30,16 @@ class IndicatorService
         $ema = new EMA($candlesCollection,$period);
 
         return $ema->run();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function SMA(Collection $candlesCollection, int $period = 9): array
+    {
+        $sma = new SMA($candlesCollection,$period);
+
+        return $sma->run();
     }
 
     public function MACD(array $data, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
