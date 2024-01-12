@@ -3,6 +3,7 @@
 namespace App\Services\Indicator;
 
 use App\Services\Indicator\Exceptions\RSIException;
+use App\Services\Indicator\Technical\BollingerBands;
 use App\Services\Indicator\Technical\EMA;
 use App\Services\Indicator\Technical\MACD;
 use App\Services\Indicator\Technical\RSI;
@@ -51,6 +52,18 @@ class IndicatorService
         $sd = new StandardDeviation($candlesCollection,$period);
 
         return $sd->run();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function BollingerBands(Collection $candlesCollection, int $period = 20 , float $multiplier = 2): array
+    {
+        $bb = new BollingerBands($candlesCollection,$period);
+
+        $bb->setMultiplier($multiplier);
+
+        return $bb->run();
     }
 
     public function MACD(array $data, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
