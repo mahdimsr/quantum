@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use App\Notifications\SignalNotification;
 use App\Services\Exchange\Facade\Exchange;
+use App\Services\Indicator\Entity\Candle;
 use App\Services\Indicator\Facade\Indicator;
 use App\Services\OrderService;
 use Illuminate\Console\Command;
@@ -31,10 +32,17 @@ class RSIComparisonCommand extends Command
 
         $response = Exchange::ohlc($symbol, $timeframe, $to, $from, 100);
 
-        $closePriceArray = $response->all()->map(fn($item) => $item->close())->toArray();
+        $candlesCollection = $response->all()->map(fn($item) => Candle::fromArray([
+            'time' => $item->time(),
+            'close' => $item->close(),
+            'open' => $item->open(),
+            'high' => $item->high(),
+            'low' => $item->low(),
+            'volume' => $item->volume()
+        ]));
 
-        $rsi100 = Indicator::RSI($closePriceArray, 100);
-        $rsi25 = Indicator::RSI($closePriceArray, 25);
+        $rsi100 = Indicator::RSI($candlesCollection, 100);
+        $rsi25 = Indicator::RSI($candlesCollection, 25);
 
         $compare = $rsi25 - $rsi100;
 
@@ -42,20 +50,20 @@ class RSIComparisonCommand extends Command
 
             $user = User::find(1);
 
-            $ema100 = Indicator::EMA($closePriceArray, 100);
-            $ema25 = Indicator::EMA($closePriceArray, 25);
+            $ema100 = Indicator::EMA($candlesCollection, 100);
+            $ema25 = Indicator::EMA($candlesCollection, 25);
 
-            $lastPrice = collect($closePriceArray)->last();
+            $lastPrice = $candlesCollection->last()->getClose();
 
             if ($ema25 < $ema100) {
 
-                $orderDetails = OrderService::positionType('short')->priceCalculate($lastPrice,1,2);
+                $orderDetails = OrderService::positionType('short')->priceCalculate($lastPrice,0.1,0.2);
 
                 Notification::send($user, new SignalNotification($this->argument('symbol'), 'short',$lastPrice,$orderDetails['takeProfit'], $orderDetails['stopLoss']));
 
             } else {
 
-                $orderDetails = OrderService::positionType('long')->priceCalculate($lastPrice,1,2);
+                $orderDetails = OrderService::positionType('long')->priceCalculate($lastPrice,0.1,0.2);
 
                 Notification::send($user, new SignalNotification($this->argument('symbol'), 'long',$lastPrice,$orderDetails['takeProfit'], $orderDetails['stopLoss']));
 
