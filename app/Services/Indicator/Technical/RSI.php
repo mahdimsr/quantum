@@ -8,7 +8,7 @@ class RSI extends IndicatorStructure
 {
     public function run(): int|float
     {
-        $closePriceArray = $this->candlesCollection->map(fn($item) => $item->close())->toArray();
+        $closePriceArray = $this->candlesCollection->map(fn($item) => $item->getClose())->toArray();
 
         // Calculate price changes
         $priceChanges = [];
