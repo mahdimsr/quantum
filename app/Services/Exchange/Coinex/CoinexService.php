@@ -2,37 +2,43 @@
 
 namespace App\Services\Exchange\Coinex;
 
-use App\Services\Exchange\Coinex\Responses\OHLCListResponse;
-use App\Services\Exchange\Enums\ExchangeResolutionEnum;
-use App\Services\Exchange\Requests\OHLCRequestContract;
-use App\Services\Exchange\Responses\OHLCListResponseContract;
+use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
+use App\Services\Exchange\Requests\CandleRequestContract;
+use App\Services\Exchange\Responses\CandleResponseContract;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Config;
 
-class CoinexService implements OHLCRequestContract
+class CoinexService implements CandleRequestContract
 {
+    protected Client $client;
+
+    public function __construct()
+    {
+
+        $futuresBaseUrl = Config::get('exchange.exchanges.coinex.base_url').'/futures/';
+
+        $this->client = new Client([
+            'base_uri' => $futuresBaseUrl,
+            'headers'  => [
+                'accept' => 'application/json'
+            ],
+        ]);
+    }
+
 
     /**
-     * @throws GuzzleException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function ohlc(string $symbol, mixed $timeframe, int $to, int $from, int $countBack, int $page = 1): OHLCListResponseContract
+    public function market(string $symbol, string $period, string $limit = null): CandleResponseContract
     {
-        // https://www.coinex.com/res/contract/market/kline?market=LRCUSDT&start_time=1702900800&end_time=1702906285&interval=3600
-
-
-        $client = new Client();
-
-
-        $request = $client->get('https://www.coinex.com/res/contract/market/kline', [
+        $request = $this->client->get('kline', [
             'query' => [
-                'market'     => $symbol,
-                'start_time' => $from,
-                'end_time'   => $to,
-                'interval'   => $timeframe,
+                'market' => $symbol,
+                'period' => $period,
+                'limit'  => $limit,
             ]
         ]);
 
-
-        return new OHLCListResponse(json_decode($request->getBody()->getContents(), true));
+        return new CandleResponseAdapter(json_decode($request->getBody()->getContents(), true));
     }
 }
