@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Indicator\Entity;
+namespace App\Services\Exchange\Repository;
 
-use App\Services\Indicator\Exceptions\IndicatorException;
+use App\Services\Exchange\Exceptions\CandleException;
 
 class Candle
 {
@@ -14,7 +14,7 @@ class Candle
     private mixed $volume;
 
     /**
-     * @throws IndicatorException
+     * @throws CandleException
      */
     public static function fromArray(array $data) : self
     {
@@ -32,32 +32,32 @@ class Candle
     }
 
     /**
-     * @throws IndicatorException
+     * @throws CandleException
      */
     public static function validateArrayKeys(array $data): void
     {
         if (!array_key_exists('time',$data)){
-            throw IndicatorException::keyNotExist('time');
+            throw CandleException::keyNotExist('time');
         }
 
         if (!array_key_exists('open',$data)){
-            throw IndicatorException::keyNotExist('open');
+            throw CandleException::keyNotExist('open');
         }
 
         if (!array_key_exists('high',$data)){
-            throw IndicatorException::keyNotExist('high');
+            throw CandleException::keyNotExist('high');
         }
 
         if (!array_key_exists('low',$data)){
-            throw IndicatorException::keyNotExist('low');
+            throw CandleException::keyNotExist('low');
         }
 
         if (!array_key_exists('close',$data)){
-            throw IndicatorException::keyNotExist('close');
+            throw CandleException::keyNotExist('close');
         }
 
         if (!array_key_exists('volume',$data)){
-            throw IndicatorException::keyNotExist('volume');
+            throw CandleException::keyNotExist('volume');
         }
     }
 
