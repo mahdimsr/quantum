@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Indicator\Exceptions;
+namespace App\Services\Exchange\Exceptions;
 
-use App\Services\Indicator\Entity\Candle;
+use App\Services\Exchange\Repository\Candle;
 use Exception;
 
-class IndicatorException extends Exception
+class CandleException extends Exception
 {
     public static function keyNotExist(string $key): static
     {

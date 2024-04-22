@@ -2,7 +2,7 @@
 
 namespace App\Services\Indicator\Technical;
 
-use App\Services\Indicator\Entity\Candle;
+use App\Services\Exchange\Repository\Candle;
 use Exception;
 use Illuminate\Support\Collection;
 
