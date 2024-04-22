@@ -22,7 +22,7 @@ class Indicator extends Facade
         return IndicatorService::class;
     }
 
-    public static function averageTrueRange(array $high, array $low, array $close, int $length = 14): array
+    public static function averageTrueRange(array $high, array $low, array $close, int $length = 14): int
     {
         $trueRange = [];
         $averageTrueRange = [];
@@ -42,7 +42,7 @@ class Indicator extends Facade
             $averageTrueRange[$i] = array_sum(array_slice($trueRange, $i, $length)) / $length;
         }
 
-        return $averageTrueRange;
+        return collect($averageTrueRange)->average();
     }
 
 }
