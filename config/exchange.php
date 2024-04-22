@@ -18,6 +18,8 @@ return [
         ],
         'coinex' => [
             'base_url' => env('EXCHANGE_COINEX_BASEURL', null),
+            'access_id' => env('EXCHANGE_COINEX_ACCESS_ID', null),
+            'secret_key' => env('EXCHANGE_COINEX_SECRET_KEY', null),
         ],
     ]
 
