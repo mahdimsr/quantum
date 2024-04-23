@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static GetOrderResponseContract order(string $coinName)
  * @method static SetOrderResponseContract setOrder(OrderTypeEnum $orderBuyEnum, OrderExecutionEnum $orderExecutionEnum, string $srcCurrency, string $dstCurrency, string $amount, string $price, string $clientOrderId)
  * @method static StatsResponseContract marketStats(string $srcCurrency, string $dstCurrency)
- * @method static CandleResponseContract market(string $symbol, string $period, string $limit = null)
+ * @method static CandleResponseContract candles(string $symbol, string $period, string $limit = null)
  * @method static UserResponseContract user()
  */
 class Exchange extends Facade

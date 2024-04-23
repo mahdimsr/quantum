@@ -29,7 +29,7 @@ class CoinexService implements CandleRequestContract
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function market(string $symbol, string $period, string $limit = null): CandleResponseContract
+    public function candles(string $symbol, string $period, string $limit = null): CandleResponseContract
     {
         $request = $this->client->get('kline', [
             'query' => [
