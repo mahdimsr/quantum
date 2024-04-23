@@ -2,6 +2,7 @@
 
 namespace App\Services\Indicator;
 
+use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\Exceptions\RSIException;
 use App\Services\Indicator\Technical\BollingerBands;
 use App\Services\Indicator\Technical\EMA;
@@ -17,7 +18,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function RSI(Collection $candlesCollection, int $period = 14): float|int
+    public function RSI(CandleCollection $candlesCollection, int $period = 14): float|int
     {
         $rsi = new RSI($candlesCollection, $period);
 
@@ -27,7 +28,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function EMA(Collection $candlesCollection, int $period = 9): array
+    public function EMA(CandleCollection $candlesCollection, int $period = 9): array
     {
         $ema = new EMA($candlesCollection,$period);
 
@@ -37,7 +38,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function SMA(Collection $candlesCollection, int $period = 7): array
+    public function SMA(CandleCollection $candlesCollection, int $period = 7): array
     {
         $sma = new SMA($candlesCollection,$period);
 
@@ -47,7 +48,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function StandardDeviation(Collection $candlesCollection, int $period = 5): array
+    public function StandardDeviation(CandleCollection $candlesCollection, int $period = 5): array
     {
         $sd = new StandardDeviation($candlesCollection,$period);
 
@@ -57,7 +58,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function BollingerBands(Collection $candlesCollection, int $period = 20 , float $multiplier = 2): array
+    public function BollingerBands(CandleCollection $candlesCollection, int $period = 20 , float $multiplier = 2): array
     {
         $bb = new BollingerBands($candlesCollection,$period);
 
@@ -69,7 +70,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function MACD(Collection $candlesCollection, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
+    public function MACD(CandleCollection $candlesCollection, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9): array
     {
        $macd = new MACD($candlesCollection,$signalPeriod);
        $macd->setLongPeriod($longPeriod);

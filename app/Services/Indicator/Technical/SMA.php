@@ -6,7 +6,7 @@ class SMA extends IndicatorStructure
 {
     public function run(): array
     {
-        $closeDataArray = $this->candlesCollection->map(fn($item) => $item->getClose())->toArray();
+        $closeDataArray = $this->candlesCollection->closes()->toArray();
 
         $sma = [];
         for ($i = $this->period - 1; $i < count($closeDataArray); $i++) {

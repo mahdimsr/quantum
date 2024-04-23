@@ -15,7 +15,7 @@ class BollingerBands extends IndicatorStructure
 
     public function run(): array
     {
-        $closeDataArray = $this->candlesCollection->map(fn($item) => $item->getClose())->toArray();
+        $closeDataArray = $this->candlesCollection->closes()->toArray();
 
         $sma = Indicator::SMA($this->candlesCollection, $this->period);
         $stdDev = Indicator::StandardDeviation($this->candlesCollection, $this->period);
