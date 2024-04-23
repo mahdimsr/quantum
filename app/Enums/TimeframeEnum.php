@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum CandleTimeframeEnum: string
+enum TimeframeEnum: string
 {
     case EVERY_MINUTE = '1m';
     case EVERY_FIVE_MINUTES = '5m';
@@ -16,4 +16,9 @@ enum CandleTimeframeEnum: string
     case DAILY = '1D';
     case TWO_DAYS = '2D';
     case THREE_DAYS = '3D';
+
+    public function toCoinexFormat(): string
+    {
+        return $this->value;
+    }
 }

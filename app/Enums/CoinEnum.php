@@ -2,9 +2,9 @@
 
 namespace App\Enums;
 
-enum CandleCoinEnum: int
+enum CoinEnum: string
 {
-    case BTC = 1;
+    case BTC = 'BTC';
 
     public function IRTSymbol(): string
     {
