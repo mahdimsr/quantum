@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Carbon;
 
 class SignalNotification extends Notification implements TelegramBotNotification
 {
@@ -16,11 +17,17 @@ class SignalNotification extends Notification implements TelegramBotNotification
 
     protected string $symbol;
     protected string $position;
+    protected mixed $currentPrice;
+    protected mixed $takeProfit;
+    protected mixed $stopLoss;
 
-    public function __construct(string $symbol, string $position)
+    public function __construct(string $symbol, string $position, mixed $currentPrice, mixed $takeProfit, mixed $stopLoss)
     {
         $this->symbol = $symbol;
         $this->position = $position;
+        $this->currentPrice = $currentPrice;
+        $this->takeProfit = $takeProfit;
+        $this->stopLoss = $stopLoss;
     }
 
 
@@ -48,8 +55,15 @@ class SignalNotification extends Notification implements TelegramBotNotification
 
     public function toTelegramBot(): string
     {
+        $positionTitle = $this->position == 'long' ? "Long 🟢" : "Short 🔴";
+        $nowDateTimeString = Carbon::now()->toDateTimeString();
+
         $message = "Symbol: $this->symbol \n";
-        $message .= "Position: $this->position";
+        $message .= "Position: $positionTitle\n";
+        $message .= "CurrentPrice: $this->currentPrice\n";
+        $message .= "TakeProfit: $this->takeProfit\n";
+        $message .= "StopLoss: $this->stopLoss\n";
+        $message .= "Now: $nowDateTimeString\n";
 
         return $message;
     }

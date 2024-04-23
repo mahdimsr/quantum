@@ -2,50 +2,56 @@
 
 namespace App\Services\Indicator\Technical;
 
+use App\Services\Indicator\Entity\Candle;
 use App\Services\Indicator\Facade\Indicator;
 
-class MACD
+class MACD extends IndicatorStructure
 {
-    protected static int $shortPeriod = 9;
-    protected static int $longPeriod = 9;
-    protected static int $signalPeriod = 9;
+    private int $shortPeriod = 9;
+    private int $longPeriod = 9;
 
-    public static function shortPeriod(int $shortPeriod): static
+    public function setShortPeriod(int $shortPeriod)
     {
-        self::$shortPeriod = $shortPeriod;
-
-        return new self();
+        $this->shortPeriod = $shortPeriod;
     }
 
-    public static function longPeriod(int $longPeriod): static
+    public function setLongPeriod(int $longPeriod)
     {
-        self::$longPeriod = $longPeriod;
-
-        return new self();
+        $this->longPeriod = $longPeriod;
     }
 
-    public static function signalPeriod(int $signalPeriod): static
+
+    public function run(): array
     {
-        self::$signalPeriod = $signalPeriod;
+        $shortEMA = Indicator::EMA($this->candlesCollection, $this->shortPeriod);
 
-        return new self();
-    }
-
-    public static function run(array $data): array
-    {
-        $shortEMA = Indicator::EMA($data, self::$shortPeriod);
-
-        $longEMA = Indicator::EMA($data, self::$longPeriod);
+        $longEMA = Indicator::EMA($this->candlesCollection, $this->longPeriod);
 
         $macdLine = array_map(function ($short, $long) {
             return $short - $long;
         }, $shortEMA, $longEMA);
 
-        $signalLine = Indicator::EMA($macdLine, self::$signalPeriod);
+        $macdLineCollection = collect($macdLine)->map(fn($item) => Candle::fromArray([
+            'time' => null,
+            'close' => $item,
+            'open' => null,
+            'high' => null,
+            'low' => null,
+            'volume' => null
+        ]));
 
-        return [
-            'MACD_line' => $macdLine,
-            'signal_line' => $signalLine
-        ];
+        $signalLine = Indicator::EMA($macdLineCollection);
+
+        $macdCalculation = [];
+
+        for ($i = 0; $i < count($macdLine); $i++) {
+            $macdCalculation[] = [
+                'macd_line' => $macdLine[$i],
+                'signal_line' => $signalLine[$i]
+            ];
+        }
+
+        return $macdCalculation;
     }
+
 }

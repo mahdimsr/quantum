@@ -2,25 +2,28 @@
 
 namespace App\Services\Indicator\Technical;
 
-class EMA
+use Illuminate\Support\Collection;
+
+class EMA extends IndicatorStructure
 {
-    protected static int $period = 9;
+    private array $closePriceArray;
 
-    public static function period(int $period): static
+    public function __construct(Collection $candlesCollection, int $period = 9)
     {
-        self::$period = $period;
+        parent::__construct($candlesCollection, $period);
 
-        return new self();
+        $this->closePriceArray = $this->candlesCollection->map(fn($item) => $item->getClose())->toArray();
     }
 
-    public static function run(array $data): array
+    public function run(): array
     {
-        $multiplier = 2 / (self::$period + 1);
-        $ema = [];
-        $ema[0] = $data[0];
 
-        for ($i = 1; $i < count($data); $i++) {
-            $ema[$i] = ($data[$i] - $ema[$i - 1]) * $multiplier + $ema[$i - 1];
+        $multiplier = 2 / ($this->period + 1);
+        $ema = [];
+        $ema[0] = $this->closePriceArray[0];
+
+        for ($i = 1; $i < count($this->closePriceArray); $i++) {
+            $ema[$i] = ($this->closePriceArray[$i] - $ema[$i - 1]) * $multiplier + $ema[$i - 1];
         }
 
         return $ema;

@@ -4,38 +4,25 @@ namespace App\Services\Indicator\Technical;
 
 use App\Services\Indicator\Exceptions\RSIException;
 
-class RSI
+class RSI extends IndicatorStructure
 {
-    protected static int $period = 14;
-
-    public static function period(int $period): static
+    public function run(): int|float
     {
-        self::$period = $period;
-
-        return new self();
-    }
-
-    /**
-     * @throws RSIException
-     */
-    public static function run(array $data): float|int
-    {
-        $period = 14;
+        $closePriceArray = $this->candlesCollection->map(fn($item) => $item->getClose())->toArray();
 
         // Calculate price changes
         $priceChanges = [];
-        foreach ($data as $key => $price) {
+        foreach ($closePriceArray as $key => $price) {
             if ($key > 0) {
 
-
-                $priceChanges[] = $price - $data[$key - 1];
+                $priceChanges[] = $price - $closePriceArray[$key - 1];
             }
         }
 
         // Calculate average gains and losses
         $gains = [];
         $losses = [];
-        for ($i = 0; $i < $period; $i++) {
+        for ($i = 0; $i < $this->period; $i++) {
             if ($priceChanges[$i] > 0) {
                 $gains[] = $priceChanges[$i];
             } elseif ($priceChanges[$i] < 0) {
@@ -43,23 +30,23 @@ class RSI
             }
         }
 
-        $averageGain = array_sum($gains) / $period;
-        $averageLoss = array_sum($losses) / $period;
+        $averageGain = array_sum($gains) / $this->period;
+        $averageLoss = array_sum($losses) / $this->period;
 
         // Calculate initial RS and RSI
         $rs = ($averageGain > 0) ? $averageGain / $averageLoss : 0;
         $rsi = 100 - (100 / (1 + $rs));
 
-        // Calculate RSI for the remaining data
-        for ($i = $period; $i < count($data); $i++) {
-            $priceChange = $data[$i] - $data[$i - 1];
+        // Calculate RSI for the remaining closePriceArray
+        for ($i = $this->period; $i < count($closePriceArray); $i++) {
+            $priceChange = $closePriceArray[$i] - $closePriceArray[$i - 1];
 
             if ($priceChange > 0) {
-                $averageGain = ($averageGain * ($period - 1) + $priceChange) / $period;
-                $averageLoss = $averageLoss * ($period - 1) / $period;
+                $averageGain = ($averageGain * ($this->period - 1) + $priceChange) / $this->period;
+                $averageLoss = $averageLoss * ($this->period - 1) / $this->period;
             } elseif ($priceChange < 0) {
-                $averageLoss = ($averageLoss * ($period - 1) + abs($priceChange)) / $period;
-                $averageGain = $averageGain * ($period - 1) / $period;
+                $averageLoss = ($averageLoss * ($this->period - 1) + abs($priceChange)) / $this->period;
+                $averageGain = $averageGain * ($this->period - 1) / $this->period;
             }
 
             $rs = ($averageGain > 0) ? $averageGain / $averageLoss : 0;
@@ -68,7 +55,6 @@ class RSI
 
         return $rsi;
     }
-
 }
 
 
