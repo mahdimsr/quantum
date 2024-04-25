@@ -8,6 +8,7 @@ use App\Services\Exchange\Enums\OrderExecutionEnum;
 use App\Services\Exchange\Enums\OrderTypeEnum;
 use App\Services\Exchange\Responses\AllOrdersResponseContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\CurrentResponseContract;
 use App\Services\Exchange\Responses\OHLCListResponseContract;
 use App\Services\Exchange\Responses\OHLCResponseContract;
 use App\Services\Exchange\Responses\GetOrderResponseContract;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static SetOrderResponseContract setOrder(OrderTypeEnum $orderBuyEnum, OrderExecutionEnum $orderExecutionEnum, string $srcCurrency, string $dstCurrency, string $amount, string $price, string $clientOrderId)
  * @method static StatsResponseContract marketStats(string $srcCurrency, string $dstCurrency)
  * @method static CandleResponseContract market(string $symbol, string $period, string $limit = null)
+ * @method static CurrentResponseContract price(string $symbol)
  * @method static UserResponseContract user()
  */
 class Exchange extends Facade
