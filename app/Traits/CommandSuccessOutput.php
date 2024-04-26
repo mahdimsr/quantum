@@ -9,7 +9,7 @@ trait CommandSuccessOutput
     public function success(string $message, $verbosity = null): void
     {
         if (! $this->output->getFormatter()->hasStyle('success')) {
-            $style = new OutputFormatterStyle('green');
+            $style = new OutputFormatterStyle('cyan');
 
             $this->output->getFormatter()->setStyle('success', $style);
         }
