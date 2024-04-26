@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use Illuminate\Support\Str;
+
 enum TimeframeEnum: string
 {
     case EVERY_MINUTE = '1m';
@@ -19,6 +21,18 @@ enum TimeframeEnum: string
 
     public function toCoinexFormat(): string
     {
+        if (Str::of($this->value)->endsWith('H')){
+            return Str::of($this->value)->replace('H','hour');
+        }
+
+        if (Str::of($this->value)->endsWith('m')){
+            return Str::of($this->value)->replace('m','min');
+        }
+
+        if (Str::of($this->value)->endsWith('D')){
+            return Str::of($this->value)->replace('D','day');
+        }
+
         return $this->value;
     }
 }
