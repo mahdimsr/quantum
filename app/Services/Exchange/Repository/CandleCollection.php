@@ -30,4 +30,9 @@ class CandleCollection extends Collection
     {
         return $this->map(fn(Candle $candle) => $candle->getClose());
     }
+
+    public function lastCandle(): Candle
+    {
+        return $this->last();
+    }
 }
