@@ -51,6 +51,10 @@ class BollingerBandsSignalCommand extends Command
                 $user = User::findByEmail('mahdi.msr4@gmail.com');
 
                 Notification::send($user, new BollingerBandsNotification($symbol, 'short'));
+
+                logs()->info("Short notification sent for $symbol");
+
+                $this->success("Short notification sent for $symbol");
             }
 
             if (Calculate::touched($lastLowPrice, $lowerBand)) {
@@ -58,10 +62,11 @@ class BollingerBandsSignalCommand extends Command
                 $user = User::findByEmail('mahdi.msr4@gmail.com');
 
                 Notification::send($user, new BollingerBandsNotification($symbol, 'long'));
+
+                logs()->info("Long notification sent for $symbol");
+
+                $this->success("Long notification sent for $symbol");
             }
-
-
-            $this->success("upper: $upperBand and lower: $lowerBand");
 
         } catch (\Exception $exception) {
 

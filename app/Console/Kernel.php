@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Enums\CoinEnum;
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Enums\SymbolEnum;
 use Carbon\Carbon;
@@ -18,20 +19,14 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            $now       = Carbon::now();
-            $yesterday = Carbon::now()->subHours(120);
+            foreach (CoinEnum::cases() as $case) {
 
-            foreach (SymbolEnum::cases() as $case) {
-
-                Artisan::call('signal:rsi-compare', [
-                    'symbol'    => $case->toUSDT(),
-                    'timeframe' => ExchangeResolutionEnum::EVERY_FIVE_MINUTES->toSeconds(),
-                    'from'      => $yesterday->timestamp,
-                    'to'        => $now->timestamp
+                Artisan::call('indicator:bollinger-bands',[
+                    'coin' => $case->USDTSymbol()
                 ]);
             }
 
-        })->everyFiveMinutes();
+        })->everyFourHours();
     }
 
     /**
