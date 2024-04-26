@@ -17,10 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
 
 
-
-    $user = \App\Models\User::find(1);
-
-    \Illuminate\Support\Facades\Notification::send($user,new \App\Notifications\SignalNotification('BTC', 'LONG 🟢'));
-
     return view('welcome');
 });
