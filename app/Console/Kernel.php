@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Enums\CoinEnum;
+use App\Models\Coin;
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Enums\SymbolEnum;
 use Carbon\Carbon;
@@ -19,15 +20,14 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            foreach (CoinEnum::cases() as $case) {
+            foreach (Coin::all() as $coin) {
 
                 Artisan::call('indicator:bollinger-bands',[
-                    'coin' => $case->value,
-                    '--RSI' => true,
+                    'coin' => $coin->name
                 ]);
             }
 
-        })->everyMinute();
+        })->everyFourHours();
     }
 
     /**
