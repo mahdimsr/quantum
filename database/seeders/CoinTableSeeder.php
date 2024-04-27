@@ -10,18 +10,21 @@ class CoinTableSeeder extends Seeder
 {
     public function run(): void
     {
-        Coin::query()->create([
+        Coin::query()->updateOrCreate([
             'name' => 'BTC',
+        ],[
             'percent_tolerance' => 0.1
         ]);
 
-        Coin::query()->create([
+        Coin::query()->updateOrCreate([
             'name' => 'FTM',
+        ],[
             'percent_tolerance' => 1.0
         ]);
 
-        Coin::query()->create([
+        Coin::query()->updateOrCreate([
             'name' => 'TON',
+        ],[
             'percent_tolerance' => 1.0
         ]);
     }
