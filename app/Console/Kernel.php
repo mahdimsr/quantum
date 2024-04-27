@@ -22,11 +22,11 @@ class Kernel extends ConsoleKernel
             foreach (CoinEnum::cases() as $case) {
 
                 Artisan::call('indicator:bollinger-bands',[
-                    'coin' => $case->USDTSymbol()
+                    'coin' => $case->value,
                 ]);
             }
 
-        })->everyFourHours();
+        })->everyMinute();
     }
 
     /**
