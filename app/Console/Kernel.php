@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
 
                 Artisan::call('indicator:bollinger-bands',[
                     'coin' => $case->value,
+                    '--RSI' => true,
                 ]);
             }
 
