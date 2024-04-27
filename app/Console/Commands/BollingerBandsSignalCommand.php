@@ -73,10 +73,6 @@ class BollingerBandsSignalCommand extends Command
                 }
             }
 
-            if (Calculate::touched($lastLowPrice, $lowerBand)) {
-
-            }
-
         } catch (\Exception $exception) {
 
             logs()->critical($exception);
@@ -97,12 +93,12 @@ class BollingerBandsSignalCommand extends Command
 
     private function isLowRSI($rsi): bool
     {
-        return Calculate::touchedByRange($rsi,30,5);
+        return Calculate::touchedByRange($rsi,30,10);
     }
 
     private function isHighRSI($rsi): bool
     {
-        return Calculate::touchedByRange($rsi,70,5);
+        return Calculate::touchedByRange($rsi,70,10);
     }
 
     private function sendLongSignal(): void

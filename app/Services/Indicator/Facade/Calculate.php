@@ -12,14 +12,14 @@ class Calculate
      * @param float $tolerancePercent
      * @return bool
      */
-    public static function touched(mixed $currentPrice, mixed $targetPrice,float $tolerancePercent = 0): bool
+    public static function touched(mixed $currentPrice, mixed $targetPrice,float $tolerancePercent = 5): bool
     {
         $intCurrentPrice = intval($currentPrice);
         $intTargetPrice = intval($targetPrice);
 
         $remainPercent = 100 - (($targetPrice/$currentPrice) * 100);
 
-        return abs($remainPercent) == $tolerancePercent;
+        return abs($remainPercent) <= $tolerancePercent;
     }
 
     public static function touchedByRange(mixed $currentValue, mixed $targetValue, float $tolerance): bool
