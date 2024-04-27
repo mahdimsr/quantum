@@ -5,6 +5,8 @@ namespace App\Enums;
 enum CoinEnum: string
 {
     case BTC = 'BTC';
+    case FTM = 'FTM';
+    case TON = 'TON';
 
     public function IRTSymbol(): string
     {
