@@ -21,4 +21,11 @@ class Calculate
 
         return abs($remainPercent) == $tolerancePercent;
     }
+
+    public static function touchedByRange(mixed $currentValue, mixed $targetValue, float $tolerance): bool
+    {
+        $difference = $targetValue - $currentValue;
+
+        return -$tolerance <= abs($difference)  or abs($tolerance)<= $tolerance;
+    }
 }
