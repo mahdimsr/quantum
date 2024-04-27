@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\CoinEnum;
 use App\Enums\TimeframeEnum;
+use App\Models\Coin;
 use App\Models\User;
 use App\Notifications\BollingerBandsNotification;
 use App\Services\Exchange\Facade\Exchange;
@@ -23,10 +24,10 @@ class BollingerBandsSignalCommand extends Command
 
     public function handle()
     {
-        $coin = $this->argument('coin');
-        $timeframe = $this->option('timeframe');
+        $coin = Coin::findByName($this->argument('coin'));
+        $symbol = $coin->USDTSymbol();
 
-        $symbol = CoinEnum::from($coin)->USDTSymbol();
+        $timeframe = $this->option('timeframe');
         $timeframe = TimeframeEnum::from($timeframe)->toCoinexFormat();
 
         try {
@@ -50,32 +51,29 @@ class BollingerBandsSignalCommand extends Command
 
                 $rsi = Indicator::RSI($marketResponse->data());
 
-                if ($this->isLowRSI($rsi) and $this->isLowBollingerBands($lastLowPrice, $lowerBand)){
+                if ($this->isLowRSI($rsi) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)){
 
                     $this->sendLongSignal();
                 }
 
-                if ($this->isHighRSI($rsi) and $this->isHighBollingerBands($lastHighPrice, $upperBand)){
+                if ($this->isHighRSI($rsi) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)){
 
                     $this->sendShortSignal();
                 }
 
             }else{
 
-                if ($this->isLowBollingerBands($lastLowPrice, $lowerBand)){
+                if ($this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)){
 
                     $this->sendLongSignal();
                 }
 
-                if ($this->isHighBollingerBands($lastHighPrice, $upperBand)){
+                if ($this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)){
 
                     $this->sendShortSignal();
                 }
             }
 
-            if (Calculate::touched($lastLowPrice, $lowerBand)) {
-
-            }
 
         } catch (\Exception $exception) {
 
@@ -85,14 +83,14 @@ class BollingerBandsSignalCommand extends Command
         }
     }
 
-    private function isLowBollingerBands($lastLowPrice, $lowerBand): bool
+    private function isLowBollingerBands($lastLowPrice, $lowerBand, $tolerance): bool
     {
-        return Calculate::touched($lastLowPrice, $lowerBand);
+        return Calculate::touched($lastLowPrice, $lowerBand, $tolerance);
     }
 
-    private function isHighBollingerBands($lastHighPrice, $upperBand): bool
+    private function isHighBollingerBands($lastHighPrice, $upperBand, $tolerance): bool
     {
-        return Calculate::touched($lastHighPrice, $upperBand);
+        return Calculate::touched($lastHighPrice, $upperBand, $tolerance);
     }
 
     private function isLowRSI($rsi): bool

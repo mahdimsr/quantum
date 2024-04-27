@@ -12,5 +12,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Coin extends Model
 {
+    public static function findByName(string $name): Model
+    {
+        return self::query()->where('name',$name)->firstOrFail();
+    }
 
+    public function USDTSymbol(): string
+    {
+        return $this->name.'USDT';
+    }
 }
