@@ -17,7 +17,7 @@ class BollingerBandsSignalCommand extends Command
 {
     use CommandSuccessOutput;
 
-    protected $signature = 'indicator:bollinger-bands {coin} {--T|timeframe=4H}';
+    protected $signature = 'indicator:bollinger-bands {coin} {--T|timeframe=4H} {--RSI : calculate rsi to be more confident of signal}';
 
     protected $description = 'Bollinger Band Signal Command';
 
@@ -33,7 +33,7 @@ class BollingerBandsSignalCommand extends Command
 
             $this->info("getting market data of $symbol in $timeframe period");
 
-            $marketResponse = Exchange::market($symbol, $timeframe);
+            $marketResponse = Exchange::candles($symbol, $timeframe);
 
             $bollingerBands = Indicator::BollingerBands($marketResponse->data());
             $lastBollingerBand = collect($bollingerBands)->last();
@@ -46,26 +46,35 @@ class BollingerBandsSignalCommand extends Command
             $lastHighPrice = $lastCandle->getHigh();
             $lastLowPrice = $lastCandle->getLow();
 
-            if (Calculate::touched($lastHighPrice, $upperBand)) {
+            if ($this->option('RSI')){
 
-                $user = User::findByEmail('mahdi.msr4@gmail.com');
+                $rsi = Indicator::RSI($marketResponse->data());
 
-                Notification::send($user, new BollingerBandsNotification($symbol, 'short'));
+                if ($this->isLowRSI($rsi) and $this->isLowBollingerBands($lastLowPrice, $lowerBand)){
 
-                logs()->info("Short notification sent for $symbol");
+                    $this->sendLongSignal();
+                }
 
-                $this->success("Short notification sent for $symbol");
+                if ($this->isHighRSI($rsi) and $this->isHighBollingerBands($lastHighPrice, $upperBand)){
+
+                    $this->sendShortSignal();
+                }
+
+            }else{
+
+                if ($this->isLowBollingerBands($lastLowPrice, $lowerBand)){
+
+                    $this->sendLongSignal();
+                }
+
+                if ($this->isHighBollingerBands($lastHighPrice, $upperBand)){
+
+                    $this->sendShortSignal();
+                }
             }
 
             if (Calculate::touched($lastLowPrice, $lowerBand)) {
 
-                $user = User::findByEmail('mahdi.msr4@gmail.com');
-
-                Notification::send($user, new BollingerBandsNotification($symbol, 'long'));
-
-                logs()->info("Long notification sent for $symbol");
-
-                $this->success("Long notification sent for $symbol");
             }
 
         } catch (\Exception $exception) {
@@ -74,7 +83,53 @@ class BollingerBandsSignalCommand extends Command
 
             $this->error("exception fired for $symbol in $timeframe period");
         }
+    }
 
+    private function isLowBollingerBands($lastLowPrice, $lowerBand): bool
+    {
+        return Calculate::touched($lastLowPrice, $lowerBand);
+    }
 
+    private function isHighBollingerBands($lastHighPrice, $upperBand): bool
+    {
+        return Calculate::touched($lastHighPrice, $upperBand);
+    }
+
+    private function isLowRSI($rsi): bool
+    {
+        return Calculate::touchedByRange($rsi,30,5);
+    }
+
+    private function isHighRSI($rsi): bool
+    {
+        return Calculate::touchedByRange($rsi,70,5);
+    }
+
+    private function sendLongSignal(): void
+    {
+        $coin = $this->argument('coin');
+        $symbol = CoinEnum::from($coin)->USDTSymbol();
+
+        $user = User::findByEmail('mahdi.msr4@gmail.com');
+
+        Notification::send($user, new BollingerBandsNotification($symbol, 'long'));
+
+        logs()->info("Long notification sent for $symbol");
+
+        $this->success("Long notification sent for $symbol");
+    }
+
+    private function sendShortSignal(): void
+    {
+        $coin = $this->argument('coin');
+        $symbol = CoinEnum::from($coin)->USDTSymbol();
+
+        $user = User::findByEmail('mahdi.msr4@gmail.com');
+
+        Notification::send($user, new BollingerBandsNotification($symbol, 'short'));
+
+        logs()->info("Short notification sent for $symbol");
+
+        $this->success("Short notification sent for $symbol");
     }
 }

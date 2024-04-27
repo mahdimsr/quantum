@@ -21,16 +21,16 @@ enum TimeframeEnum: string
 
     public function toCoinexFormat(): string
     {
-        if (Str::of($this->value)->endsWith('H')){
-            return Str::of($this->value)->replace('H','hour');
+        if (Str::endsWith($this->value,'m')){
+            return Str::replace('m','min',$this->value);
         }
 
-        if (Str::of($this->value)->endsWith('m')){
-            return Str::of($this->value)->replace('m','min');
+        if (Str::endsWith($this->value,'H')){
+            return Str::replace('H','hour',$this->value);
         }
 
-        if (Str::of($this->value)->endsWith('D')){
-            return Str::of($this->value)->replace('D','day');
+        if (Str::endsWith($this->value,'D')){
+            return Str::replace('D','day',$this->value);
         }
 
         return $this->value;
