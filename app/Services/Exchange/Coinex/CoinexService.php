@@ -5,12 +5,15 @@ namespace App\Services\Exchange\Coinex;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
 use App\Services\Exchange\Requests\CandleRequestContract;
+use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
+use Psr\Http\Message\ResponseInterface;
 
-class CoinexService implements CandleRequestContract
+class CoinexService implements CandleRequestContract, OrderRequestContract
 {
     private Client $client;
 
@@ -29,12 +32,12 @@ class CoinexService implements CandleRequestContract
     /**
      * @throws GuzzleException
      */
-    private function getAuthorizationClient(HttpMethodEnum $httpMethodEnum, string $endpoint, ?array $queryString = null, ?array $body = null)
+    private function getAuthorizationClient(HttpMethodEnum $httpMethodEnum, string $endpoint, ?array $queryString = null, ?array $body = null): ResponseInterface
     {
         $baseUri = Config::get('exchange.exchanges.coinex.base_url');
         $requestPath = "/v2/futures/$endpoint";
         $fullUri = $baseUri . $requestPath;
-        $timestamp = now()->timestamp;
+        $timestamp = $this->time();
 
         $authorizationToken = $this->generateAuthorizationToken($httpMethodEnum->value, $requestPath, $timestamp, $queryString, $body);
 
@@ -54,6 +57,8 @@ class CoinexService implements CandleRequestContract
 
     private function generateAuthorizationToken(string $httpMethod, string $requestPath, string $timestamp, ?array $queryParams = null, ?array $bodyParam = null): string
     {
+        $preparedToken = Str::upper($httpMethod);
+
         $queryParamsStringify = '';
 
         if ($queryParams) {
@@ -66,13 +71,45 @@ class CoinexService implements CandleRequestContract
             $requestPath = $requestPath . '?' . $queryParamsStringify;
         }
 
-        $bodyStringify = json_encode($bodyParam);
+        $preparedToken .= $requestPath;
 
-        $preparedToken = $httpMethod . $requestPath . $bodyStringify . $timestamp;
+        if ($bodyParam){
+
+            $bodyStringify = json_encode($bodyParam);
+
+            $preparedToken .= $bodyStringify;
+        }
+
+        $preparedToken .= $timestamp;
 
         $secretKey = Config::get('exchange.exchanges.coinex.secret_key');
 
+
         return hash_hmac('sha256', $preparedToken, $secretKey);
+    }
+
+    public function time(): mixed
+    {
+        $uri = Config::get('exchange.exchanges.coinex.base_url'). '/v2/time';
+
+        $client = new Client([
+            'headers' => [
+                'accept' => 'application/json',
+            ],
+        ]);
+
+        try {
+
+            $response = $client->get($uri);
+
+            $jsonResponse = json_decode($response->getBody()->getContents(),true);
+
+            return $jsonResponse['data']['timestamp'];
+
+        } catch (GuzzleException $e) {
+
+            dd($e);
+        }
     }
 
 
@@ -90,5 +127,21 @@ class CoinexService implements CandleRequestContract
         ]);
 
         return new CandleResponseAdapter(json_decode($request->getBody()->getContents(), true));
+    }
+
+
+    public function orders(string $marketType): mixed
+    {
+        try {
+
+            $response = $this->getAuthorizationClient(HttpMethodEnum::GET, 'finished-order', ['market_type' => Str::upper($marketType)]);
+
+
+            dd($response->getBody()->getContents());
+
+        } catch (GuzzleException $e) {
+
+            dd($e);
+        }
     }
 }
