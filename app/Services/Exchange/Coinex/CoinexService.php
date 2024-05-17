@@ -2,6 +2,7 @@
 
 namespace App\Services\Exchange\Coinex;
 
+use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
@@ -9,6 +10,7 @@ use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
+use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
 use GuzzleHttp\Client;
@@ -191,6 +193,25 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         } catch (\Exception $e) {
 
             logs()->critical($e);
+
+            return null;
+        }
+    }
+
+    public function adjustPositionMargin(string $symbol, string $marketType, string $amount): ?AdjustPositionMarginResponseContract
+    {
+        try {
+
+            return new AdjustPositionMarginResponseAdapter($this->coinexClient->v2_private_post_futures_adjust_position_margin(
+                [
+                    'market'      => $symbol,
+                    'market_type' => Str::upper($marketType),
+                    'amount'      => $amount,
+                ]));
+
+        }catch (\Exception $exception){
+
+            logs()->critical($exception);
 
             return null;
         }

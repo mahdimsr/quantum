@@ -8,6 +8,8 @@ use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Enums\OrderExecutionEnum;
 use App\Services\Exchange\Enums\OrderTypeEnum;
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
+use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
+use App\Services\Exchange\Responses\CandleResponseContract;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static OrderResponseAdapter orders(string $marketType)
  * @method static mixed placeOrder(string $symbol, string $marketType, string $side, string $type, int $amount, int $price)
  * @method static AdjustPositionLeverageContract adjustPositionLeverage(string $symbol, string $marketType, string $marginMode, int $leverage)
+ * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
  */
 class Exchange extends Facade
 {
