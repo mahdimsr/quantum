@@ -10,9 +10,5 @@ use App\Services\Exchange\Responses\SetOrderResponseContract;
 
 interface OrderRequestContract
 {
-    public function orders(): AllOrdersResponseContract;
-
-    public function order(string $coinName): GetOrderResponseContract;
-
-    public function setOrder(OrderTypeEnum $orderBuyEnum, OrderExecutionEnum $orderExecutionEnum, string $srcCurrency, string $dstCurrency, string $amount, string $price, string $clientOrderId): SetOrderResponseContract;
+    public function orders(string $marketType): mixed;
 }

@@ -14,13 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use Modules\CCXT\ccxt;
+
 Route::get('/', function () {
 
+    $coinex = new \Modules\CCXT\coinex(array(
+                                   'apiKey' => '',
+                                   'secret' => '',
+                               ));
 
+    dd($coinex->v2_private_get_futures_finished_order(array('market_type' => 'FUTURES')));
 
-    $user = \App\Models\User::find(1);
-
-    \Illuminate\Support\Facades\Notification::send($user,new \App\Notifications\SignalNotification('BTC', 'LONG 🟢'));
 
     return view('welcome');
 });
