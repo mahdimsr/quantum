@@ -3,23 +3,31 @@
 namespace App\Services\Exchange\Coinex;
 
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\OrderResponseContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Modules\CCXT\coinex;
 use Psr\Http\Message\ResponseInterface;
 
 class CoinexService implements CandleRequestContract, OrderRequestContract
 {
     private Client $client;
+    private coinex $coinexClient;
 
     public function __construct()
     {
         $baseUri = Config::get('exchange.exchanges.coinex.base_url') . '/v2/futures';
+        $this->coinexClient = new coinex([
+            'apiKey' => Config::get('exchange.exchanges.coinex.access_id'),
+            'secret' => Config::get('exchange.exchanges.coinex.secret_key'),
+        ]);
 
         $this->client = new Client([
             'uri' => $baseUri,
@@ -130,18 +138,18 @@ class CoinexService implements CandleRequestContract, OrderRequestContract
     }
 
 
-    public function orders(string $marketType): mixed
+    public function orders(string $marketType): ?OrderResponseContract
     {
         try {
 
-            $response = $this->getAuthorizationClient(HttpMethodEnum::GET, 'finished-order', ['market_type' => Str::upper($marketType)]);
 
-
-            dd($response->getBody()->getContents());
+            return new OrderResponseAdapter($this->coinexClient->v2_private_get_futures_finished_order(['market_type' => Str::upper($marketType)]));
 
         } catch (GuzzleException $e) {
 
-            dd($e);
+            logs()->critical($e);
+
+            return null;
         }
     }
 }
