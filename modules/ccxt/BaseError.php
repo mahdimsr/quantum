@@ -1,6 +1,6 @@
 <?php
 
-namespace ccxt;
+namespace Modules\CCXT;
 
 use Exception;
 

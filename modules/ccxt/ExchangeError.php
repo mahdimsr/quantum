@@ -1,7 +1,5 @@
 <?php
 
-namespace ccxt;
-
-require_once PATH_TO_CCXT . 'BaseError.php';
+namespace Modules\CCXT;
 
 class ExchangeError extends BaseError {};
