@@ -6,6 +6,7 @@ use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
+use App\Services\Exchange\Repository\PositionLevelCollection;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\PositionRequestContract;
@@ -210,6 +211,22 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
                 ]));
 
         }catch (\Exception $exception){
+
+            logs()->critical($exception);
+
+            return null;
+        }
+    public function positionLevel(string $symbol): ?PositionLevelCollection
+    {
+        try {
+
+            $data = $this->coinexClient->v2_public_get_futures_position_level(['market' => $symbol]);
+
+            $positionLevels = $data['data'][0]['level'];
+
+            return new PositionLevelCollection($positionLevels);
+
+        } catch (\Exception $exception) {
 
             logs()->critical($exception);
 
