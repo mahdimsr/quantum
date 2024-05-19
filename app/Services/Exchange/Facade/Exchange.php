@@ -21,8 +21,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static Order placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price)
  * @method static AdjustPositionLeverageContract adjustPositionLeverage(string $symbol, string $marketType, string $marginMode, int $leverage)
  * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
- * @method static ClosePositionResponseContract closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
+ * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionLevelCollection positionLevel(string $symbol)
+ * @method static mixed setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice)
+ * @method static mixed currentPosition(string $symbol, string $marketType)
  */
 class Exchange extends Facade
 {

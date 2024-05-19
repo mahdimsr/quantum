@@ -239,4 +239,72 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
             return null;
         }
     }
+
+    public function setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice): mixed
+    {
+        try {
+
+            $data = $this->coinexClient->v2_private_post_futures_set_position_take_profit(
+                ['market' => $symbol,
+                 'market_type' => Str::upper($marketType),
+                 'take_profit_type' => $takeProfitType,
+                 'take_profit_price' => $takeProfitPrice,
+                ]);
+
+            dd($data);
+
+        } catch (\Exception $exception) {
+
+            dd('Exception', $exception);
+
+            logs()->critical($exception);
+
+            return null;
+        }
+    }
+
+    public function currentPosition(string $symbol, string $marketType): mixed
+    {
+        try {
+
+            $data = $this->coinexClient->v2_private_get_futures_pending_position(
+                ['market' => $symbol,
+                 'market_type' => Str::upper($marketType),
+                ]);
+
+            return $data;
+
+        }catch (\Exception $exception){
+
+            dd('Exception', $exception);
+
+            logs()->critical($exception);
+
+            return null;
+        }
+    }
+
+    public function closePosition(string $symbol, string $marketType, string $type, float $price, float $amount): mixed
+    {
+        try {
+
+            $data = $this->coinexClient->v2_private_post_futures_close_position(
+                ['market' => $symbol,
+                 'market_type' => Str::upper($marketType),
+                 'type'        => $type,
+                 'price'       => $price,
+                 'amount'      => $amount,
+                ]);
+
+            dd($data);
+
+        }catch (\Exception $exception){
+
+            dd('Exception', $exception);
+
+            logs()->critical($exception);
+
+            return null;
+        }
+    }
 }
