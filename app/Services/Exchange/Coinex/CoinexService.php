@@ -173,7 +173,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
                  'price'       => $price,
                 ]);
 
-            return Order::fromArray($data);
+            return Order::fromArray($data['data']);
 
         } catch (\Exception $e) {
 
