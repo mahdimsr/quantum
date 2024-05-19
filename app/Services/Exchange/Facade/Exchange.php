@@ -16,7 +16,7 @@ use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static CandleResponseContract market(string $symbol, string $period, string $limit = null)
+ * @method static CandleResponseContract candles(string $symbol, string $period, string $limit = null)
  * @method static OrderResponseAdapter orders(string $marketType)
  * @method static Order placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price)
  * @method static AdjustPositionLeverageContract adjustPositionLeverage(string $symbol, string $marketType, string $marginMode, int $leverage)

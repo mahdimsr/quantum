@@ -30,14 +30,14 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
 
     public function __construct()
     {
-        $baseUri            = Config::get('exchange.exchanges.coinex.base_url') . '/v2/futures';
+        $baseUri            = Config::get('exchange.exchanges.coinex.base_url') . '/v2/futures/';
         $this->coinexClient = new coinex([
                                              'apiKey' => Config::get('exchange.exchanges.coinex.access_id'),
                                              'secret' => Config::get('exchange.exchanges.coinex.secret_key'),
                                          ]);
 
         $this->client = new Client([
-                                       'uri'     => $baseUri,
+                                       'base_uri'     => $baseUri,
                                        'headers' => [
                                            'accept' => 'application/json',
                                        ],
