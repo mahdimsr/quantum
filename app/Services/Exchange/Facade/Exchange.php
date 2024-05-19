@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionLevelCollection positionLevel(string $symbol)
  * @method static mixed setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice)
+ * @method static mixed setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice)
  * @method static mixed currentPosition(string $symbol, string $marketType)
  */
 class Exchange extends Facade

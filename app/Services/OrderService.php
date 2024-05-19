@@ -2,35 +2,23 @@
 
 namespace App\Services;
 
+use App\Services\Exchange\Facade\Exchange;
+use App\Services\Exchange\Repository\Order;
 use Exception;
 
 class OrderService
 {
-    protected static string $positionType = 'long';
-
-    /**
-     * @throws Exception
-     */
-    public static function positionType(string $positionType): static
+    public static function long(string $symbol,mixed $currentPrice, mixed $percent = 1): Order
     {
-        if (!in_array($positionType,['long','short'])){
 
-            throw new Exception('positionType only should be: long or short');
-        }
+        Exchange::adjustPositionLeverage($symbol,'futures','isolated', 10);
 
-        self::$positionType = $positionType;
+        $order = Exchange::placeOrder($symbol,'futures','buy', 'limit', '','');
 
-        return new self();
-    }
+        Exchange::setTakeProfit($symbol,'futures','','');
 
-    public static function priceCalculate(mixed $currentPrice, mixed $takeProfitPercent, mixed $stopLossPercent): array
-    {
-        $upsidePrice = (($takeProfitPercent/100) * $currentPrice) + $currentPrice;
-        $downsidePrice = $currentPrice - (($stopLossPercent/100) * $currentPrice);
+        Exchange::setStopLoss($symbol,'futures','','');
 
-        return [
-            'takeProfit' => self::$positionType == 'long' ? $upsidePrice : $downsidePrice,
-            'stopLoss' => self::$positionType == 'long' ? $downsidePrice : $upsidePrice,
-        ];
+        return $order;
     }
 }
