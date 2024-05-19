@@ -6,6 +6,7 @@ use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
+use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
@@ -13,6 +14,7 @@ use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -158,18 +160,20 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function placeOrder(string $symbol, string $marketType, string $side, string $type, int $amount, int $price): mixed
+    public function placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price): ?Order
     {
         try {
 
-            dd($this->coinexClient->v2_private_post_futures_order([
-                                                                      'market'      => $symbol,
-                                                                      'market_type' => Str::upper($marketType),
-                                                                      'side'        => $side,
-                                                                      'type'        => $type,
-                                                                      'amount'      => $amount,
-                                                                      'price'       => $price,
-                                                                  ]));
+            $data = $this->coinexClient->v2_private_post_futures_order(
+                ['market'      => $symbol,
+                 'market_type' => Str::upper($marketType),
+                 'side'        => $side,
+                 'type'        => $type,
+                 'amount'      => $amount,
+                 'price'       => $price,
+                ]);
+
+            return Order::fromArray($data);
 
         } catch (\Exception $e) {
 
@@ -210,12 +214,14 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
                     'amount'      => $amount,
                 ]));
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             logs()->critical($exception);
 
             return null;
         }
+    }
+
     public function positionLevel(string $symbol): ?PositionLevelCollection
     {
         try {

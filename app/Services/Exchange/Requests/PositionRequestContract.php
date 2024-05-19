@@ -4,6 +4,7 @@ namespace App\Services\Exchange\Requests;
 
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
+use App\Services\Exchange\Responses\ClosePositionResponseContract;
 
 interface PositionRequestContract
 {
