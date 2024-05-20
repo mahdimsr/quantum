@@ -15,11 +15,13 @@ class BollingerBandsNotification extends Notification implements TelegramBotNoti
 
     protected string $symbol;
     protected string $position;
+    protected mixed $price;
 
-    public function __construct(string $symbol, string $position)
+    public function __construct(string $symbol, string $position, mixed $price)
     {
         $this->symbol = $symbol;
         $this->position = $position;
+        $this->price = $price;
     }
 
     /**
@@ -58,6 +60,7 @@ class BollingerBandsNotification extends Notification implements TelegramBotNoti
     public function toTelegramBot(): string
     {
        $telegramMessage = "algorithm: Bollinger-bands \n";
+       $telegramMessage = "price: $this->price \n";
        $telegramMessage .= "time: " . now()->toDateTimeString() . "\n";
        $telegramMessage .= "symbol: $this->symbol \n";
        $telegramMessage .= $this->position == 'long' ? "Long 🟢" : "Short 🔴";

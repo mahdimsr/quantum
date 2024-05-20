@@ -53,24 +53,26 @@ class BollingerBandsSignalCommand extends Command
 
                 if ($this->isLowRSI($rsi) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)){
 
-                    $this->sendLongSignal();
+                    $this->sendLongSignal($lastLowPrice);
                 }
 
                 if ($this->isHighRSI($rsi) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)){
 
-                    $this->sendShortSignal();
+                    $this->sendShortSignal($lastHighPrice);
                 }
 
             }else{
 
-                if ($this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)){
+                $ema = collect(Indicator::EMA($marketResponse->data()))->last();
 
-                    $this->sendLongSignal();
+                if ($this->isUpperEMA($ema,$lastLowPrice) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)) {
+
+                    $this->sendLongSignal($lastLowPrice);
                 }
 
-                if ($this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)){
+                if ($this->isBelowEMA($ema,$lastHighPrice) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)) {
 
-                    $this->sendShortSignal();
+                    $this->sendShortSignal($lastHighPrice);
                 }
             }
 
@@ -103,30 +105,36 @@ class BollingerBandsSignalCommand extends Command
         return Calculate::touchedByRange($rsi,70,5);
     }
 
-    private function sendLongSignal(): void
+    public function isUpperEMA($ema, $price): bool
+    {
+        return $price >= $ema;
+    }
+
+    public function isBelowEMA($ema, $price): bool
+    {
+        return $price <= $ema;
+    }
+
+    private function sendLongSignal($price): void
     {
         $coin = $this->argument('coin');
         $symbol = CoinEnum::from($coin)->USDTSymbol();
 
         $user = User::findByEmail('mahdi.msr4@gmail.com');
 
-        Notification::send($user, new BollingerBandsNotification($symbol, 'long'));
-
-        logs()->info("Long notification sent for $symbol");
+        Notification::send($user, new BollingerBandsNotification($symbol, 'long', $price));
 
         $this->success("Long notification sent for $symbol");
     }
 
-    private function sendShortSignal(): void
+    private function sendShortSignal($price): void
     {
         $coin = $this->argument('coin');
         $symbol = CoinEnum::from($coin)->USDTSymbol();
 
         $user = User::findByEmail('mahdi.msr4@gmail.com');
 
-        Notification::send($user, new BollingerBandsNotification($symbol, 'short'));
-
-        logs()->info("Short notification sent for $symbol");
+        Notification::send($user, new BollingerBandsNotification($symbol, 'short', $price));
 
         $this->success("Short notification sent for $symbol");
     }
