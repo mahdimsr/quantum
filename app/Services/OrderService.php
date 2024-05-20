@@ -8,16 +8,17 @@ use Exception;
 
 class OrderService
 {
-    public static function long(string $symbol,mixed $currentPrice, mixed $percent = 1): Order
+    public static function open(string $symbol, mixed $currentPrice, mixed $takeProfit, mixed $stopLoss, string $position = 'long', mixed $leverage = 10): Order
     {
+        $side = $position == 'long' ? 'buy' : 'sell';
 
-        Exchange::adjustPositionLeverage($symbol,'futures','isolated', 10);
+        Exchange::adjustPositionLeverage($symbol, 'futures', 'isolated', $leverage);
 
-        $order = Exchange::placeOrder($symbol,'futures','buy', 'limit', '','');
+        $order = Exchange::placeOrder($symbol, 'futures', $side, 'limit', '', '');
 
-        Exchange::setTakeProfit($symbol,'futures','','');
+        Exchange::setTakeProfit($symbol, 'futures', '', $takeProfit);
 
-        Exchange::setStopLoss($symbol,'futures','','');
+        Exchange::setStopLoss($symbol, 'futures', '', $stopLoss);
 
         return $order;
     }

@@ -28,4 +28,23 @@ class Calculate
 
         return -$tolerance <= abs($difference)  or abs($tolerance)<= $tolerance;
     }
+
+    public static function target(mixed $price, float $percent)
+    {
+        $absPercent = abs($percent);
+
+        $targetPrice = 0;
+
+        if ($percent > 0) {
+
+            $targetPrice = $price + ($price * ($absPercent / 100));
+        }
+
+        if ($percent < 0) {
+
+            $targetPrice = $price - ($price * ($absPercent / 100));
+        }
+
+        return $targetPrice;
+    }
 }
