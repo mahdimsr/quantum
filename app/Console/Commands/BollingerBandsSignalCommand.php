@@ -53,12 +53,12 @@ class BollingerBandsSignalCommand extends Command
 
                 if ($this->isLowRSI($rsi) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)){
 
-                    $this->sendLongSignal();
+                    $this->sendLongSignal($lastLowPrice);
                 }
 
                 if ($this->isHighRSI($rsi) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)){
 
-                    $this->sendShortSignal();
+                    $this->sendShortSignal($lastHighPrice);
                 }
 
             }else{
@@ -67,12 +67,12 @@ class BollingerBandsSignalCommand extends Command
 
                 if ($this->isUpperEMA($ema,$lastLowPrice) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)) {
 
-                    $this->sendLongSignal();
+                    $this->sendLongSignal($lastLowPrice);
                 }
 
                 if ($this->isBelowEMA($ema,$lastHighPrice) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)) {
 
-                    $this->sendShortSignal();
+                    $this->sendShortSignal($lastHighPrice);
                 }
             }
 
@@ -115,30 +115,26 @@ class BollingerBandsSignalCommand extends Command
         return $price <= $ema;
     }
 
-    private function sendLongSignal(): void
+    private function sendLongSignal($price): void
     {
         $coin = $this->argument('coin');
         $symbol = CoinEnum::from($coin)->USDTSymbol();
 
         $user = User::findByEmail('mahdi.msr4@gmail.com');
 
-        Notification::send($user, new BollingerBandsNotification($symbol, 'long'));
-
-        logs()->info("Long notification sent for $symbol");
+        Notification::send($user, new BollingerBandsNotification($symbol, 'long', $price));
 
         $this->success("Long notification sent for $symbol");
     }
 
-    private function sendShortSignal(): void
+    private function sendShortSignal($price): void
     {
         $coin = $this->argument('coin');
         $symbol = CoinEnum::from($coin)->USDTSymbol();
 
         $user = User::findByEmail('mahdi.msr4@gmail.com');
 
-        Notification::send($user, new BollingerBandsNotification($symbol, 'short'));
-
-        logs()->info("Short notification sent for $symbol");
+        Notification::send($user, new BollingerBandsNotification($symbol, 'short', $price));
 
         $this->success("Short notification sent for $symbol");
     }
