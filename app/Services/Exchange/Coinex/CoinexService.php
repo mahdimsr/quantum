@@ -4,15 +4,18 @@ namespace App\Services\Exchange\Coinex;
 
 use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\FuturesAssetResponse;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
+use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
+use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
@@ -23,7 +26,7 @@ use Illuminate\Support\Str;
 use Modules\CCXT\coinex;
 use Psr\Http\Message\ResponseInterface;
 
-class CoinexService implements CandleRequestContract, OrderRequestContract, PositionRequestContract
+class CoinexService implements CandleRequestContract, OrderRequestContract, PositionRequestContract, AssetRequestContract
 {
     private Client $client;
     private coinex $coinexClient;
@@ -330,6 +333,22 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
             logs()->critical($exception);
 
             return null;
+        }
+    }
+
+    public function futuresBalance(): ?AssetBalanceContract
+    {
+        try {
+
+            $data = $this->coinexClient->v2_private_get_assets_futures_balance();
+
+            return new FuturesAssetResponse($data);
+
+        }catch (\Exception $exception) {
+
+            logs()->error($exception);
+
+        	return null;
         }
     }
 }
