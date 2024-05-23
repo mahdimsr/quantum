@@ -5,27 +5,21 @@ namespace Database\Seeders;
 use App\Models\Coin;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\CCXT\coinex;
 
 class CoinTableSeeder extends Seeder
 {
     public function run(): void
     {
-        Coin::query()->updateOrCreate([
-            'name' => 'BTC',
-        ],[
-            'percent_tolerance' => 0.1
-        ]);
+        $coinex = new coinex();
 
-        Coin::query()->updateOrCreate([
-            'name' => 'FTM',
-        ],[
-            'percent_tolerance' => 1.0
-        ]);
+        $marketData = $coinex->v2_public_get_futures_market()['data'];
 
-        Coin::query()->updateOrCreate([
-            'name' => 'TON',
-        ],[
-            'percent_tolerance' => 1.0
-        ]);
+        $marketDataAdapter = collect($marketData)->map(fn($item) => ['name' =>  $item['base_ccy'], 'percent_tolerance' => 1.00])->toArray();
+
+        foreach ($marketDataAdapter as $marketDataItem) {
+
+            Coin::query()->firstOrCreate($marketDataItem);
+        }
     }
 }
