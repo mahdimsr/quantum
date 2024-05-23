@@ -1,7 +1,8 @@
 <?php
 
-namespace ccxt;
+namespace Modules\CCXT;
 
-require_once PATH_TO_CCXT . 'OperationFailed.php';
+
+use ccxt\OperationFailed;
 
 class NetworkError extends OperationFailed {};
