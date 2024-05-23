@@ -19,7 +19,7 @@ class Calculate
 
         $remainPercent = 100 - (($targetPrice / $currentPrice) * 100);
 
-        return abs($remainPercent) == $tolerancePercent;
+        return abs($remainPercent) <= $tolerancePercent;
     }
 
     public static function touchedByRange(mixed $currentValue, mixed $targetValue, float $tolerance): bool
