@@ -11,6 +11,7 @@ use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
+use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use Illuminate\Support\Facades\Facade;
@@ -24,7 +25,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionLevelCollection positionLevel(string $symbol)
  * @method static mixed setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice)
+ * @method static mixed setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice)
  * @method static mixed currentPosition(string $symbol, string $marketType)
+ * @method static AssetBalanceContract futuresBalance()
  */
 class Exchange extends Facade
 {

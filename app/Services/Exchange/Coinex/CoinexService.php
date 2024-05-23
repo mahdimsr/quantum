@@ -4,15 +4,18 @@ namespace App\Services\Exchange\Coinex;
 
 use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\FuturesAssetResponse;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
+use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
+use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
@@ -23,7 +26,7 @@ use Illuminate\Support\Str;
 use Modules\CCXT\coinex;
 use Psr\Http\Message\ResponseInterface;
 
-class CoinexService implements CandleRequestContract, OrderRequestContract, PositionRequestContract
+class CoinexService implements CandleRequestContract, OrderRequestContract, PositionRequestContract, AssetRequestContract
 {
     private Client $client;
     private coinex $coinexClient;
@@ -37,8 +40,8 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
                                          ]);
 
         $this->client = new Client([
-                                       'base_uri'     => $baseUri,
-                                       'headers' => [
+                                       'base_uri' => $baseUri,
+                                       'headers'  => [
                                            'accept' => 'application/json',
                                        ],
                                    ]);
@@ -187,13 +190,15 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
     {
         try {
 
-            dd($this->coinexClient->v2_private_post_futures_adjust_position_leverage(
+            $data = $this->coinexClient->v2_private_post_futures_adjust_position_leverage(
                 [
                     'market'      => $symbol,
                     'market_type' => Str::upper($marketType),
                     'margin_mode' => $marginMode,
                     'leverage'    => $leverage,
-                ]));
+                ]);
+
+            return $data;
 
         } catch (\Exception $e) {
 
@@ -245,13 +250,13 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         try {
 
             $data = $this->coinexClient->v2_private_post_futures_set_position_take_profit(
-                ['market' => $symbol,
-                 'market_type' => Str::upper($marketType),
-                 'take_profit_type' => $takeProfitType,
+                ['market'            => $symbol,
+                 'market_type'       => Str::upper($marketType),
+                 'take_profit_type'  => $takeProfitType,
                  'take_profit_price' => $takeProfitPrice,
                 ]);
 
-            dd($data);
+            return $data;
 
         } catch (\Exception $exception) {
 
@@ -268,13 +273,13 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         try {
 
             $data = $this->coinexClient->v2_private_get_futures_pending_position(
-                ['market' => $symbol,
+                ['market'      => $symbol,
                  'market_type' => Str::upper($marketType),
                 ]);
 
             return $data;
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             dd('Exception', $exception);
 
@@ -289,7 +294,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         try {
 
             $data = $this->coinexClient->v2_private_post_futures_close_position(
-                ['market' => $symbol,
+                ['market'      => $symbol,
                  'market_type' => Str::upper($marketType),
                  'type'        => $type,
                  'price'       => $price,
@@ -298,13 +303,52 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
 
             dd($data);
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
 
             dd('Exception', $exception);
 
             logs()->critical($exception);
 
             return null;
+        }
+    }
+
+    public function setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice): mixed
+    {
+        try {
+
+            $data = $this->coinexClient->v2_private_post_futures_set_position_stop_loss(
+                ['market'          => $symbol,
+                 'market_type'     => Str::upper($marketType),
+                 'stop_loss_type'  => $stopLossType,
+                 'stop_loss_price' => $stopLossPrice
+                ]);
+
+            return $data;
+
+        } catch (\Exception $exception) {
+
+            dd('Exception', $exception);
+
+            logs()->critical($exception);
+
+            return null;
+        }
+    }
+
+    public function futuresBalance(): ?AssetBalanceContract
+    {
+        try {
+
+            $data = $this->coinexClient->v2_private_get_assets_futures_balance();
+
+            return new FuturesAssetResponse($data);
+
+        }catch (\Exception $exception) {
+
+            logs()->error($exception);
+
+        	return null;
         }
     }
 }

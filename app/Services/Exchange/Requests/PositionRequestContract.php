@@ -13,4 +13,5 @@ interface PositionRequestContract
     public function adjustPositionMargin(string $symbol, string $marketType, string $amount): ?AdjustPositionMarginResponseContract;
     public function currentPosition(string $symbol, string $marketType): mixed;
     public function setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice): mixed;
+    public function setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice): mixed;
 }

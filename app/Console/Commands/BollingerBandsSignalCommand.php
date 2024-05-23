@@ -63,7 +63,7 @@ class BollingerBandsSignalCommand extends Command
 
             }else{
 
-                $ema = collect(Indicator::EMA($marketResponse->data()))->last();
+                $ema = collect(Indicator::EMA($marketResponse->data()))->first();
 
                 if ($this->isUpperEMA($ema,$lastLowPrice) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)) {
 
