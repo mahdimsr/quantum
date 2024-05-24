@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Coin extends Model
 {
-    public static function findByName(string $name): Model
+    public static function findByName(string $name): Model|self
     {
         return self::query()->where('name',$name)->firstOrFail();
     }

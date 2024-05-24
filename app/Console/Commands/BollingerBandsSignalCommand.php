@@ -22,10 +22,12 @@ class BollingerBandsSignalCommand extends Command
 
     protected $description = 'Bollinger Band Signal Command';
 
+    private Coin $coin;
+
     public function handle()
     {
-        $coin = Coin::findByName($this->argument('coin'));
-        $symbol = $coin->USDTSymbol();
+        $this->coin = Coin::findByName($this->argument('coin'));
+        $symbol = $this->coin->USDTSymbol();
 
         $timeframe = $this->option('timeframe');
         $timeframe = TimeframeEnum::from($timeframe)->toCoinexFormat();
@@ -51,12 +53,12 @@ class BollingerBandsSignalCommand extends Command
 
                 $rsi = Indicator::RSI($marketResponse->data());
 
-                if ($this->isLowRSI($rsi) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)){
+                if ($this->isLowRSI($rsi) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $this->coin->percent_tolerance)){
 
                     $this->sendLongSignal($lastLowPrice);
                 }
 
-                if ($this->isHighRSI($rsi) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)){
+                if ($this->isHighRSI($rsi) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $this->coin->percent_tolerance)){
 
                     $this->sendShortSignal($lastHighPrice);
                 }
@@ -65,12 +67,12 @@ class BollingerBandsSignalCommand extends Command
 
                 $ema = collect(Indicator::EMA($marketResponse->data()))->first();
 
-                if ($this->isUpperEMA($ema,$lastLowPrice) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $coin->percent_tolerance)) {
+                if ($this->isUpperEMA($ema,$lastLowPrice) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $this->coin->percent_tolerance)) {
 
                     $this->sendLongSignal($lastLowPrice);
                 }
 
-                if ($this->isBelowEMA($ema,$lastHighPrice) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $coin->percent_tolerance)) {
+                if ($this->isBelowEMA($ema,$lastHighPrice) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $this->coin->percent_tolerance)) {
 
                     $this->sendShortSignal($lastHighPrice);
                 }
@@ -118,7 +120,7 @@ class BollingerBandsSignalCommand extends Command
     private function sendLongSignal($price): void
     {
         $coin = $this->argument('coin');
-        $symbol = CoinEnum::from($coin)->USDTSymbol();
+        $symbol = $this->coin->USDTSymbol();
 
         $user = User::findByEmail('mahdi.msr4@gmail.com');
 
@@ -130,7 +132,7 @@ class BollingerBandsSignalCommand extends Command
     private function sendShortSignal($price): void
     {
         $coin = $this->argument('coin');
-        $symbol = CoinEnum::from($coin)->USDTSymbol();
+        $symbol = $this->coin->USDTSymbol();
 
         $user = User::findByEmail('mahdi.msr4@gmail.com');
 
