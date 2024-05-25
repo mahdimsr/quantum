@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\CoinEnum;
 use App\Enums\TimeframeEnum;
 use App\Models\Coin;
 use App\Models\User;
 use App\Notifications\BollingerBandsNotification;
 use App\Services\Exchange\Facade\Exchange;
-use App\Services\Indicator\Facade\Calculate;
 use App\Services\Indicator\Facade\Indicator;
+use App\Services\Order\Calculate;
+use App\Services\OrderService;
 use App\Traits\CommandSuccessOutput;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
@@ -70,11 +70,13 @@ class BollingerBandsSignalCommand extends Command
                 if ($this->isUpperEMA($ema,$lastLowPrice) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $this->coin->percent_tolerance)) {
 
                     $this->sendLongSignal($lastLowPrice);
+                    $this->openLongPosition($lastLowPrice);
                 }
 
                 if ($this->isBelowEMA($ema,$lastHighPrice) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $this->coin->percent_tolerance)) {
 
                     $this->sendShortSignal($lastHighPrice);
+                    $this->openShortPosition($lastHighPrice);
                 }
             }
 
@@ -139,5 +141,41 @@ class BollingerBandsSignalCommand extends Command
         Notification::send($user, new BollingerBandsNotification($symbol, 'short', $price));
 
         $this->success("Short notification sent for $symbol");
+    }
+
+    private function openLongPosition($price): void
+    {
+        $availableAmount = OrderService::getAvailableAmount();
+
+        if ($availableAmount >= 3) {
+
+            $leverage = 5;
+
+            $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
+            $orderAmount = $maxOrderAmount/2;
+
+            $tp = Calculate::target($price,1);
+            $sl = Calculate::target($price, -1);
+
+            OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,'long', $leverage);
+        }
+    }
+
+    private function openShortPosition($price): void
+    {
+        $availableAmount = OrderService::getAvailableAmount();
+
+        if ($availableAmount >= 3) {
+
+            $leverage = 5;
+
+            $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
+            $orderAmount = $maxOrderAmount/2;
+
+            $sl = Calculate::target($price,-1);
+            $tp = Calculate::target($price, 1);
+
+            OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,'short', $leverage);
+        }
     }
 }
