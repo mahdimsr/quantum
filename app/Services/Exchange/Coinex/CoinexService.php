@@ -2,6 +2,7 @@
 
 namespace App\Services\Exchange\Coinex;
 
+use App\Services\Exchange\Coinex\Responses\AdjustPositionLeverageResponse;
 use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\FuturesAssetResponse;
@@ -182,6 +183,8 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
 
             logs()->critical($e);
 
+            dd($e);
+
             return null;
         }
     }
@@ -198,7 +201,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
                     'leverage'    => $leverage,
                 ]);
 
-            return $data;
+            return new AdjustPositionLeverageResponse($data);
 
         } catch (\Exception $e) {
 
@@ -260,8 +263,6 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
 
         } catch (\Exception $exception) {
 
-            dd('Exception', $exception);
-
             logs()->critical($exception);
 
             return null;
@@ -280,8 +281,6 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
             return $data;
 
         } catch (\Exception $exception) {
-
-            dd('Exception', $exception);
 
             logs()->critical($exception);
 
@@ -305,8 +304,6 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
 
         } catch (\Exception $exception) {
 
-            dd('Exception', $exception);
-
             logs()->critical($exception);
 
             return null;
@@ -327,8 +324,6 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
             return $data;
 
         } catch (\Exception $exception) {
-
-            dd('Exception', $exception);
 
             logs()->critical($exception);
 

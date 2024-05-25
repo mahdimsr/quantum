@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Indicator\Facade;
+namespace App\Services\Order;
 
 class Calculate
 {
@@ -48,7 +48,7 @@ class Calculate
         return $targetPrice;
     }
 
-    public static function availableAmount($price, $totalAsset, $leverage): float
+    public static function maxOrderAmount($price, $totalAsset, $leverage): float
     {
         return ($leverage * $totalAsset) / $price;
     }
