@@ -29,7 +29,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Modules\\": "modules/"
+            "Modules\\": "modules/",
+            "Modules\\CCXT\\": "modules/ccxt/"
         }
     },
     "autoload-dev": {
