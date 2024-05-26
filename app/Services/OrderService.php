@@ -21,7 +21,7 @@ class OrderService
 
         sleep(1);
 
-        $order = Exchange::placeOrder($symbol, 'futures', $side, 'limit', $amount, $currentPrice);
+        $order = Exchange::placeOrder($symbol, 'futures', $side, 'market', $amount, $currentPrice);
 
         sleep(1);
 

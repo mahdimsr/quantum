@@ -168,14 +168,18 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
     {
         try {
 
-            $data = $this->coinexClient->v2_private_post_futures_order(
-                ['market'      => $symbol,
-                 'market_type' => Str::upper($marketType),
-                 'side'        => $side,
-                 'type'        => $type,
-                 'amount'      => $amount,
-                 'price'       => $price,
-                ]);
+            $params = ['market'      => $symbol,
+                       'market_type' => Str::upper($marketType),
+                       'side'        => $side,
+                       'type'        => $type,
+                       'amount'      => $amount,];
+
+            if ($type == 'limit') {
+
+                $params = array_merge($params, ['price' => $price]);
+            }
+
+            $data = $this->coinexClient->v2_private_post_futures_order($params);
 
             return Order::fromArray($data['data']);
 
