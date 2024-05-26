@@ -25,11 +25,11 @@ class Kernel extends ConsoleKernel
 
                 Artisan::call('indicator:bollinger-bands',[
                     'coin' => $coin->name,
-                    '--timeframe' => TimeframeEnum::EVERY_THIRTY_MINUTES->value,
+                    '--timeframe' => TimeframeEnum::EVERY_FOUR_HOURS->value,
                 ]);
             }
 
-        })->everyThirtyMinutes();
+        })->everyFourHours();
     }
 
     /**
