@@ -147,35 +147,44 @@ class BollingerBandsSignalCommand extends Command
     {
         $availableAmount = OrderService::getAvailableAmount();
 
-        if ($availableAmount >= 3) {
+        $leverage = 5;
 
-            $leverage = 5;
+        $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
 
-            $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
+        $orderAmount = $maxOrderAmount;
+
+        if ($availableAmount > 5) {
+
             $orderAmount = $maxOrderAmount/2;
-
-            $tp = Calculate::target($price,1);
-            $sl = Calculate::target($price, -1);
-
-            OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,'long', $leverage);
         }
+
+
+
+        $tp = Calculate::target($price,1);
+        $sl = Calculate::target($price, -1);
+
+        OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,'long', $leverage);
     }
 
     private function openShortPosition($price): void
     {
         $availableAmount = OrderService::getAvailableAmount();
 
-        if ($availableAmount >= 3) {
+        $leverage = 5;
 
-            $leverage = 5;
+        $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
 
-            $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
+        $orderAmount = $maxOrderAmount;
+
+        if ($availableAmount > 5) {
+
             $orderAmount = $maxOrderAmount/2;
-
-            $sl = Calculate::target($price,-1);
-            $tp = Calculate::target($price, 1);
-
-            OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,'short', $leverage);
         }
+
+
+        $sl = Calculate::target($price,-1);
+        $tp = Calculate::target($price, 1);
+
+        OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,'short', $leverage);
     }
 }
