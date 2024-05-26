@@ -15,16 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 use Modules\CCXT\ccxt;
+use Modules\CCXT\coinex;
 
 Route::get('/', function () {
-
-    $coinex = new \Modules\CCXT\coinex(array(
-                                   'apiKey' => '',
-                                   'secret' => '',
-                               ));
-
-    dd($coinex->v2_private_get_futures_finished_order(array('market_type' => 'FUTURES')));
-
 
     return view('welcome');
 });
