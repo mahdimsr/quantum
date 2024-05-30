@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Services\Exchange\Repository\Order as OrderRepository;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
-    use HasFactory;
     protected $guarded = ['id'];
 
-    public static function storeOrderRecord($order, $futuresOrderPrices)
+    public static function storeOrderRecord(OrderRepository $order, $futuresOrderPrices)
     {
       return self::query()
           ->create([
@@ -26,17 +28,27 @@ class Order extends Model
             'take_profit_price' => $futuresOrderPrices['take_profit_price'],
             'has_stop_loss' => false,
             'has_take_profit' => false,
-            'unfilled_amount' => $order->getUnfilledAmount(),
-            'filled_amount' => $order->getFilledAmount(),
-            'filled_value' => $order->getFilledValue(),
-            'client_id' => $order->getClientId(),
-            'fee' => $order->getFee(),
-            'fee_ccy' => $order->getFeeCcy(),
-            'maker_fee_rate' => $order->getMakerFeeRate(),
-            'taker_fee_rate' => $order->getTakerFeeRate(),
-            'last_filled_amount' => null,
-            'last_filled_price' => null,
-            'realized_pnl' => null,
         ]);
+    }
+
+    public function stop_loss_price()
+    {
+        return Attribute::make(
+            get: fn(string $value) => Str::of($value)->toFloat()
+        );
+    }
+
+    public function take_profit_price()
+    {
+        return Attribute::make(
+            get: fn(string $value) => Str::of($value)->toFloat()
+        );
+    }
+
+    public function current_price()
+    {
+        return Attribute::make(
+            get: fn(string $value) => Str::of($value)->toFloat()
+        );
     }
 }
