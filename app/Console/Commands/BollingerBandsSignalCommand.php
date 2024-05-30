@@ -65,15 +65,14 @@ class BollingerBandsSignalCommand extends Command
 
             }else{
 
-                $ema = collect(Indicator::EMA($marketResponse->data()))->first();
 
-                if ($this->isUpperEMA($ema,$lastLowPrice) and $this->isLowBollingerBands($lastLowPrice, $lowerBand, $this->coin->percent_tolerance)) {
+                if ($this->isLowBollingerBands($lastLowPrice, $lowerBand, $this->coin->percent_tolerance)) {
 
                     $this->sendLongSignal($lastLowPrice);
                     $this->openLongPosition($lastLowPrice);
                 }
 
-                if ($this->isBelowEMA($ema,$lastHighPrice) and $this->isHighBollingerBands($lastHighPrice, $upperBand, $this->coin->percent_tolerance)) {
+                if ($this->isHighBollingerBands($lastHighPrice, $upperBand, $this->coin->percent_tolerance)) {
 
                     $this->sendShortSignal($lastHighPrice);
                     $this->openShortPosition($lastHighPrice);
@@ -107,16 +106,6 @@ class BollingerBandsSignalCommand extends Command
     private function isHighRSI($rsi): bool
     {
         return Calculate::touchedByRange($rsi,70,5);
-    }
-
-    public function isUpperEMA($ema, $price): bool
-    {
-        return $price >= $ema;
-    }
-
-    public function isBelowEMA($ema, $price): bool
-    {
-        return $price <= $ema;
     }
 
     private function sendLongSignal($price): void
