@@ -28,7 +28,7 @@ SOFTWARE.
 
 //-----------------------------------------------------------------------------
 
-namespace Modules\ccxt;
+namespace Modules\CCXT;
 
 use MessagePack\MessagePack;
 use kornrunner\Keccak;
