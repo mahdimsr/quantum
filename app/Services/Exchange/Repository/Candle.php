@@ -13,6 +13,8 @@ class Candle
     private mixed $close;
     private mixed $volume;
 
+    protected array $meta = [];
+
     /**
      * @throws CandleException
      */
@@ -155,6 +157,16 @@ class Candle
     public function setVolume(mixed $volume): void
     {
         $this->volume = $volume;
+    }
+
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    public function setMeta(array $meta): void
+    {
+        $this->meta = array_merge($meta, $this->meta);
     }
 
 

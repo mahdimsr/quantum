@@ -35,4 +35,9 @@ class CandleCollection extends Collection
     {
         return $this->last();
     }
+
+    public function mergeDataInMeta(array $data, $key): CandleCollection
+    {
+        return $this->each(fn(Candle $candle, $index) => $candle->setMeta([$key => $data[$index]]));
+    }
 }
