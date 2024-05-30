@@ -21,15 +21,15 @@ class OrderService
 
         sleep(1);
 
-        $order = Exchange::placeOrder($symbol, 'futures', $side, 'limit', $amount, $currentPrice);
+        $order = Exchange::placeOrder($symbol, 'futures', $side, 'market', $amount, $currentPrice);
 
-        sleep(1);
+        $futuresOrderPrices = [
+            'current_price' => $currentPrice,
+            'stop_loss_price' => $stopLoss,
+            'take_profit_price' => $takeProfit
+        ];
 
-        Exchange::setStopLoss($symbol, 'futures', 'mark_price', $stopLoss);
-
-        sleep(1);
-
-        Exchange::setTakeProfit($symbol, 'futures', 'mark_price', $takeProfit);
+        \App\Models\Order::storeOrderRecord($order, $futuresOrderPrices);
 
         return $order;
     }
