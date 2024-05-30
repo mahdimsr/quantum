@@ -171,8 +171,8 @@ class BollingerBandsSignalCommand extends Command
         }
 
 
-        $sl = Calculate::target($price,-1);
-        $tp = Calculate::target($price, 1);
+        $sl = Calculate::target($price,1);
+        $tp = Calculate::target($price, -1);
 
         OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,'short', $leverage);
     }
