@@ -125,4 +125,9 @@ class UTBotAlertStrategy
     {
         return $this->candles;
     }
+
+    public function lastExitingPosition(): Candle
+    {
+        return $this->candles->filter(fn(Candle $candle) => array_key_exists('order', $candle->getMeta()))->first();
+    }
 }
