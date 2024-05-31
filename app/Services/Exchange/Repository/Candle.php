@@ -3,6 +3,7 @@
 namespace App\Services\Exchange\Repository;
 
 use App\Services\Exchange\Exceptions\CandleException;
+use Illuminate\Support\Carbon;
 
 class Candle
 {
@@ -13,6 +14,8 @@ class Candle
     private mixed $close;
     private mixed $volume;
 
+    protected array $meta = [];
+
     /**
      * @throws CandleException
      */
@@ -21,7 +24,7 @@ class Candle
         self::validateArrayKeys($data);
 
         $candle = new Candle();
-        $candle->setTime($data['time']);
+        $candle->setTime(Carbon::createFromTimestampMs($data['time'])->toDateTimeString());
         $candle->setOpen($data['open']);
         $candle->setHigh($data['high']);
         $candle->setLow($data['low']);
@@ -155,6 +158,16 @@ class Candle
     public function setVolume(mixed $volume): void
     {
         $this->volume = $volume;
+    }
+
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    public function setMeta(array $meta): void
+    {
+        $this->meta = array_merge($meta, $this->meta);
     }
 
 
