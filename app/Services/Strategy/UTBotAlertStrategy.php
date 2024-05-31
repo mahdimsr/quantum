@@ -18,7 +18,7 @@ class UTBotAlertStrategy
     protected array $ema;
     protected array $ATRTrailingStop;
 
-    public function __construct(CandleCollection $candles, int $multiplier) {
+    public function __construct(CandleCollection $candles, int $multiplier = 1) {
         $this->candles = $candles;
 
         $this->closeValues = $candles->closes()->toArray();
