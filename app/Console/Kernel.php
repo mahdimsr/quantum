@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
 
             foreach (Coin::all() as $coin) {
 
-                Artisan::call('indicator:bollinger-bands',[
+                Artisan::call('strategy:static-reward',[
                     'coin' => $coin->name,
                     '--timeframe' => TimeframeEnum::EVERY_HOUR->value,
                 ]);
