@@ -4,12 +4,15 @@ namespace App\Console\Commands;
 
 use App\Enums\TimeframeEnum;
 use App\Models\Coin;
+use App\Models\User;
+use App\Notifications\SignalNotification;
 use App\Services\Exchange\Facade\Exchange;
 use App\Services\Order\Calculate;
 use App\Services\OrderService;
 use App\Services\Strategy\UTBotAlertStrategy;
 use App\Traits\CommandSuccessOutput;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class StaticRewardStrategyCommand extends Command
 {
@@ -88,5 +91,9 @@ class StaticRewardStrategyCommand extends Command
         }
 
         OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,$position, $leverage);
+
+        $user = User::findByEmail('mahdi.msr4@gmail.com');
+
+        Notification::send($user, new SignalNotification($this->coin->name, $position, 'Static Hourly Reward'));
     }
 }
