@@ -85,11 +85,6 @@ class StaticRewardStrategyCommand extends Command
 
         $orderAmount = $maxOrderAmount;
 
-        if ($availableAmount > 5) {
-
-            $orderAmount = $maxOrderAmount/2;
-        }
-
         OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,$position, $leverage);
 
         $user = User::findByEmail('mahdi.msr4@gmail.com');

@@ -2,6 +2,7 @@
 
 namespace App\Services\Exchange\Requests;
 
+use App\Enums\PriceTypeEnum;
 use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
@@ -14,5 +15,5 @@ interface PositionRequestContract
     public function adjustPositionMargin(string $symbol, string $marketType, string $amount): ?AdjustPositionMarginResponseContract;
     public function currentPosition(string $symbol, string $marketType): mixed;
     public function setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice): mixed;
-    public function setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice): ?RewardResponseContract;
+    public function setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice): ?RewardResponseContract;
 }

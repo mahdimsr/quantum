@@ -2,8 +2,10 @@
 
 namespace App\Services\Exchange\Facade;
 
+use App\Enums\PriceTypeEnum;
 use App\Services\Exchange\Coinex\CoinexService;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\StopLossResponseAdapter;
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Enums\OrderExecutionEnum;
 use App\Services\Exchange\Enums\OrderTypeEnum;
@@ -25,7 +27,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionLevelCollection positionLevel(string $symbol)
  * @method static mixed setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice)
- * @method static mixed setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice)
+ * @method static StopLossResponseAdapter setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice)
  * @method static mixed currentPosition(string $symbol, string $marketType)
  * @method static AssetBalanceContract futuresBalance()
  */

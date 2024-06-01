@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\PriceTypeEnum;
 use App\Models\Order;
 use App\Services\Exchange\Facade\Exchange;
 use Illuminate\Console\Command;
@@ -33,7 +34,7 @@ class CheckOrderCommand extends Command
 
         foreach ($orders as $order) {
 
-            $slResponse = Exchange::setStopLoss($order->market, 'futures', 'mark_price', $order->stop_loss_price);
+            $slResponse = Exchange::setStopLoss($order->market, PriceTypeEnum::MARK, $order->stop_loss_price);
 
             if($slResponse['message'] == 'OK') {
                 $order->update(['has_stop_loss' => true]);

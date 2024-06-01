@@ -2,6 +2,7 @@
 
 namespace App\Services\Exchange\Coinex;
 
+use App\Enums\PriceTypeEnum;
 use App\Services\Exchange\Coinex\Responses\AdjustPositionLeverageResponse;
 use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
@@ -316,14 +317,14 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice): ?RewardResponseContract
+    public function setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice): ?RewardResponseContract
     {
         try {
 
             $data = $this->coinexClient->v2_private_post_futures_set_position_stop_loss(
                 ['market'          => $symbol,
-                 'market_type'     => Str::upper($marketType),
-                 'stop_loss_type'  => $stopLossType,
+                 'market_type'     => 'FUTURES',
+                 'stop_loss_type'  => $stopLossType->value,
                  'stop_loss_price' => $stopLossPrice
                 ]);
 
