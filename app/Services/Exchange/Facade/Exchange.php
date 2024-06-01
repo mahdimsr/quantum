@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionLevelCollection positionLevel(string $symbol)
- * @method static mixed setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice)
+ * @method static PositionResponseContract setTakeProfit(string $symbol, PriceTypeEnum $takeProfitType, float $takeProfitPrice)
  * @method static PositionResponseContract setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice)
  * @method static mixed currentPosition(string $symbol, string $marketType)
  * @method static AssetBalanceContract futuresBalance()

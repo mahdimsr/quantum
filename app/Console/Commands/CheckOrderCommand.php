@@ -41,7 +41,7 @@ class CheckOrderCommand extends Command
             }
             sleep(1);
 
-           $tpResponse = Exchange::setTakeProfit($order->market, 'futures', 'mark_price', $order->take_profit_price);
+           $tpResponse = Exchange::setTakeProfit($order->market, PriceTypeEnum::MARK, $order->take_profit_price);
             if($tpResponse['message'] == 'OK') {
                 $order->update(['has_take_profit' => true]);
             }

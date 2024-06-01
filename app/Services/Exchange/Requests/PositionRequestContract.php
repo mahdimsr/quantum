@@ -14,6 +14,6 @@ interface PositionRequestContract
     public function adjustPositionLeverage(string $symbol, string $marketType, string $marginMode, int $leverage): ?AdjustPositionLeverageContract;
     public function adjustPositionMargin(string $symbol, string $marketType, string $amount): ?AdjustPositionMarginResponseContract;
     public function currentPosition(string $symbol, string $marketType): mixed;
-    public function setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice): ?PositionResponseContract;
+    public function setTakeProfit(string $symbol, PriceTypeEnum $takeProfitType, float $takeProfitPrice): ?PositionResponseContract;
     public function setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice): ?PositionResponseContract;
 }

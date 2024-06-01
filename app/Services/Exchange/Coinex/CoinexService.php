@@ -255,18 +255,18 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function setTakeProfit(string $symbol, string $marketType, string $takeProfitType, float $takeProfitPrice): mixed
+    public function setTakeProfit(string $symbol, PriceTypeEnum $takeProfitType, float $takeProfitPrice): ?PositionResponseContract
     {
         try {
 
             $data = $this->coinexClient->v2_private_post_futures_set_position_take_profit(
                 ['market'            => $symbol,
-                 'market_type'       => Str::upper($marketType),
-                 'take_profit_type'  => $takeProfitType,
+                 'market_type'       => 'FUTURES',
+                 'take_profit_type'  => $takeProfitType->value,
                  'take_profit_price' => $takeProfitPrice,
                 ]);
 
-            return $data;
+            return new PositionResponseAdapter($data);
 
         } catch (\Exception $exception) {
 
