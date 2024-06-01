@@ -5,7 +5,7 @@ namespace App\Services\Exchange\Responses;
 use App\Enums\PositionTypeEnum;
 use App\Enums\PriceTypeEnum;
 
-interface RewardResponseContract
+interface PositionResponseContract
 {
     public function isSuccess(): bool;
 
@@ -17,7 +17,13 @@ interface RewardResponseContract
 
     public function positionType(): PositionTypeEnum;
 
-    public function price(): mixed;
+    public function stopLossPrice(): mixed;
 
-    public function priceType(): PriceTypeEnum;
+    public function stopLossPriceType(): PriceTypeEnum;
+
+    public function takeProfitPrice(): mixed;
+
+    public function takeProfitPriceType(): PriceTypeEnum;
+
+    public function averageEntryPrice();
 }
