@@ -41,7 +41,7 @@ class StaticRewardStrategyCommand extends Command
 
             $utbot = new UTBotAlertStrategy($candlesResponse->data(), 1);
 
-            $lastExitingPosition = $utbot->lastExitingPosition();
+            $lastExitingPosition = $utbot->lastPosition();
             $lastCandle = $candlesResponse->data()->lastCandle();
 
             $takeProfit = $lastCandle->getClose();

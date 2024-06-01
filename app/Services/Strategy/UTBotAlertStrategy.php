@@ -104,20 +104,33 @@ class UTBotAlertStrategy
 
     public function calculateOrderType(): void
     {
-        $this->candles = $this->candles->each(function (Candle $candle){
+        $this->candles = $this->candles->each(function (Candle $candle, int $index){
 
             $meta = $candle->getMeta();
 
+            $additionalMeta = [];
+
             if ($candle->getClose() > $meta['atr'] and $meta['cross'] == 'above') {
 
-                $candle->setMeta(['order' => 'buy']);
+                $additionalMeta = ['order' => 'buy'];
+
             }
 
             if ($candle->getClose() < $meta['atr'] and $meta['cross'] == 'below') {
 
-                $candle->setMeta(['order' => 'sell']);
+                $additionalMeta = ['order' => 'sell'];
             }
 
+            if (count($additionalMeta) == 0 and $index != 0){
+
+                $preCandle = $this->candles->toArray()[$index-1];
+
+                $preOrder = array_key_exists('order', $preCandle->getMeta()) ? $preCandle->getMeta()['order'] : 'not defined';
+
+                $additionalMeta = ['order' => $preOrder];
+            }
+
+            $candle->setMeta($additionalMeta);
         });
     }
 
@@ -126,7 +139,7 @@ class UTBotAlertStrategy
         return $this->candles;
     }
 
-    public function lastExitingPosition(): Candle
+    public function lastPosition(): Candle
     {
         return $this->candles->filter(fn(Candle $candle) => array_key_exists('order', $candle->getMeta()))->first();
     }
