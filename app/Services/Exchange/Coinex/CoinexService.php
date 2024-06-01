@@ -7,6 +7,7 @@ use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\FuturesAssetResponse;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\StopLossResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
@@ -20,6 +21,7 @@ use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\RewardResponseContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Config;
@@ -314,7 +316,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice): mixed
+    public function setStopLoss(string $symbol, string $marketType, string $stopLossType, float $stopLossPrice): ?RewardResponseContract
     {
         try {
 
@@ -325,7 +327,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
                  'stop_loss_price' => $stopLossPrice
                 ]);
 
-            return $data;
+            return new StopLossResponseAdapter($data);
 
         } catch (\Exception $exception) {
 
