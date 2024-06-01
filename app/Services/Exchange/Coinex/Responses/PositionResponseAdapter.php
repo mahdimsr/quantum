@@ -8,6 +8,31 @@ use App\Services\Exchange\Responses\PositionResponseContract;
 
 class PositionResponseAdapter extends ResponseAdapter implements PositionResponseContract
 {
+    private string|null $symbol;
+
+    public function __construct(array $response, ?string $symbol = null)
+    {
+        parent::__construct($response);
+
+        $this->symbol = $symbol;
+    }
+
+    public function data(): array
+    {
+        if ($this->symbol){
+
+            foreach (parent::data() as $item){
+
+                if ($item['market'] == $this->symbol){
+
+                    return $item;
+                }
+            }
+        }
+
+        return parent::data();
+    }
+
     public function positionId(): mixed
     {
         return $this->data()['position_id'];

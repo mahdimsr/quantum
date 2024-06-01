@@ -276,16 +276,16 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function currentPosition(string $symbol, string $marketType): mixed
+    public function currentPosition(string $symbol): ?PositionResponseContract
     {
         try {
 
             $data = $this->coinexClient->v2_private_get_futures_pending_position(
                 ['market'      => $symbol,
-                 'market_type' => Str::upper($marketType),
+                 'market_type' => 'FUTURES',
                 ]);
 
-            return $data;
+            return new PositionResponseAdapter($data, $symbol);
 
         } catch (\Exception $exception) {
 

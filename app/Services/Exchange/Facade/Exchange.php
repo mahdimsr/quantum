@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static PositionLevelCollection positionLevel(string $symbol)
  * @method static PositionResponseContract setTakeProfit(string $symbol, PriceTypeEnum $takeProfitType, float $takeProfitPrice)
  * @method static PositionResponseContract setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice)
- * @method static mixed currentPosition(string $symbol, string $marketType)
+ * @method static PositionResponseContract currentPosition(string $symbol)
  * @method static AssetBalanceContract futuresBalance()
  */
 class Exchange extends Facade
