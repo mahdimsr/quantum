@@ -36,13 +36,13 @@ class CheckOrderCommand extends Command
 
             $slResponse = Exchange::setStopLoss($order->market, PriceTypeEnum::MARK, $order->stop_loss_price);
 
-            if($slResponse['message'] == 'OK') {
+            if($slResponse->isSuccess()) {
                 $order->update(['has_stop_loss' => true]);
             }
             sleep(1);
 
            $tpResponse = Exchange::setTakeProfit($order->market, PriceTypeEnum::MARK, $order->take_profit_price);
-            if($tpResponse['message'] == 'OK') {
+            if($tpResponse->isSuccess()) {
                 $order->update(['has_take_profit' => true]);
             }
         }
