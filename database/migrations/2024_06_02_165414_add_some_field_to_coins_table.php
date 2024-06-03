@@ -16,7 +16,7 @@ return new class extends Migration
             $table->tinyInteger('status')->nullable()->after('leverage');
             $table->string('asset')->nullable()->after('status');
             $table->integer('order')->nullable()->after('asset');
-            $table->tinyInteger('strategy_type')->nullable()->after('orders');
+            $table->tinyInteger('strategy_type')->nullable()->after('order');
         });
     }
 
@@ -26,7 +26,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('coins', function (Blueprint $table) {
-            //
+            $table->dropColumn('leverage');
+            $table->dropColumn('status');
+            $table->dropColumn('asset');
+            $table->dropColumn('order');
+            $table->dropColumn('strategy_type');
         });
     }
 };
