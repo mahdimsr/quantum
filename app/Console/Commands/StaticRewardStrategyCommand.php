@@ -50,7 +50,7 @@ class StaticRewardStrategyCommand extends Command
             if ($lastExitingPosition->getMeta()['order'] == 'buy'){
 
                 $takeProfit = Calculate::target($lastCandle->getClose(), 1);
-                $stopLoss = $lastCandle->getLow();
+                $stopLoss = Calculate::target($lastCandle->getClose(), -5);
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'long');
             }
@@ -58,7 +58,7 @@ class StaticRewardStrategyCommand extends Command
             if ($lastExitingPosition->getMeta()['order'] == 'sell'){
 
                 $takeProfit = Calculate::target($lastCandle->getClose(), -1);
-                $stopLoss = $lastCandle->getHigh();
+                $stopLoss = Calculate::target($lastCandle->getClose(), 5);
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'short');
             }
@@ -83,7 +83,7 @@ class StaticRewardStrategyCommand extends Command
 
         $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
 
-        $orderAmount = $maxOrderAmount;
+        $orderAmount = ($maxOrderAmount/4);
 
         OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,$position, $leverage);
 
