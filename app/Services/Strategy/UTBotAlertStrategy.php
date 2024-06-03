@@ -37,7 +37,7 @@ class UTBotAlertStrategy
         $this->calculateOrderType();
     }
 
-    public function calculateATRTrailingStop(): array
+    protected function calculateATRTrailingStop(): array
     {
         $xATRTrailingStop = array_fill(0, count($this->closeValues), 0.0);
 
@@ -60,7 +60,7 @@ class UTBotAlertStrategy
         return $xATRTrailingStop;
     }
 
-    public function calculatePosition(array $src, array $xATRTrailingStop): array
+    protected function calculatePosition(array $src, array $xATRTrailingStop): array
     {
         $pos = [];
         $pos[0] = 0; // Initialize the first position to 0
@@ -85,14 +85,14 @@ class UTBotAlertStrategy
         return $pos;
     }
 
-    public function calculateEMA(): void
+    protected function calculateEMA(): void
     {
         $this->ema = Indicator::EMA($this->candles, 2);
 
         $this->candles = $this->candles->mergeDataInMeta($this->ema, 'ema');
     }
 
-    public function calculateCrossOvers(): void
+    protected function calculateCrossOvers(): void
     {
         $this->calculateEMA();
 
@@ -103,7 +103,7 @@ class UTBotAlertStrategy
         $this->candles = $this->candles->mergeDataInMeta($aboveCrossOver, 'cross');
     }
 
-    public function calculateOrderType(): void
+    protected function calculateOrderType(): void
     {
         $this->candles = $this->candles->each(function (Candle $candle, int $index) {
 
