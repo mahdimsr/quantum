@@ -86,12 +86,15 @@ class StaticRewardStrategyCommand extends Command
     {
         $availableAmount = OrderService::getAvailableAmount();
 
+        if($availableAmount > 3) {
+
+            $availableAmount = 3;
+        }
+
         $leverage = $this->coin->leverage;
 
         $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
 
-        $orderAmount = ($maxOrderAmount/4);
-
-        OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,$position, $leverage);
+        OrderService::set($this->coin->USDTSymbol(), $price, $maxOrderAmount,$tp,$sl,$position, $leverage);
     }
 }
