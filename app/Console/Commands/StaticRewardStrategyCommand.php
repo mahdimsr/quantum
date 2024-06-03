@@ -79,7 +79,7 @@ class StaticRewardStrategyCommand extends Command
     {
         $availableAmount = OrderService::getAvailableAmount();
 
-        $leverage = 10;
+        $leverage = $this->coin->leverage;
 
         $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
 

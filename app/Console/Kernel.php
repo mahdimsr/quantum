@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            $staticRewardCoins = Coin::strategy(StrategyEnum::STATIC_REWARD)->get();
+            $staticRewardCoins = Coin::strategy(StrategyEnum::STATIC_REWARD)->orderBy('order')->get();
 
             foreach ($staticRewardCoins as $coin) {
 
