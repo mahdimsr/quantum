@@ -6,6 +6,13 @@ trait OptionValues
 {
     public static function optionCases(): array
     {
-        return collect(self::cases())->map(fn($object) => [$object->value => $object->name])->flatten()->toArray();
+        $optionCases = [];
+
+        foreach (self::cases() as $case){
+
+            $optionCases[$case->value] = $case->name;
+        }
+
+        return $optionCases;
     }
 }
