@@ -66,8 +66,13 @@ class CoinResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
-                    ->searchable()
-                ,
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('order')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('leverage')
+                    ->sortable()
+                    ->searchable(),
                 ToggleColumn::make('status')
                     ->onColor('success'),
             ])
