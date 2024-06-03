@@ -3,9 +3,13 @@
 namespace App\Services;
 
 use App\Exceptions\OrderException;
+use App\Models\User;
+use App\Notifications\ExceptionNotification;
+use App\Notifications\SignalNotification;
 use App\Services\Exchange\Facade\Exchange;
 use App\Services\Exchange\Repository\Order;
 use Exception;
+use Illuminate\Support\Facades\Notification;
 
 class OrderService
 {
@@ -21,9 +25,13 @@ class OrderService
     {
         $side = $position == 'long' ? 'buy' : 'sell';
 
+        $user = User::findByEmail('mahdi.msr4@gmail.com');
+
         $leverageResponse = Exchange::adjustPositionLeverage($symbol, 'futures', 'isolated', $leverage);
 
         if (! $leverageResponse->isSuccess()){
+
+            Notification::send($user, new ExceptionNotification($symbol, $leverageResponse->message()));
 
             throw OrderException::leverageFailed($leverageResponse->message());
         }
@@ -34,10 +42,14 @@ class OrderService
 
         if (! $placeOrderResponse->isSuccess()) {
 
+            Notification::send($user, new ExceptionNotification($symbol, $placeOrderResponse->message()));
+
             throw OrderException::placeOrderFailed($placeOrderResponse->message());
         }
 
         $order = $placeOrderResponse->order();
+
+        Notification::send($user, new SignalNotification($symbol, $position, 'Static Hourly Reward'));
 
         $futuresOrderPrices = [
             'current_price' => $currentPrice,

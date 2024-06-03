@@ -87,8 +87,5 @@ class StaticRewardStrategyCommand extends Command
 
         OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,$position, $leverage);
 
-        $user = User::findByEmail('mahdi.msr4@gmail.com');
-
-        Notification::send($user, new SignalNotification($this->coin->name, $position, 'Static Hourly Reward'));
     }
 }
