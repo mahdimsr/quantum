@@ -47,18 +47,18 @@ class StaticRewardStrategyCommand extends Command
             $takeProfit = $lastCandle->getClose();
             $stopLoss = $lastCandle->getClose();
 
-            if ($lastExitingPosition->getMeta()['order'] == 'buy'){
+            if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['order'] == 'buy') {
 
                 $takeProfit = Calculate::target($lastCandle->getClose(), 1);
-                $stopLoss = Calculate::target($lastCandle->getClose(), -5);
+                $stopLoss = max(Calculate::target($lastCandle->getClose(), -5), $lastCandle->getLow());
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'long');
             }
 
-            if ($lastExitingPosition->getMeta()['order'] == 'sell'){
+            if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['order'] == 'sell') {
 
                 $takeProfit = Calculate::target($lastCandle->getClose(), -1);
-                $stopLoss = Calculate::target($lastCandle->getClose(), 5);
+                $stopLoss = max(Calculate::target($lastCandle->getClose(), 5), $lastCandle->getHigh());
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'short');
             }
@@ -74,6 +74,13 @@ class StaticRewardStrategyCommand extends Command
         }
     }
 
+    private function validateSignal(UTBotAlertStrategy $utbot): bool
+    {
+        $lasTriggerdPositionIndex = collect($utbot->triggeredPositions())->keys()->last();
+        $currentPositionIndex = $utbot->getCalculatedCandles()->keys()->last();
+
+        return ($currentPositionIndex - $lasTriggerdPositionIndex) <= 2;
+    }
 
     private function setOrder($price, $tp, $sl, $position): void
     {
@@ -86,6 +93,5 @@ class StaticRewardStrategyCommand extends Command
         $orderAmount = ($maxOrderAmount/4);
 
         OrderService::set($this->coin->USDTSymbol(), $price, $orderAmount,$tp,$sl,$position, $leverage);
-
     }
 }

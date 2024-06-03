@@ -28,11 +28,11 @@ class Kernel extends ConsoleKernel
 
                 Artisan::call('strategy:static-reward',[
                     'coin' => $coin->name,
-                    '--timeframe' => TimeframeEnum::EVERY_HOUR->value,
+                    '--timeframe' => TimeframeEnum::EVERY_THIRTY_MINUTES->value,
                 ]);
             }
 
-        })->hourly();
+        })->everyThirtyMinutes();
 
         $schedule->command('orders:check')->everyFiveMinutes();
     }

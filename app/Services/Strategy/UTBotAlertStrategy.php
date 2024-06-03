@@ -144,4 +144,29 @@ class UTBotAlertStrategy
     {
         return $this->candles->filter(fn(Candle $candle) => array_key_exists('order', $candle->getMeta()) and in_array($candle->getMeta()['order'], ['buy', 'sell']))->last();
     }
+
+    public function triggeredPositions(): array
+    {
+        $triggeredPositions = [];
+        $candlesArray = $this->candles->toArray();
+
+        foreach ($candlesArray as $key => $candle) {
+
+            if ($key > 0) {
+
+                $currentCandle = $candle;
+                $preCandle = $candlesArray[$key - 1];
+
+                if (array_key_exists('order', $currentCandle->getMeta()) and array_key_exists('order', $preCandle->getMeta())) {
+
+                    if ($currentCandle->getMeta()['order'] != $preCandle->getMeta()['order']) {
+
+                        $triggeredPositions[$key] = $currentCandle;
+                    }
+                }
+            }
+        }
+
+        return $triggeredPositions;
+    }
 }
