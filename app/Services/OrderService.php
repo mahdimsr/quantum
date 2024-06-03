@@ -30,7 +30,14 @@ class OrderService
 
         sleep(1);
 
-        $order = Exchange::placeOrder($symbol, 'futures', $side, 'limit', $amount, $currentPrice);
+        $placeOrderResponse = Exchange::placeOrder($symbol, 'futures', $side, 'limit', $amount, $currentPrice);
+
+        if (! $placeOrderResponse->isSuccess()) {
+
+            throw OrderException::placeOrderFailed($placeOrderResponse->message());
+        }
+
+        $order = $placeOrderResponse->order();
 
         $futuresOrderPrices = [
             'current_price' => $currentPrice,
