@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Enums\CoinEnum;
+use App\Enums\StrategyEnum;
 use App\Enums\TimeframeEnum;
 use App\Models\Coin;
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
@@ -21,15 +22,19 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            foreach (Coin::all() as $coin) {
+            $staticRewardCoins = Coin::strategy(StrategyEnum::STATIC_REWARD)->orderBy('order')->get();
 
-                Artisan::call('indicator:bollinger-bands',[
+            foreach ($staticRewardCoins as $coin) {
+
+                Artisan::call('strategy:static-reward',[
                     'coin' => $coin->name,
-                    '--timeframe' => TimeframeEnum::EVERY_THIRTY_MINUTES->value,
+                    '--timeframe' => TimeframeEnum::EVERY_HOUR->value,
                 ]);
             }
 
-        })->everyThirtyMinutes();
+        })->hourly();
+
+        $schedule->command('orders:check')->everyFiveMinutes();
     }
 
     /**

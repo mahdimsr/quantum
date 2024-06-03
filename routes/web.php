@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+use Modules\CCXT\ccxt;
+use Modules\CCXT\coinex;
 
+Route::get('/', function () {
 
     return view('welcome');
 });

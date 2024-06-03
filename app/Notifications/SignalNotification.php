@@ -17,17 +17,13 @@ class SignalNotification extends Notification implements TelegramBotNotification
 
     protected string $symbol;
     protected string $position;
-    protected mixed $currentPrice;
-    protected mixed $takeProfit;
-    protected mixed $stopLoss;
+    protected string $strategy;
 
-    public function __construct(string $symbol, string $position, mixed $currentPrice, mixed $takeProfit, mixed $stopLoss)
+    public function __construct(string $symbol, string $position, mixed $strategy)
     {
         $this->symbol = $symbol;
         $this->position = $position;
-        $this->currentPrice = $currentPrice;
-        $this->takeProfit = $takeProfit;
-        $this->stopLoss = $stopLoss;
+        $this->strategy = $strategy;
     }
 
 
@@ -58,11 +54,9 @@ class SignalNotification extends Notification implements TelegramBotNotification
         $positionTitle = $this->position == 'long' ? "Long 🟢" : "Short 🔴";
         $nowDateTimeString = Carbon::now()->toDateTimeString();
 
-        $message = "Symbol: $this->symbol \n";
+        $message = "Strategy: $this->strategy \n";
+        $message .= "Symbol: $this->symbol \n";
         $message .= "Position: $positionTitle\n";
-        $message .= "CurrentPrice: $this->currentPrice\n";
-        $message .= "TakeProfit: $this->takeProfit\n";
-        $message .= "StopLoss: $this->stopLoss\n";
         $message .= "Now: $nowDateTimeString\n";
 
         return $message;
