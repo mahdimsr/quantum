@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\StrategyEnum;
 use App\Filament\Resources\CoinResource\Pages;
 use App\Filament\Resources\CoinResource\RelationManagers;
 use App\Models\Coin;
@@ -43,10 +44,7 @@ class CoinResource extends Resource
                     ->required(),
 
                 Forms\Components\Select::make('strategy_type')
-                    ->options([
-                        1 => 'UT BOT',
-                        2 => 'BOLLINGER BANDS',
-                    ])
+                    ->options(StrategyEnum::optionCases())
                     ->searchable()
                     ->preload()
                     ->required()
