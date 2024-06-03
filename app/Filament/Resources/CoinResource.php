@@ -21,12 +21,6 @@ class CoinResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationLabel = 'مدیریت رمز ارزها';
-
-    protected static ?string $modelLabel = 'رمز ارز';
-
-    protected static ?string $pluralModelLabel = 'رمز ارزها';
-
     public static function form(Form $form): Form
     {
         return $form
@@ -34,26 +28,21 @@ class CoinResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->minValue(1)
-                    ->maxValue(191)
-                    ->label('نام'),
+                    ->maxValue(191),
 
                 Forms\Components\TextInput::make('percent_tolerance')
                     ->type('number')
-                    ->required()
-                    ->label('درصد تغییر قیمت'),
+                    ->required(),
 
                 Forms\Components\TextInput::make('leverage')
                     ->type('number')
-                    ->required()
-                    ->label('اهرم'),
+                    ->required(),
 
                 Forms\Components\TextInput::make('order')
                     ->type('number')
-                    ->required()
-                    ->label('اولویت'),
+                    ->required(),
 
                 Forms\Components\Select::make('strategy_type')
-                    ->label('استراتژی معاملاتی')
                     ->options([
                         1 => 'UT BOT',
                         2 => 'BOLLINGER BANDS',
@@ -65,7 +54,6 @@ class CoinResource extends Resource
                 ,
 
                 Toggle::make('status')
-                    ->label('وضعیت')
                     ->onIcon('heroicon-s-eye')
                     ->offIcon('heroicon-s-x-circle')
                     ->columnSpan('full')
@@ -79,12 +67,10 @@ class CoinResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('نام')
                     ->sortable()
                     ->searchable()
                 ,
                 ToggleColumn::make('status')
-                    ->label('وضعیت')
                     ->onColor('success'),
             ])
 
