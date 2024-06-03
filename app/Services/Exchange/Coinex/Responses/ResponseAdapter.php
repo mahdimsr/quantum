@@ -21,7 +21,7 @@ abstract class ResponseAdapter
         return $this->response['message'];
     }
 
-    public function data(): array
+    public function data(): mixed
     {
         return $this->response['data'];
     }

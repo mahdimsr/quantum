@@ -3,37 +3,13 @@
 namespace App\Services\Exchange\Coinex\Responses;
 
 use App\Services\Exchange\Repository\Order;
-use App\Services\Exchange\Repository\OrderCollection;
 use App\Services\Exchange\Responses\OrderResponseContract;
 
-class OrderResponseAdapter implements OrderResponseContract
+class OrderResponseAdapter extends ResponseAdapter implements OrderResponseContract
 {
 
-    private array $response;
-
-    public function __construct(array $response)
+    public function order(): ?Order
     {
-        $this->response = $response;
-    }
-
-    public function code(): int
-    {
-        return $this->response['code'];
-
-    }
-
-    public function message(): string
-    {
-        return $this->response['message'];
-
-    }
-
-    public function data(): OrderCollection
-    {
-        $data = $this->response['data'];
-
-        $data = collect($data)->map(fn($item) => Order::fromArray($item));
-
-        return OrderCollection::make($data);
+        return Order::fromArray($this->data());
     }
 }

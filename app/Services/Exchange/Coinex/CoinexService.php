@@ -7,6 +7,7 @@ use App\Services\Exchange\Coinex\Responses\AdjustPositionLeverageResponse;
 use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\FuturesAssetResponse;
+use App\Services\Exchange\Coinex\Responses\OrderListResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\PositionResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
@@ -21,6 +22,7 @@ use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
+use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
 use App\Services\Exchange\Responses\PositionResponseContract;
 use GuzzleHttp\Client;
@@ -152,12 +154,12 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
     }
 
 
-    public function orders(string $marketType): ?OrderResponseContract
+    public function orders(string $marketType): ?OrderListResponseContract
     {
         try {
 
 
-            return new OrderResponseAdapter($this->coinexClient->v2_private_get_futures_finished_order(['market_type' => Str::upper($marketType)]));
+            return new OrderListResponseAdapter($this->coinexClient->v2_private_get_futures_finished_order(['market_type' => Str::upper($marketType)]));
 
         } catch (\Exception $e) {
 
@@ -167,7 +169,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price): ?Order
+    public function placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price): ?OrderResponseContract
     {
         try {
 
@@ -184,13 +186,11 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
 
             $data = $this->coinexClient->v2_private_post_futures_order($params);
 
-            return Order::fromArray($data['data']);
+            return new OrderResponseAdapter($data);
 
         } catch (\Exception $e) {
 
             logs()->critical($e);
-
-            dd($e);
 
             return null;
         }

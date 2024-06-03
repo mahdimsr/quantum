@@ -2,11 +2,11 @@
 
 namespace App\Services\Exchange\Responses;
 
-use App\Services\Exchange\Repository\OrderCollection;
+use App\Services\Exchange\Repository\Order;
 
 interface OrderResponseContract
 {
-    public function code(): int;
+    public function isSuccess(): bool;
     public function message(): string;
-    public function data(): OrderCollection;
+    public function order(): ?Order;
 }
