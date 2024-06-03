@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\OrderException;
 use App\Services\Exchange\Facade\Exchange;
 use App\Services\Exchange\Repository\Order;
 use Exception;
@@ -13,15 +14,23 @@ class OrderService
         return Exchange::futuresBalance()->data()->ccy('USDT')->getAvailable();
     }
 
+    /**
+     * @throws OrderException
+     */
     public static function set(string $symbol, mixed $currentPrice, mixed $amount, mixed $takeProfit, mixed $stopLoss, string $position = 'long', mixed $leverage = 10): Order
     {
         $side = $position == 'long' ? 'buy' : 'sell';
 
         $leverageResponse = Exchange::adjustPositionLeverage($symbol, 'futures', 'isolated', $leverage);
 
+        if (! $leverageResponse->isSuccess()){
+
+            throw OrderException::leverageFailed($leverageResponse->message());
+        }
+
         sleep(1);
 
-        $order = Exchange::placeOrder($symbol, 'futures', $side, 'market', $amount, $currentPrice);
+        $order = Exchange::placeOrder($symbol, 'futures', $side, 'limit', $amount, $currentPrice);
 
         $futuresOrderPrices = [
             'current_price' => $currentPrice,
