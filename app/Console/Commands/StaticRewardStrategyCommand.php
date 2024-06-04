@@ -57,16 +57,14 @@ class StaticRewardStrategyCommand extends Command
 
             if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['order'] == 'sell') {
 
-                $takeProfit = Calculate::target($lastCandle->getClose(), -1);
-                $stopLoss = max(Calculate::target($lastCandle->getClose(), 5), $lastCandle->getHigh());
+                $takeProfit = Calculate::target($lastCandle->getClose(), 1);
+                $stopLoss = max(Calculate::target($lastCandle->getClose(), -5), $lastCandle->getHigh());
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'short');
             }
 
 
-
-
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
 
             logs()->channel('strategy')->error($exception);
 
@@ -76,7 +74,7 @@ class StaticRewardStrategyCommand extends Command
 
     private function validateSignal(UTBotAlertStrategy $utbot): bool
     {
-        $lasTriggerdPositionIndex = collect($utbot->triggeredPositions())->keys()->last();
+        $lasTriggerdPositionIndex = $utbot->getCalculatedCandles()->signals()->keys()->last();
         $currentPositionIndex = $utbot->getCalculatedCandles()->keys()->last();
 
         return ($currentPositionIndex - $lasTriggerdPositionIndex) <= 2;
@@ -89,12 +87,12 @@ class StaticRewardStrategyCommand extends Command
         if($availableAmount > 3) {
 
             $availableAmount = 3;
+
+            $leverage = $this->coin->leverage;
+
+            $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
+
+            OrderService::set($this->coin->USDTSymbol(), $price, $maxOrderAmount,$tp,$sl,$position, $leverage);
         }
-
-        $leverage = $this->coin->leverage;
-
-        $maxOrderAmount = Calculate::maxOrderAmount($price,$availableAmount,$leverage);
-
-        OrderService::set($this->coin->USDTSymbol(), $price, $maxOrderAmount,$tp,$sl,$position, $leverage);
     }
 }
