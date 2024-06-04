@@ -34,7 +34,7 @@ class UTBotAlertStrategy
         $this->ATRTrailingStop = $this->calculateATRTrailingStop();
         $this->calculatePosition($this->closeValues, $this->ATRTrailingStop);
         $this->calculateCrossOvers();
-        $this->calculateOrderType();
+        $this->calculateSignal();
     }
 
     protected function calculateATRTrailingStop(): array
@@ -103,7 +103,7 @@ class UTBotAlertStrategy
         $this->candles = $this->candles->mergeDataInMeta($aboveCrossOver, 'cross');
     }
 
-    protected function calculateOrderType(): void
+    protected function calculateSignal(): void
     {
         $this->candles = $this->candles->each(function (Candle $candle, int $index) {
 
@@ -113,22 +113,21 @@ class UTBotAlertStrategy
 
             if ($candle->getClose() > $meta['atr'] and $meta['cross'] == 'above') {
 
-                $additionalMeta = ['order' => 'buy'];
-
+                $additionalMeta = ['signal' => 'buy', 'candle_signal' => 'buy'];
             }
 
             if ($candle->getClose() < $meta['atr'] and $meta['cross'] == 'below') {
 
-                $additionalMeta = ['order' => 'sell'];
+                $additionalMeta = ['signal' => 'sell', 'candle_signal' => 'sell'];
             }
 
             if (count($additionalMeta) == 0 and $index != 0) {
 
                 $preCandle = $this->candles->toArray()[$index - 1];
 
-                $preOrder = array_key_exists('order', $preCandle->getMeta()) ? $preCandle->getMeta()['order'] : 'not defined';
+                $preOrder = array_key_exists('signal', $preCandle->getMeta()) ? $preCandle->getMeta()['signal'] : 'not defined';
 
-                $additionalMeta = ['order' => $preOrder];
+                $additionalMeta = ['signal' => $preOrder];
             }
 
             $candle->setMeta($additionalMeta);
