@@ -134,9 +134,9 @@ class UTBotAlertStrategy
         });
     }
 
-    public function getCalculatedCandles(): CandleCollection
+    public function getCalculatedCandles(): UTBotAlertCollection
     {
-        return $this->candles;
+        return UTBotAlertCollection::make($this->candles);
     }
 
     public function lastPosition(): Candle
