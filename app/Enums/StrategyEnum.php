@@ -9,4 +9,5 @@ enum StrategyEnum: int
     use OptionValues;
 
     case STATIC_REWARD = 1;
+    case NO_STRATEGY = 2;
 }

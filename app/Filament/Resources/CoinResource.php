@@ -32,7 +32,6 @@ class CoinResource extends Resource
                     ->maxValue(191),
 
                 Forms\Components\TextInput::make('percent_tolerance')
-                    ->type('number')
                     ->required(),
 
                 Forms\Components\TextInput::make('leverage')
@@ -73,8 +72,8 @@ class CoinResource extends Resource
                 Tables\Columns\TextColumn::make('leverage')
                     ->sortable()
                     ->searchable(),
-                ToggleColumn::make('status')
-                    ->onColor('success'),
+                Tables\Columns\SelectColumn::make('strategy_type')
+                    ->options(StrategyEnum::optionCases()),
             ])
 
             ->filters([
