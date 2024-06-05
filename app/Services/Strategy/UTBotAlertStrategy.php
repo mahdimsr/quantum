@@ -141,7 +141,7 @@ class UTBotAlertStrategy
 
     public function lastPosition(): Candle
     {
-        return $this->candles->filter(fn(Candle $candle) => array_key_exists('order', $candle->getMeta()) and in_array($candle->getMeta()['order'], ['buy', 'sell']))->last();
+        return $this->candles->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()) and in_array($candle->getMeta()['signal'], ['buy', 'sell']))->last();
     }
 
     public function triggeredPositions(): array

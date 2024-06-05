@@ -47,7 +47,7 @@ class StaticRewardStrategyCommand extends Command
             $takeProfit = $lastCandle->getClose();
             $stopLoss = $lastCandle->getClose();
 
-            if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['order'] == 'buy') {
+            if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['signal'] == 'buy') {
 
                 $takeProfit = Calculate::target($lastCandle->getClose(), 1);
                 $stopLoss = max(Calculate::target($lastCandle->getClose(), -5), $lastCandle->getLow());
@@ -55,10 +55,10 @@ class StaticRewardStrategyCommand extends Command
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'long');
             }
 
-            if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['order'] == 'sell') {
+            if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['signal'] == 'sell') {
 
-                $takeProfit = Calculate::target($lastCandle->getClose(), 1);
-                $stopLoss = max(Calculate::target($lastCandle->getClose(), -5), $lastCandle->getHigh());
+                $takeProfit = Calculate::target($lastCandle->getClose(), -1);
+                $stopLoss = max(Calculate::target($lastCandle->getClose(), 5), $lastCandle->getHigh());
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'short');
             }
