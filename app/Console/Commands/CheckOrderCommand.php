@@ -28,7 +28,8 @@ class CheckOrderCommand extends Command
      */
     public function handle()
     {
-        $orders = Order::where('has_stop_loss', false)
+        $orders = Order::query()
+            ->where('has_stop_loss', false)
             ->where('has_take_profit', false)
             ->get();
 
@@ -38,6 +39,29 @@ class CheckOrderCommand extends Command
 
             if($slResponse->isSuccess()) {
                 $order->update(['has_stop_loss' => true]);
+            } else {
+
+
+                if ($order->side == 'sell') {
+
+                    $stopLossRange = $order->stop_loss_price - $order->current_price;
+
+                    $newStopLoss = $order->stop_loss_price + $stopLossRange;
+
+                    $order->update(['stop_loss_price' => $newStopLoss]);
+                }
+
+                if ($order->side == 'buy') {
+
+                    $stopLossRange = $order->current_price - $order->stop_loss_price;
+
+                    $newStopLoss = $order->stop_loss_price - $stopLossRange;
+
+                    $order->update(['stop_loss_price' => $newStopLoss]);
+                }
+
+
+
             }
             sleep(1);
 

@@ -51,4 +51,11 @@ class Order extends Model
             get: fn(string $value) => Str::of($value)->toFloat()
         );
     }
+
+    public function coin(): Coin
+    {
+        $coinName = Str::of($this->market)->replace('USDT','')->trim()->toString();
+
+        return Coin::findByName($coinName);
+    }
 }
