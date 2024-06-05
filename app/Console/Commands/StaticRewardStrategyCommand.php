@@ -46,19 +46,20 @@ class StaticRewardStrategyCommand extends Command
 
             $takeProfit = $lastCandle->getClose();
             $stopLoss = $lastCandle->getClose();
+            $profitPercent = $this->coin->percent_tolerance;
 
             if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['signal'] == 'buy') {
 
-                $takeProfit = Calculate::target($lastCandle->getClose(), 1);
-                $stopLoss = max(Calculate::target($lastCandle->getClose(), 1), $lastCandle->getLow());
+                $takeProfit = Calculate::target($lastCandle->getClose(), $profitPercent);
+                $stopLoss = Calculate::target($lastCandle->getClose(), -($profitPercent * 1.5));
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'long');
             }
 
             if ($this->validateSignal($utbot) and $lastExitingPosition->getMeta()['signal'] == 'sell') {
 
-                $takeProfit = Calculate::target($lastCandle->getClose(), -1);
-                $stopLoss = max(Calculate::target($lastCandle->getClose(), 1), $lastCandle->getHigh());
+                $takeProfit = Calculate::target($lastCandle->getClose(), - ($profitPercent));
+                $stopLoss = Calculate::target($lastCandle->getClose(), ($profitPercent * 1.5));
 
                 $this->setOrder($lastCandle->getClose(),$takeProfit, $stopLoss, 'short');
             }
