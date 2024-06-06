@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
                 ]);
             }
 
-        })->hourlyAt(25);
+        })->hourlyAt(20);
 
         $schedule->command('orders:check')->everyFiveMinutes();
     }
