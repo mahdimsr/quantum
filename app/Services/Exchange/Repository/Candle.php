@@ -13,6 +13,7 @@ class Candle
     private mixed $low;
     private mixed $close;
     private mixed $volume;
+    private bool $isBullish;
 
     protected array $meta = [];
 
@@ -30,6 +31,7 @@ class Candle
         $candle->setLow($data['low']);
         $candle->setClose($data['close']);
         $candle->setVolume($data['volume']);
+        $candle->setIsBullish($data['close'] > $data['open']);
 
         return $candle;
     }
@@ -168,6 +170,16 @@ class Candle
     public function setMeta(array $meta): void
     {
         $this->meta = array_merge($meta, $this->meta);
+    }
+
+    public function isBullish(): bool
+    {
+        return $this->isBullish;
+    }
+
+    private function setIsBullish(bool $isBullish): void
+    {
+        $this->isBullish = $isBullish;
     }
 
 
