@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property StrategyEnum strategy_type
  *
  * @method static Builder strategy(StrategyEnum $strategyEnum)
+ * @method static Builder status(CoinStatusEnum $coinStatusEnum)
  */
 class Coin extends Model
 {
@@ -31,6 +32,11 @@ class Coin extends Model
     public function scopeStrategy(Builder $builder, StrategyEnum $strategyEnum)
     {
         $builder->where('strategy_type', $strategyEnum->value);
+    }
+
+    public function scopeStatus(Builder $builder, CoinStatusEnum $coinStatusEnum)
+    {
+        $builder->where('status', $coinStatusEnum->value);
     }
 
     public static function findByName(string $name): Model|self
