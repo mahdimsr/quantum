@@ -5,14 +5,17 @@ namespace App\Models;
 use App\Enums\CoinStatusEnum;
 use App\Enums\StrategyEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * @property int id
  * @property string name
  * @property float percent_tolerance
  * @property int leverage
+ * @property int fee
  * @property CoinStatusEnum status
  * @property int order
  * @property StrategyEnum strategy_type
@@ -37,6 +40,13 @@ class Coin extends Model
     public function scopeStatus(Builder $builder, CoinStatusEnum $coinStatusEnum)
     {
         $builder->where('status', $coinStatusEnum->value);
+    }
+
+    public function fee()
+    {
+        return Attribute::make(
+            get: fn(string $value) => Str::of($value)->toFloat(),
+        );
     }
 
     public static function findByName(string $name): Model|self

@@ -37,10 +37,17 @@ class CoinResource extends Resource
 
                 Forms\Components\TextInput::make('leverage')
                     ->type('number')
+                    ->columnSpan('sm')
                     ->required(),
+
+                Forms\Components\TextInput::make('fee')
+                    ->type('number')
+                    ->columnSpan('sm')
+                    ->default(0),
 
                 Forms\Components\TextInput::make('order')
                     ->type('number')
+                    ->columnSpan('sm')
                     ->required(),
 
                 Forms\Components\Select::make('strategy_type')
