@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\CoinStatusEnum;
 use App\Enums\StrategyEnum;
 use App\Filament\Resources\CoinResource\Pages;
 use App\Filament\Resources\CoinResource\RelationManagers;
@@ -47,14 +48,16 @@ class CoinResource extends Resource
                     ->searchable()
                     ->preload()
                     ->required()
-                    ->columnSpanFull()
-                ,
+                    ->columnSpan('md'),
 
-                Toggle::make('status')
-                    ->onIcon('heroicon-s-eye')
-                    ->offIcon('heroicon-s-x-circle')
-                    ->columnSpan('full')
-                    ->onColor('success'),
+
+
+                Forms\Components\Select::make('status')
+                    ->options(CoinStatusEnum::optionCases())
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->columnSpan('md'),
             ]);
 
     }
@@ -74,6 +77,8 @@ class CoinResource extends Resource
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('strategy_type')
                     ->options(StrategyEnum::optionCases()),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options(CoinStatusEnum::optionCases()),
             ])
 
             ->filters([
