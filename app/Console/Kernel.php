@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Enums\CoinEnum;
+use App\Enums\CoinStatusEnum;
 use App\Enums\StrategyEnum;
 use App\Enums\TimeframeEnum;
 use App\Models\Coin;
@@ -22,7 +23,10 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            $staticRewardCoins = Coin::strategy(StrategyEnum::STATIC_REWARD)->orderBy('order')->get();
+            $staticRewardCoins = Coin::strategy(StrategyEnum::STATIC_REWARD)
+                ->status(CoinStatusEnum::AVAILABLE)
+                ->orderBy('order')
+                ->get();
 
             foreach ($staticRewardCoins as $coin) {
 
