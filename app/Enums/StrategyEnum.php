@@ -10,4 +10,5 @@ enum StrategyEnum: int
 
     case STATIC_REWARD = 1;
     case NO_STRATEGY = 2;
+    case WEEKLY_REWARD = 3;
 }
