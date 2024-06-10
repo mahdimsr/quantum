@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Notification;
 
 class WeeklyRewardStrategyCommand extends Command
 {
-    protected $signature = 'app:weekly-reward {coin}';
+    protected $signature = 'strategy:weekly-reward {coin}';
 
     protected $description = 'check position daily';
 

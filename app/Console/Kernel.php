@@ -23,22 +23,19 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            $staticRewardCoins = Coin::strategy(StrategyEnum::STATIC_REWARD)
+            $weeklyRewardCoins = Coin::strategy(StrategyEnum::WEEKLY_REWARD)
                 ->status(CoinStatusEnum::AVAILABLE)
                 ->orderBy('order')
                 ->get();
 
-            foreach ($staticRewardCoins as $coin) {
+            foreach ($weeklyRewardCoins as $coin) {
 
-                Artisan::call('strategy:static-reward',[
+                Artisan::call('strategy:weekly-reward',[
                     'coin' => $coin->name,
-                    '--timeframe' => TimeframeEnum::EVERY_HOUR->value,
                 ]);
             }
 
-        })->hourlyAt(20);
-
-        $schedule->command('orders:check')->everyFiveMinutes();
+        })->hourlyAt(30);
     }
 
     /**
