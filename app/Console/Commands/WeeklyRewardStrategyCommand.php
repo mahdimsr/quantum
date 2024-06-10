@@ -48,7 +48,7 @@ class WeeklyRewardStrategyCommand extends Command
 
                     $user = User::findByEmail('mahdi.msr4@gmail.com');
 
-                    Notification::send($user, new SignalNotification($symbol,$lastDailyExitingPosition->getMeta()['signal'],StrategyEnum::WEEKLY_REWARD->value));
+                    Notification::send($user, new SignalNotification($symbol,$lastDailyExitingPosition->getMeta()['signal'],StrategyEnum::WEEKLY_REWARD->name));
                 }
             }
 
