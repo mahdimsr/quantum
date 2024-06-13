@@ -4,6 +4,7 @@ namespace App\Services\Exchange\Repository;
 
 use App\Services\Exchange\Exceptions\CandleException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class Candle
 {
@@ -183,4 +184,14 @@ class Candle
     }
 
 
+    public function hasSellSignal(): bool
+    {
+        return array_key_exists('signal', $this->meta) and in_array(Str::lower($this->meta['signal']),['sell', 'short']);
+    }
+
+
+    public function hasBuySignal(): bool
+    {
+        return array_key_exists('signal', $this->meta) and in_array(Str::lower($this->meta['signal']),['buy', 'long']);
+    }
 }

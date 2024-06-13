@@ -51,7 +51,7 @@ class SignalNotification extends Notification implements TelegramBotNotification
 
     public function toTelegramBot(): string
     {
-        $positionTitle = $this->position == 'long' ? "Long 🟢" : "Short 🔴";
+        $positionTitle = in_array($this->position , ['long', 'buy']) ? "Long 🟢" : "Short 🔴";
         $nowDateTimeString = Carbon::now()->toDateTimeString();
 
         $message = "Strategy: $this->strategy \n";

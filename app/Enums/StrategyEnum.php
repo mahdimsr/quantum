@@ -4,10 +4,10 @@ namespace App\Enums;
 
 use App\Traits\OptionValues;
 
-enum StrategyEnum: int
+enum StrategyEnum: string
 {
     use OptionValues;
 
-    case STATIC_REWARD = 1;
-    case NO_STRATEGY = 2;
+    case SIMPLE_BOLLINGER_BAND = 'simple_bollinger_band';
+    case UT_BOT_ALERT = 'ut_bot_alert';
 }

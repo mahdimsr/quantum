@@ -23,22 +23,33 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            $staticRewardCoins = Coin::strategy(StrategyEnum::STATIC_REWARD)
+            $bollingerBandCoins = Coin::strategy(StrategyEnum::SIMPLE_BOLLINGER_BAND)
                 ->status(CoinStatusEnum::AVAILABLE)
-                ->orderBy('order')
                 ->get();
 
-            foreach ($staticRewardCoins as $coin) {
+            foreach ($bollingerBandCoins as $coin) {
 
-                Artisan::call('strategy:static-reward',[
+                Artisan::call('strategy:bollinger-band',[
                     'coin' => $coin->name,
-                    '--timeframe' => TimeframeEnum::EVERY_HOUR->value,
+                    'timeframe' => TimeframeEnum::EVERY_HOUR,
                 ]);
             }
 
-        })->hourlyAt(20);
+            $utBotCoins = Coin::strategy(StrategyEnum::UT_BOT_ALERT)
+                ->status(CoinStatusEnum::AVAILABLE)
+                ->get();
 
-        $schedule->command('orders:check')->everyFiveMinutes();
+
+
+            foreach ($bollingerBandCoins as $coin) {
+
+                Artisan::call('strategy:utbot',[
+                    'coin' => $coin->name,
+                    'timeframe' => TimeframeEnum::EVERY_HOUR,
+                ]);
+            }
+
+        })->hourlyAt(15);
     }
 
     /**

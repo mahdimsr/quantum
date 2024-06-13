@@ -50,9 +50,10 @@ class CoinResource extends Resource
                     ->columnSpan('sm')
                     ->required(),
 
-                Forms\Components\Select::make('strategy_type')
+                Forms\Components\Select::make('strategies')
                     ->options(StrategyEnum::optionCases())
                     ->searchable()
+                    ->multiple()
                     ->preload()
                     ->required()
                     ->columnSpan('md'),

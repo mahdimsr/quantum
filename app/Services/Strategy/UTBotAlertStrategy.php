@@ -35,6 +35,7 @@ class UTBotAlertStrategy
         $this->calculatePosition($this->closeValues, $this->ATRTrailingStop);
         $this->calculateCrossOvers();
         $this->calculateSignal();
+
     }
 
     protected function calculateATRTrailingStop(): array
@@ -139,33 +140,28 @@ class UTBotAlertStrategy
         return UTBotAlertCollection::make($this->candles);
     }
 
-    public function lastPosition(): Candle
+    public function lastSignal(): Candle
     {
-        return $this->candles->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()) and in_array($candle->getMeta()['signal'], ['buy', 'sell']))->last();
+        return $this->getCalculatedCandles()->signals()->lastCandle();
     }
 
-    public function triggeredPositions(): array
+    public function buy(): bool
     {
-        $triggeredPositions = [];
-        $candlesArray = $this->candles->toArray();
+        return $this->lastSignal()->hasBuySignal();
+    }
 
-        foreach ($candlesArray as $key => $candle) {
+    public function sell(): bool
+    {
+        return $this->lastSignal()->hasSellSignal();
+    }
 
-            if ($key > 0) {
+    public function hasRecentlySignal(): bool
+    {
+        $index = $this->getCalculatedCandles()->search(function (Candle $candle) {
 
-                $currentCandle = $candle;
-                $preCandle = $candlesArray[$key - 1];
+            return $candle === $this->lastSignal();
+        });
 
-                if (array_key_exists('order', $currentCandle->getMeta()) and array_key_exists('order', $preCandle->getMeta())) {
-
-                    if ($currentCandle->getMeta()['order'] != $preCandle->getMeta()['order']) {
-
-                        $triggeredPositions[$key] = $currentCandle;
-                    }
-                }
-            }
-        }
-
-        return $triggeredPositions;
+        return ($this->getCalculatedCandles()->count() - $index) <= 3;
     }
 }

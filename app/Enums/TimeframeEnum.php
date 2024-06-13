@@ -18,6 +18,7 @@ enum TimeframeEnum: string
     case DAILY = '1D';
     case TWO_DAYS = '2D';
     case THREE_DAYS = '3D';
+    case WEEKLY = '1W';
 
     public function toCoinexFormat(): string
     {
@@ -31,6 +32,10 @@ enum TimeframeEnum: string
 
         if (Str::endsWith($this->value,'D')){
             return Str::replace('D','day',$this->value);
+        }
+
+        if (Str::endsWith($this->value,'W')){
+            return Str::replace('W','week',$this->value);
         }
 
         return $this->value;
