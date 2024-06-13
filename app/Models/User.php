@@ -31,6 +31,11 @@ class User extends Authenticatable implements FilamentUser
         return self::query()->where('email',$email)->firstOrFail();
     }
 
+    public static function mahdi(): self|Model
+    {
+        return self::query()->where('email','mahdi.msr4@gmail.com')->firstOrFail();
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
