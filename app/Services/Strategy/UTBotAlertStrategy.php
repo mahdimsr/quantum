@@ -144,4 +144,13 @@ class UTBotAlertStrategy
         return $this->getCalculatedCandles()->signals()->lastCandle();
     }
 
+    public function buy(): bool
+    {
+        return $this->lastSignal()->hasBuySignal();
+    }
+
+    public function sell(): bool
+    {
+        return $this->lastSignal()->hasSellSignal();
+    }
 }
