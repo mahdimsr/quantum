@@ -10,4 +10,5 @@ enum StrategyEnum: string
 
     case SIMPLE_BOLLINGER_BAND = 'simple_bollinger_band';
     case UT_BOT_ALERT = 'ut_bot_alert';
+    case SHORT_TREND = 'short_trend';
 }

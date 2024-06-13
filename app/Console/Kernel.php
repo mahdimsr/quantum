@@ -23,27 +23,11 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            $bollingerBandCoins = Coin::strategy(StrategyEnum::SIMPLE_BOLLINGER_BAND)
-                ->status(CoinStatusEnum::AVAILABLE)
-                ->get();
+            $allCoin = Coin::all();
 
-            foreach ($bollingerBandCoins as $coin) {
+            foreach ($allCoin as $coin) {
 
-                Artisan::call('strategy:bollinger-band',[
-                    'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_HOUR->value,
-                ]);
-            }
-
-            $utBotCoins = Coin::strategy(StrategyEnum::UT_BOT_ALERT)
-                ->status(CoinStatusEnum::AVAILABLE)
-                ->get();
-
-
-
-            foreach ($utBotCoins as $coin) {
-
-                Artisan::call('strategy:utbot',[
+                Artisan::call('strategy:short-trend',[
                     'coin' => $coin->name,
                     'timeframe' => TimeframeEnum::EVERY_HOUR->value,
                 ]);
