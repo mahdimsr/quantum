@@ -34,7 +34,7 @@ class Coin extends Model
 
     public function scopeStrategy(Builder $builder, StrategyEnum $strategyEnum)
     {
-        $builder->where('strategy_type', $strategyEnum->value);
+        $builder->whereJsonContains('strategies', $strategyEnum->value);
     }
 
     public function scopeStatus(Builder $builder, CoinStatusEnum $coinStatusEnum)
@@ -42,36 +42,20 @@ class Coin extends Model
         $builder->where('status', $coinStatusEnum->value);
     }
 
-    public function strategies(): Attribute
-    {
-        return Attribute::make(
-            get: function (array $values) {
-
-                $strategies = [];
-
-                foreach ($values as $value) {
-                    $strategies[] = StrategyEnum::from($value);
-                }
-
-                return $strategies;
-            }
-        );
-    }
-
     public function fee(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => Str::of($value)->toFloat(),
+            get: fn(?string $value) => Str::of($value)->toFloat(),
         );
     }
 
     public static function findByName(string $name): Model|self
     {
-        return self::query()->where('name',$name)->firstOrFail();
+        return self::query()->where('name', $name)->firstOrFail();
     }
 
     public function USDTSymbol(): string
     {
-        return $this->name.'USDT';
+        return $this->name . 'USDT';
     }
 }
