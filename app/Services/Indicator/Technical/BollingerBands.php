@@ -8,9 +8,11 @@ class BollingerBands extends IndicatorStructure
 {
     private float $multiplier;
 
-    public function setMultiplier(float $multiplier)
+    public function setMultiplier(float $multiplier): static
     {
         $this->multiplier = $multiplier;
+
+        return $this;
     }
 
     public function run(): array

@@ -17,10 +17,12 @@ class BollingerBandStrategy
     public function __construct(CandleCollection $candles)
     {
         $this->candles = $candles;
-        $bollingerBandsData = (new BollingerBands($candles))->run();
+        $bollingerBandsData = (new BollingerBands($candles, 20))->setMultiplier(2)->run();
 
         $this->lastBollingerbands = collect($bollingerBandsData)->last();
         $this->lastCandle = $candles->lastCandle();
+
+        dd($this->lastBollingerbands, $this->lastCandle);
     }
 
     protected function hasTouchedUpperBand(): bool
