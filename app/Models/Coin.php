@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
  * @property int fee
  * @property CoinStatusEnum status
  * @property int order
- * @property StrategyEnum strategy_type
+ * @property array strategies
  *
  * @method static Builder strategy(StrategyEnum $strategyEnum)
  * @method static Builder status(CoinStatusEnum $coinStatusEnum)
@@ -28,7 +28,7 @@ class Coin extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'strategy_type' => StrategyEnum::class,
+        'strategies' => 'array',
         'status' => CoinStatusEnum::class,
     ];
 
@@ -42,7 +42,23 @@ class Coin extends Model
         $builder->where('status', $coinStatusEnum->value);
     }
 
-    public function fee()
+    public function strategies(): Attribute
+    {
+        return Attribute::make(
+            get: function (array $values) {
+
+                $strategies = [];
+
+                foreach ($values as $value) {
+                    $strategies[] = StrategyEnum::from($value);
+                }
+
+                return $strategies;
+            }
+        );
+    }
+
+    public function fee(): Attribute
     {
         return Attribute::make(
             get: fn(string $value) => Str::of($value)->toFloat(),
