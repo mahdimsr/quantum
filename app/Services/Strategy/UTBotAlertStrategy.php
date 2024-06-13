@@ -139,33 +139,9 @@ class UTBotAlertStrategy
         return UTBotAlertCollection::make($this->candles);
     }
 
-    public function lastPosition(): Candle
+    public function lastSignal(): Candle
     {
-        return $this->candles->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()) and in_array($candle->getMeta()['signal'], ['buy', 'sell']))->last();
+        return $this->getCalculatedCandles()->signals()->lastCandle();
     }
 
-    public function triggeredPositions(): array
-    {
-        $triggeredPositions = [];
-        $candlesArray = $this->candles->toArray();
-
-        foreach ($candlesArray as $key => $candle) {
-
-            if ($key > 0) {
-
-                $currentCandle = $candle;
-                $preCandle = $candlesArray[$key - 1];
-
-                if (array_key_exists('order', $currentCandle->getMeta()) and array_key_exists('order', $preCandle->getMeta())) {
-
-                    if ($currentCandle->getMeta()['order'] != $preCandle->getMeta()['order']) {
-
-                        $triggeredPositions[$key] = $currentCandle;
-                    }
-                }
-            }
-        }
-
-        return $triggeredPositions;
-    }
 }
