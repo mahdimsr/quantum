@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
 
                 Artisan::call('strategy:bollinger-band',[
                     'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_HOUR,
+                    'timeframe' => TimeframeEnum::EVERY_HOUR->value,
                 ]);
             }
 
@@ -41,11 +41,11 @@ class Kernel extends ConsoleKernel
 
 
 
-            foreach ($bollingerBandCoins as $coin) {
+            foreach ($utBotCoins as $coin) {
 
                 Artisan::call('strategy:utbot',[
                     'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_HOUR,
+                    'timeframe' => TimeframeEnum::EVERY_HOUR->value,
                 ]);
             }
 
