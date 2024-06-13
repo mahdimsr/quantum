@@ -21,8 +21,6 @@ class BollingerBandStrategy
 
         $this->lastBollingerbands = collect($bollingerBandsData)->last();
         $this->lastCandle = $candles->lastCandle();
-
-        dd($this->lastBollingerbands, $this->lastCandle);
     }
 
     protected function hasTouchedUpperBand(): bool
