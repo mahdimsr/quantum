@@ -16,7 +16,7 @@ return new class extends Migration
             $table->tinyInteger('status')->nullable()->after('leverage');
             $table->string('asset')->nullable()->after('status');
             $table->integer('order')->nullable()->after('asset');
-            $table->tinyInteger('strategy_type')->nullable()->after('order');
+            $table->text('strategy')->nullable()->after('order');
         });
     }
 
