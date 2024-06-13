@@ -35,6 +35,7 @@ class UTBotAlertStrategy
         $this->calculatePosition($this->closeValues, $this->ATRTrailingStop);
         $this->calculateCrossOvers();
         $this->calculateSignal();
+
     }
 
     protected function calculateATRTrailingStop(): array
@@ -152,5 +153,15 @@ class UTBotAlertStrategy
     public function sell(): bool
     {
         return $this->lastSignal()->hasSellSignal();
+    }
+
+    public function hasRecentlySignal(): bool
+    {
+        $index = $this->getCalculatedCandles()->search(function (Candle $candle) {
+
+            return $candle === $this->lastSignal();
+        });
+
+        return ($this->getCalculatedCandles()->count() - $index) <= 3;
     }
 }

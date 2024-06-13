@@ -30,12 +30,12 @@ class UTBotStrategyCommand extends Command
 
         $utbotStrategy = new UTBotAlertStrategy($candlesResponse->data());
 
-        if ($utbotStrategy->buy()) {
+        if ($utbotStrategy->buy() and $utbotStrategy->hasRecentlySignal()) {
 
             Notification::send(User::mahdi(), new SignalNotification($this->coin->USDTSymbol(),'buy',StrategyEnum::UT_BOT_ALERT->value));
         }
 
-        if ($utbotStrategy->sell()) {
+        if ($utbotStrategy->sell() and $utbotStrategy->hasRecentlySignal()) {
 
             Notification::send(User::mahdi(), new SignalNotification($this->coin->USDTSymbol(),'sell',StrategyEnum::UT_BOT_ALERT->value));
         }
