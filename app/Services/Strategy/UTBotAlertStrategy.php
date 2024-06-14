@@ -18,7 +18,7 @@ class UTBotAlertStrategy
     protected array $ema;
     protected array $ATRTrailingStop;
 
-    public function __construct(CandleCollection $candles, int $multiplier = 1)
+    public function __construct(CandleCollection $candles, int $sensitivity = 1, int $atrPeriod = 10)
     {
         $this->candles = $candles;
 
@@ -26,9 +26,9 @@ class UTBotAlertStrategy
         $this->highValues = $candles->highs()->toArray();
         $this->lowsValues = $candles->lows()->toArray();
 
-        $atr = Indicator::averageTrueRange($this->highValues, $this->lowsValues, $this->closeValues, 10);
+        $atr = Indicator::averageTrueRange($this->highValues, $this->lowsValues, $this->closeValues, $atrPeriod);
 
-        $this->nLoss = collect($atr)->map(fn($atrValue) => $atrValue * 1)->toArray();
+        $this->nLoss = collect($atr)->map(fn($atrValue) => $atrValue * $sensitivity)->toArray();
 
 
         $this->ATRTrailingStop = $this->calculateATRTrailingStop();
