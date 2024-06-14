@@ -28,7 +28,7 @@ class UTBotStrategyCommand extends Command
 
         $candlesResponse = Exchange::candles($this->coin->USDTSymbol(),$timeframe->toCoinexFormat());
 
-        $utbotStrategy = new UTBotAlertStrategy($candlesResponse->data());
+        $utbotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 20);
 
         if ($utbotStrategy->buy() and $utbotStrategy->hasRecentlySignal()) {
 
