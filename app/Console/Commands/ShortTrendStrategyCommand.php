@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Notification;
 
 class ShortTrendStrategyCommand extends Command
 {
-    protected $signature = 'strategy:short-trend {coin} {--timeframe}';
+    protected $signature = 'strategy:short-trend {coin} {timeframe=1h}';
 
     protected $description = 'Determine trend using ut-bot and enter by approve with bollinger-band';
 
