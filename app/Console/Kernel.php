@@ -29,11 +29,19 @@ class Kernel extends ConsoleKernel
 
                 Artisan::call('strategy:short-trend',[
                     'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_HOUR->value,
+                    'timeframe' => TimeframeEnum::EVERY_FOUR_HOURS->value,
                 ]);
             }
 
-        })->hourlyAt(15);
+            foreach ($allCoin as $coin) {
+
+                Artisan::call('strategy:utbot',[
+                    'coin' => $coin->name,
+                    'timeframe' => TimeframeEnum::EVERY_FOUR_HOURS->value,
+                ]);
+            }
+
+        })->everyFourHours();
     }
 
     /**
