@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,9 +12,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-use Modules\CCXT\ccxt;
-use Modules\CCXT\coinex;
 
 Route::get('/', function () {
 
