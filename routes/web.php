@@ -15,5 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
+    $bingx = new \App\Services\Exchange\Bingx\BingXService();
+
+    dd($bingx->candles('BTC-USDT',100, '1h'));
+
     return view('welcome');
 });

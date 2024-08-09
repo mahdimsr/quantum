@@ -1,7 +1,5 @@
 <?php
 
-namespace ccxt;
-
-require_once PATH_TO_CCXT . 'ExchangeError.php';
+namespace Modules\ccxt;
 
 class AuthenticationError extends ExchangeError {};

@@ -21,6 +21,10 @@ return [
             'access_id' => env('EXCHANGE_COINEX_ACCESS_ID', null),
             'secret_key' => env('EXCHANGE_COINEX_SECRET_KEY', null),
         ],
+        'bingx' => [
+            'api_key' => env('EXCHANGE_BINGX_API_KEY', null),
+            'secret_key' => env('EXCHANGE_BINGX_SECRET_KEY', null),
+        ],
     ]
 
 ];
