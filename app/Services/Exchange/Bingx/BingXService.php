@@ -3,12 +3,16 @@
 namespace App\Services\Exchange\Bingx;
 
 use App\Services\Exchange\Bingx\Response\CandleResponseAdapter;
+use App\Services\Exchange\Bingx\Response\CoinResponseAdapter;
 use App\Services\Exchange\Requests\CandleRequestContract;
+use App\Services\Exchange\Requests\CoinsRequestContract;
+use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\CoinsResponseContract;
 use Modules\CCXT\bingx;
 use Illuminate\Support\Facades\Config;
 
-class BingXService implements CandleRequestContract
+class BingXService implements CandleRequestContract, CoinsRequestContract
 {
     private bingx $bingxClient;
 
@@ -29,5 +33,12 @@ class BingXService implements CandleRequestContract
         ]);
 
         return new CandleResponseAdapter($data);
+    }
+
+    public function coins(): CoinsResponseContract
+    {
+        $data = $this->bingxClient->swap_v2_public_get_quote_contracts();
+
+        return new CoinResponseAdapter($data);
     }
 }
