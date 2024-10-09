@@ -3,6 +3,7 @@
 namespace App\Services\Exchange\Facade;
 
 use App\Enums\PriceTypeEnum;
+use App\Services\Exchange\Bingx\BingXService;
 use App\Services\Exchange\Coinex\CoinexService;
 use App\Services\Exchange\Coinex\Responses\OrderListResponseAdapter;
 use App\Services\Exchange\Repository\Order;
@@ -11,12 +12,14 @@ use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\CoinsResponseContract;
 use App\Services\Exchange\Responses\OrderResponseContract;
 use App\Services\Exchange\Responses\PositionResponseContract;
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static CandleResponseContract candles(string $symbol, string $period, string $limit = null)
+ * @method static CoinsResponseContract coins()
  * @method static OrderListResponseAdapter orders(string $marketType)
  * @method static OrderResponseContract placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price)
  * @method static AdjustPositionLeverageContract adjustPositionLeverage(string $symbol, string $marketType, string $marginMode, int $leverage)
@@ -32,6 +35,6 @@ class Exchange extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return CoinexService::class;
+        return BingXService::class;
     }
 }
