@@ -3,7 +3,7 @@
 namespace App\Services\Exchange\Requests;
 
 use App\Services\Exchange\Enums\SideEnum;
-use App\Services\Exchange\Enums\OrderExecutionEnum;
+use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
 use App\Services\Exchange\Responses\AllOrdersResponseContract;

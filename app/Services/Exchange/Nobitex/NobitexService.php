@@ -3,7 +3,7 @@
 namespace App\Services\Exchange\Nobitex;
 
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
-use App\Services\Exchange\Enums\OrderExecutionEnum;
+use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Nobitex\Responses\AllOrdersResponse;
 use App\Services\Exchange\Nobitex\Responses\OHLCListResponse;
@@ -93,13 +93,13 @@ class NobitexService implements OrderRequestContract, MarketStatsRequestContract
      * @throws GuzzleException
      */
     public function setOrder(
-        SideEnum           $orderBuyEnum,
-        OrderExecutionEnum $orderExecutionEnum,
-        string             $srcCurrency,
-        string             $dstCurrency,
-        string             $amount,
-        string             $price,
-        string             $clientOrderId
+        SideEnum $orderBuyEnum,
+        TypeEnum $orderExecutionEnum,
+        string   $srcCurrency,
+        string   $dstCurrency,
+        string   $amount,
+        string   $price,
+        string   $clientOrderId
     ): SetOrderResponseContract {
         $request = $this->request('POST', 'market/orders/add', null, [
             'type'          => $orderBuyEnum->value,

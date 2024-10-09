@@ -5,6 +5,7 @@ namespace App\Services\Exchange\Bingx;
 use App\Services\Exchange\Bingx\Response\CandleResponseAdapter;
 use App\Services\Exchange\Bingx\Response\CoinResponseAdapter;
 use App\Services\Exchange\BingX\Response\SetLeverageResponseAdapter;
+use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\CoinsRequestContract;
 use App\Services\Exchange\Requests\SetLeverageRequestContract;
@@ -46,11 +47,11 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
         return new CoinResponseAdapter($data);
     }
 
-    public function setLeverage(string $symbol, string $side, string $leverage): SetLeverageResponseContract
+    public function setLeverage(string $symbol, SideEnum $side, string $leverage): SetLeverageResponseContract
     {
         $data = $this->bingxClient->swap_v2_private_post_trade_leverage([
             'symbol' => $symbol,
-            'side' => Str::of($side)->upper()->toString(),
+            'side' => Str::of($side->value)->upper()->toString(),
             'leverage' => $leverage,
             'timestamp' => now()->timestamp
         ]);
