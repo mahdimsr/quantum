@@ -7,6 +7,7 @@ use App\Services\Exchange\Bingx\BingXService;
 use App\Services\Exchange\Coinex\CoinexService;
 use App\Services\Exchange\Coinex\Responses\OrderListResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static CoinsResponseContract coins()
  * @method static SetLeverageResponseContract setLeverage(string $symbol, SideEnum $side, string $leverage)
  * @method static OrderListResponseAdapter orders(string $marketType)
- * @method static OrderResponseContract placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price)
+ * @method static OrderResponseContract setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price)
  * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionLevelCollection positionLevel(string $symbol)

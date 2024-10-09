@@ -14,9 +14,5 @@ use App\Services\Exchange\Responses\SetOrderResponseContract;
 
 interface OrderRequestContract
 {
-    public function orders(string $marketType): ?OrderListResponseContract;
-
-    public function placeOrder(string $symbol, string $marketType,string $side, string $type, float $amount, float $price): ?OrderResponseContract;
-
-    public function positionLevel(string $symbol): ?PositionLevelCollection;
+    public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price): ?OrderResponseContract;
 }
