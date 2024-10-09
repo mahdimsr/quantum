@@ -3,7 +3,7 @@
 namespace App\Services\Exchange\Coinex;
 
 use App\Enums\PriceTypeEnum;
-use App\Services\Exchange\Coinex\Responses\AdjustPositionLeverageResponse;
+use App\Services\Exchange\Coinex\Responses\SetLeverageResponseResponse;
 use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\FuturesAssetResponse;
@@ -17,7 +17,7 @@ use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\PositionRequestContract;
-use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
+use App\Services\Exchange\Responses\SetLeverageResponseContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
@@ -196,7 +196,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function adjustPositionLeverage(string $symbol, string $marketType, string $marginMode, int $leverage): ?AdjustPositionLeverageContract
+    public function adjustPositionLeverage(string $symbol, string $marketType, string $marginMode, int $leverage): ?SetLeverageResponseContract
     {
         try {
 
@@ -208,7 +208,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
                     'leverage'    => $leverage,
                 ]);
 
-            return new AdjustPositionLeverageResponse($data);
+            return new SetLeverageResponseResponse($data);
 
         } catch (\Exception $e) {
 
