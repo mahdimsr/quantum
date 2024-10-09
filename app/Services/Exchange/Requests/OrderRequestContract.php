@@ -2,7 +2,7 @@
 
 namespace App\Services\Exchange\Requests;
 
-use App\Services\Exchange\Enums\OrderTypeEnum;
+use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\OrderExecutionEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;

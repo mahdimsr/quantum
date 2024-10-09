@@ -2,7 +2,7 @@
 
 namespace App\Services\Exchange\Nobitex\Responses;
 
-use App\Services\Exchange\Enums\OrderTypeEnum;
+use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Responses\SetOrderResponseContract;
 
 class SetOrderResponse implements SetOrderResponseContract
@@ -15,9 +15,9 @@ class SetOrderResponse implements SetOrderResponseContract
     }
 
 
-    public function type(): OrderTypeEnum
+    public function type(): SideEnum
     {
-        return OrderTypeEnum::from($this->response['order']['type']);
+        return SideEnum::from($this->response['order']['type']);
     }
 
     public function srcCurrency(): string
