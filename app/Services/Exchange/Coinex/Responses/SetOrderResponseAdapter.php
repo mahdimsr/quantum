@@ -3,9 +3,9 @@
 namespace App\Services\Exchange\Coinex\Responses;
 
 use App\Services\Exchange\Repository\Order;
-use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\SetOrderResponseContract;
 
-class OrderResponseAdapter extends ResponseAdapter implements OrderResponseContract
+class SetOrderResponseAdapter extends ResponseAdapter implements SetOrderResponseContract
 {
 
     public function order(): ?Order

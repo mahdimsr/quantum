@@ -5,19 +5,23 @@ namespace App\Services\Exchange\Bingx;
 use App\Services\Exchange\Bingx\Response\CandleResponseAdapter;
 use App\Services\Exchange\Bingx\Response\CoinResponseAdapter;
 use App\Services\Exchange\BingX\Response\SetLeverageResponseAdapter;
+use App\Services\Exchange\Bingx\Response\SetOrderResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\CoinsRequestContract;
+use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\CoinsResponseContract;
+use App\Services\Exchange\Responses\SetOrderResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
 use Illuminate\Support\Str;
 use Modules\CCXT\bingx;
 use Illuminate\Support\Facades\Config;
 
-class BingXService implements CandleRequestContract, CoinsRequestContract, SetLeverageRequestContract
+class BingXService implements CandleRequestContract, CoinsRequestContract, SetLeverageRequestContract, OrderRequestContract
 {
     private bingx $bingxClient;
 
@@ -57,5 +61,20 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
         ]);
 
         return new SetLeverageResponseAdapter($data);
+    }
+
+    public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price): ?SetOrderResponseContract
+    {
+        $data = $this->bingxClient->swap_v2_private_post_trade_order([
+            'symbol' => $symbol,
+            'type' => Str::of($typeEnum->value)->upper()->toString(),
+            'side' => Str::of($sideEnum->value)->upper()->toString(),
+            'positionSide' => Str::of($positionSide->value)->upper()->toString(),
+            'quantity' => $amount,
+            'price' => $price,
+        ]);
+
+
+        return new SetOrderResponseAdapter($data);
     }
 }

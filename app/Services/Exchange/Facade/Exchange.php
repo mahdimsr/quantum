@@ -15,7 +15,7 @@ use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\CoinsResponseContract;
-use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\SetOrderResponseContract;
 use App\Services\Exchange\Responses\PositionResponseContract;
 use Illuminate\Support\Facades\Facade;
 
@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static CoinsResponseContract coins()
  * @method static SetLeverageResponseContract setLeverage(string $symbol, SideEnum $side, string $leverage)
  * @method static OrderListResponseAdapter orders(string $marketType)
- * @method static OrderResponseContract setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price)
+ * @method static SetOrderResponseContract setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price)
  * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionLevelCollection positionLevel(string $symbol)

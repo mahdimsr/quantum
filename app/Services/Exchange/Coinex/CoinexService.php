@@ -8,7 +8,7 @@ use App\Services\Exchange\Coinex\Responses\AdjustPositionMarginResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\FuturesAssetResponse;
 use App\Services\Exchange\Coinex\Responses\OrderListResponseAdapter;
-use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\SetOrderResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\PositionResponseAdapter;
 use App\Services\Exchange\Enums\HttpMethodEnum;
 use App\Services\Exchange\Repository\Order;
@@ -23,7 +23,7 @@ use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\OrderListResponseContract;
-use App\Services\Exchange\Responses\OrderResponseContract;
+use App\Services\Exchange\Responses\SetOrderResponseContract;
 use App\Services\Exchange\Responses\PositionResponseContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -169,7 +169,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
         }
     }
 
-    public function placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price): ?OrderResponseContract
+    public function placeOrder(string $symbol, string $marketType, string $side, string $type, float $amount, float $price): ?SetOrderResponseContract
     {
         try {
 
@@ -186,7 +186,7 @@ class CoinexService implements CandleRequestContract, OrderRequestContract, Posi
 
             $data = $this->coinexClient->v2_private_post_futures_order($params);
 
-            return new OrderResponseAdapter($data);
+            return new SetOrderResponseAdapter($data);
 
         } catch (\Exception $e) {
 
