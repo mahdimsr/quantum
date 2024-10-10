@@ -73,6 +73,7 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
             'positionSide' => Str::of($positionSide->value)->upper()->toString(),
             'quantity' => $amount,
             'price' => $price,
+            'timestamp' => now()->timestamp,
         ];
 
         if ($client_id) {
