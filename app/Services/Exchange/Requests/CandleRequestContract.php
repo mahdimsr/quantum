@@ -6,5 +6,5 @@ use App\Services\Exchange\Responses\CandleResponseContract;
 
 interface CandleRequestContract
 {
-    public function candles(string $symbol, string $limit, string $period): CandleResponseContract;
+    public function candles(string $symbol, string $period, string $limit = null): CandleResponseContract;
 }
