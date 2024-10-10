@@ -22,7 +22,13 @@ Route::get('/', function () {
 
     $amount = \App\Services\Order\Calculate::maxOrderAmount($price,$asset, 10);
 
-    dd(\App\Services\Exchange\Facade\Exchange::setOrder('FTM-USDT', \App\Services\Exchange\Enums\TypeEnum::LIMIT, \App\Services\Exchange\Enums\SideEnum::BUY, \App\Services\Exchange\Enums\SideEnum::LONG, $amount, $price));
+    $target = \App\Services\Exchange\Repository\Target::create(\App\Services\Exchange\Enums\TypeEnum::TAKE_PROFIT->value,$price +1, $price+1);
+    $stopLose = \App\Services\Exchange\Repository\Target::create(\App\Services\Exchange\Enums\TypeEnum::STOP_MARKET->value,$price -0.05, $price -0.05);
+
+
+    $setOrderResponse =\App\Services\Exchange\Facade\Exchange::setOrder('FTM-USDT', \App\Services\Exchange\Enums\TypeEnum::LIMIT, \App\Services\Exchange\Enums\SideEnum::BUY, \App\Services\Exchange\Enums\SideEnum::LONG, $amount, $price, null, $target, $stopLose);
+
+    dd($setOrderResponse->order());
 
     return view('welcome');
 });
