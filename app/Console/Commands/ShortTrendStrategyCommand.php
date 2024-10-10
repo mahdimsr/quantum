@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Enums\StrategyEnum;
-use App\Enums\TimeframeEnum;
 use App\Models\Coin;
 use App\Models\User;
 use App\Notifications\SignalNotification;
+use App\Services\Exchange\Enums\TimeframeEnum;
 use App\Services\Exchange\Facade\Exchange;
 use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Strategy\BollingerBandStrategy;

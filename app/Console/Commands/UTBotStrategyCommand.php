@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Enums\StrategyEnum;
-use App\Enums\TimeframeEnum;
 use App\Models\Coin;
 use App\Models\User;
 use App\Notifications\SignalNotification;
+use App\Services\Exchange\Enums\TimeframeEnum;
 use App\Services\Exchange\Facade\Exchange;
 use App\Services\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
@@ -26,7 +26,7 @@ class UTBotStrategyCommand extends Command
         $this->coin = Coin::findByName($this->argument('coin'));
         $timeframe = TimeframeEnum::from($this->argument('timeframe'));
 
-        $candlesResponse = Exchange::candles($this->coin->USDTSymbol(),$timeframe->toCoinexFormat());
+        $candlesResponse = Exchange::candles($this->coin->USDTSymbol(),$timeframe->toBingXFormat());
 
         $utbotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 20);
 
