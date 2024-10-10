@@ -15,7 +15,7 @@ class CandleResponseAdapter extends BingXResponse implements CandleResponseContr
 
         $data = collect($data)->map(function ($item) {
 
-            $item['time'] = $item['openTime'];
+            $item['time'] = $item['closeTime'];
 
             return Candle::fromArray($item);
         });

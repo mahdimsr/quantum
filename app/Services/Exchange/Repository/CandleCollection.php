@@ -33,7 +33,7 @@ class CandleCollection extends Collection
 
     public function lastCandle(): Candle
     {
-        return $this->last();
+        return $this->first();
     }
 
     public function mergeDataInMeta(array $data, $key): CandleCollection
