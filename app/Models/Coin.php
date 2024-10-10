@@ -54,8 +54,13 @@ class Coin extends Model
         return self::query()->where('name', $name)->firstOrFail();
     }
 
-    public function USDTSymbol(): string
+    public function USDTSymbol(?string $separator = null): string
     {
+        if ($separator) {
+
+            return $this->name . $separator . 'USDT';
+        }
+
         return $this->name . 'USDT';
     }
 }
