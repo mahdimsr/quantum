@@ -8,6 +8,7 @@ use App\Services\Exchange\BingX\Response\SetLeverageResponseAdapter;
 use App\Services\Exchange\Bingx\Response\SetOrderResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
+use App\Services\Exchange\Repository\Target;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\CoinsRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
@@ -63,17 +64,35 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
         return new SetLeverageResponseAdapter($data);
     }
 
-    public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price): ?SetOrderResponseContract
+    public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null): ?SetOrderResponseContract
     {
-        $data = $this->bingxClient->swap_v2_private_post_trade_order([
+        $params = [
             'symbol' => $symbol,
             'type' => Str::of($typeEnum->value)->upper()->toString(),
             'side' => Str::of($sideEnum->value)->upper()->toString(),
             'positionSide' => Str::of($positionSide->value)->upper()->toString(),
             'quantity' => $amount,
             'price' => $price,
-        ]);
+        ];
 
+        if ($client_id) {
+            $params['clientOrderId'] = $client_id;
+        }
+
+        if ($takeProfit) {
+            $params['takeProfit'] = json_encode($takeProfit->toArray());
+        }
+
+        if ($stopLoss) {
+            $params['stopLoss'] = json_encode($stopLoss->toArray());
+        }
+
+        $data = $this->bingxClient->swap_v2_private_post_trade_order($params);
+
+        if (is_string($data)) {
+
+            $data = json_decode($data, true);
+        }
 
         return new SetOrderResponseAdapter($data);
     }

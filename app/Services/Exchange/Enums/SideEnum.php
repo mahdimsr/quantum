@@ -5,8 +5,8 @@ namespace App\Services\Exchange\Enums;
 
 enum SideEnum: string
 {
-    case LONG = 'long';
-    case BUY = 'buy';
-    case SELL = 'sell';
-    case SHORT = 'short';
+    case LONG = 'LONG';
+    case BUY = 'BUY';
+    case SELL = 'SELL';
+    case SHORT = 'SHORT';
 }

@@ -26,6 +26,16 @@ class SetOrderResponseAdapter implements SetOrderResponseContract
 
     public function order(): ?Order
     {
-        dd($this->data['data']['order']);
+        $orderResponse = $this->data['data']['order'];
+
+        return Order::create(
+            $orderResponse['symbol'],
+            $orderResponse['side'],
+            $orderResponse['type'],
+            $orderResponse['price'],
+            $orderResponse['quantity'],
+            $orderResponse['clientOrderID'],
+            $orderResponse['orderID'],
+        );
     }
 }
