@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('client_id')->nullable();
+            $table->string('client_id')->unique()->nullable();
             $table->string('exchange')->nullable();
             $table->string('symbol');
             $table->string('coin');
