@@ -7,15 +7,23 @@ use App\Services\Indicator\Facade\Indicator;
 
 class LNLTrendStrategy
 {
-    private LNLTrendCollection $LNLTrendCollection;
+    private CandleCollection $candleCollection;
+    private ?LNLTrendCollection $LNLTrendCollection;
 
     public function __construct(CandleCollection $candleCollection)
     {
-        $this->LNLTrendCollection = LNLTrendCollection::make($candleCollection);
+        $this->candleCollection = $candleCollection;
+
+        $this->LNLTrendCollection = $this->collection();
     }
 
     public function collection(): LNLTrendCollection
     {
-        return $this->LNLTrendCollection;
+        if (isset($this->LNLTrendCollection) and $this->LNLTrendCollection) {
+
+            return $this->LNLTrendCollection;
+        }
+
+        return new LNLTrendCollection($this->candleCollection);
     }
 }
