@@ -93,15 +93,10 @@ class LNLTrendCollection extends CandleCollection
 
                 $candle->setMeta(['lnl-trend-cloud' => 'bullish']);
 
-            } elseif ($isDown) {
-
-                $candle->setMeta(['lnl-trend-cloud' => 'bearish']);
-
             } else {
 
-                $candle->setMeta(['lnl-trend-cloud' => 'none']);
+                $candle->setMeta(['lnl-trend-cloud' => 'bearish']);
             }
-
 
         });
     }
