@@ -6,6 +6,7 @@ use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\Exceptions\RSIException;
 use App\Services\Indicator\Technical\BollingerBands;
 use App\Services\Indicator\Technical\EMA;
+use App\Services\Indicator\Technical\EMASimpleValues;
 use App\Services\Indicator\Technical\MACD;
 use App\Services\Indicator\Technical\RSI;
 use App\Services\Indicator\Technical\SMA;
@@ -31,6 +32,16 @@ class IndicatorService
     public function EMA(CandleCollection $candlesCollection, int $period = 9): array
     {
         $ema = new EMA($candlesCollection,$period);
+
+        return $ema->run();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function EMAWithSimpleValues(array $values, int $period = 9): array
+    {
+        $ema = new EMASimpleValues($values, $period);
 
         return $ema->run();
     }

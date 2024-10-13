@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static float|int RSI(Collection $candlesCollection, int $period = 14)
  * @method static array EMA(Collection $candlesCollection, int $period = 9)
+ * @method static array EMAWithSimpleValues(array $values, int $period = 9)
  * @method static array SMA(Collection $candlesCollection, int $period = 7)
  * @method static array StandardDeviation(Collection $candlesCollection, int $period = 5)
- * @method static array BollingerBands(Collection $candlesCollection, int $period = 20 , float $multiplier = 2)
+ * @method static array BollingerBands(Collection $candlesCollection, int $period = 20, float $multiplier = 2)
  * @method static array MACD(Collection $candlesCollection, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9)
- * @method static array superTrend(array $highPriceArray,array $lowPriceArray, array $closePriceArray, int $period = 14, float $multiplier = 1.5)
+ * @method static array superTrend(array $highPriceArray, array $lowPriceArray, array $closePriceArray, int $period = 14, float $multiplier = 1.5)
  */
 class Indicator extends Facade
 {
@@ -22,10 +23,14 @@ class Indicator extends Facade
         return IndicatorService::class;
     }
 
-    public static function averageTrueRange(array $high, array $low, array $close, int $length = 14): array
+    public static function trueRange(array $high, array $low, array $close, int $length = 14): array
     {
         $trueRange = [];
-        $averageTrueRange = [];
+
+        $trueRange[0] = max($high[0] - $low[0],
+                            $high[0],
+                            $low[0]
+        );
 
         for ($i = 1; $i < count($close); $i++) {
             $trueRange[] = max(
@@ -35,7 +40,17 @@ class Indicator extends Facade
             );
         }
 
-        $averageTrueRange[0] = array_sum(array_slice($trueRange, 0, $length)) / $length;
+        return $trueRange;
+    }
+
+    public static function averageTrueRange(array $high, array $low, array $close, int $length = 14): array
+    {
+        $trueRange        = [];
+        $averageTrueRange = [];
+
+        $trueRange = self::trueRange($high, $low, $close, $length);
+
+        $averageTrueRange[0] =$trueRange[0];
 
         for ($i = 1; $i < count($trueRange); $i++) {
             $averageTrueRange[$i] = ($averageTrueRange[$i - 1] * ($length - 1) + $trueRange[$i]) / $length;
