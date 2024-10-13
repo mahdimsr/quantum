@@ -8,7 +8,7 @@ class CandleCollection extends Collection
 {
     public function highs(): Collection
     {
-        return $this->map(fn(Candle $candle) => $candle->getHigh());
+        return $this->map(fn(Candle $candle) => $candle->getHigh())->reverse()->values();
     }
 
     public function maxHigh(): mixed
@@ -18,7 +18,7 @@ class CandleCollection extends Collection
 
     public function lows(): Collection
     {
-        return $this->map(fn(Candle $candle) => $candle->getLow());
+        return $this->map(fn(Candle $candle) => $candle->getLow())->reverse()->values();
     }
 
     public function minLow(): mixed
@@ -28,7 +28,7 @@ class CandleCollection extends Collection
 
     public function closes(): Collection
     {
-        return $this->map(fn(Candle $candle) => $candle->getClose());
+        return $this->map(fn(Candle $candle) => $candle->getClose())->reverse()->values();
     }
 
     public function lastCandle(): Candle
