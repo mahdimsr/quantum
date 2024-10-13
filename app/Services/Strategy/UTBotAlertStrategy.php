@@ -26,6 +26,8 @@ class UTBotAlertStrategy
         $this->candles = $candles;
         $this->sensitivity = $sensitivity;
         $this->atrPeriod = $atrPeriod;
+
+        $this->UTBotAlertCollection = $this->collection();
     }
 
     public function collection(): ?UTBotAlertCollection
@@ -36,6 +38,21 @@ class UTBotAlertStrategy
         }
 
         return new UTBotAlertCollection($this->candles, $this->sensitivity, $this->atrPeriod);
+    }
+
+    public function lastSignalCandle(): Candle
+    {
+        return $this->UTBotAlertCollection->lastSignal();
+    }
+
+    public function isBuy(): bool
+    {
+        return $this->lastSignalCandle()->getMeta()['signal'] == 'buy';
+    }
+
+    public function isSell(): bool
+    {
+        return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
     }
 
 }

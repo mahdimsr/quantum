@@ -31,6 +31,11 @@ class UTBotAlertCollection extends CandleCollection
         $this->calculateSignal();
     }
 
+    public function lastSignal(): Candle
+    {
+        return $this->candleCollection->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()))->first();
+    }
+
     private function calculateAverageTrueRange(): void
     {
         $highs = $this->candleCollection->highs()->toArray();
@@ -125,7 +130,7 @@ class UTBotAlertCollection extends CandleCollection
         }
     }
 
-    public function crossOvers(): CandleCollection
+    private function crossOvers(): CandleCollection
     {
         return $this->candleCollection->filter(fn(Candle $candle) => array_key_exists('cross-over', $candle->getMeta()));
     }
