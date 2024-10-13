@@ -23,22 +23,22 @@ class Indicator extends Facade
         return IndicatorService::class;
     }
 
-    public static function trueRange(array $high, array $low, array $close, int $length = 14): array
+    public static function trueRange(array $high, array $low, array $close): array
     {
         $trueRange = [];
+        $count     = count($high) - 1;
 
-        $trueRange[0] = max($high[0] - $low[0],
-                            $high[0],
-                            $low[0]
-        );
 
-        for ($i = 1; $i < count($close); $i++) {
+        for ($i = 0; $i < $count; $i++) {
+
             $trueRange[] = max(
                 $high[$i] - $low[$i],
-                abs($high[$i] - $close[$i - 1]),
-                abs($low[$i] - $close[$i - 1])
+                abs($high[$i] - $close[$i + 1]),
+                abs($low[$i] - $close[$i + 1])
             );
         }
+
+        $trueRange[] = $high[$count] - $low[$count];
 
         return $trueRange;
     }
@@ -47,17 +47,25 @@ class Indicator extends Facade
     {
         $trueRange        = [];
         $averageTrueRange = [];
+        $alpha = 1/$length;
 
-        $trueRange = self::trueRange($high, $low, $close, $length);
+        $trueRange = self::trueRange($high, $low, $close);
 
-        $averageTrueRange[0] =$trueRange[0];
+        $count = count($trueRange) - 1;
 
-        for ($i = 1; $i < count($trueRange); $i++) {
-            $averageTrueRange[$i] = ($averageTrueRange[$i - 1] * ($length - 1) + $trueRange[$i]) / $length;
-//            $averageTrueRange[$i] = array_sum(array_slice($trueRange, $i, $length)) / $length;
+        $averageTrueRange[0] = $trueRange[$count];
+
+        for ($i = 1; $i <= $count; $i++) {
+
+//            $averageTrueRange[$i] = ($averageTrueRange[$i - 1] * ($length - 1) + $trueRange[$i]) / $length;
+            $value = $alpha * $trueRange[$count - $i] + (1- $alpha) * $averageTrueRange[$i - 1];
+
+            $value = round($value,4);
+
+            $averageTrueRange[$i] = $value;
         }
 
-        return $averageTrueRange;
+        return array_reverse($averageTrueRange);
     }
 
     public static function crossover(array $a, array $b): array
@@ -74,7 +82,7 @@ class Indicator extends Facade
         }
 
         // For the first element, there's no previous element to compare to, so we can't determine crossover
-        array_unshift($result, false);
+//        array_unshift($result, false);
 
         return $result;
     }

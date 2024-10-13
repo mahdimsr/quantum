@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
 
     $bingx = new \App\Services\Exchange\Bingx\BingXService();
+    $candlesResponse = $bingx->candles('FTM-USDT',100, '30m');
+
+    $utbotStrategy = new \App\Services\Strategy\UTBotAlertStrategy($candlesResponse->data(), 1, 10);
+
+    dd($utbotStrategy->collection());
 
     $price = 0.6700;
     $asset = $price * 15;
