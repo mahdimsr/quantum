@@ -1,4 +1,5 @@
-<?php
+<?php  #items: array:500 [▶]
+
 
 namespace App\Services\Exchange\Bingx\Response;
 
@@ -14,8 +15,6 @@ class CandleResponseAdapter extends BingXResponse implements CandleResponseContr
 
 
         $data = collect($data)->map(function ($item) {
-
-            $item['time'] = $item['closeTime'];
 
             return Candle::fromArray($item);
         });

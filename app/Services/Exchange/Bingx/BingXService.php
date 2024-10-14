@@ -36,7 +36,7 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
 
     public function candles(string $symbol, string $period, string $limit = null): CandleResponseContract
     {
-        $data = $this->bingxClient->swap_v1_private_get_market_markpriceklines([
+        $data = $this->bingxClient->swap_v3_public_get_quote_klines([
             'symbol' => $symbol,
             'limit' => $limit,
             'interval' => $period
