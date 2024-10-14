@@ -2,6 +2,7 @@
 
 namespace App\Services\Indicator\Facade;
 
+use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\IndicatorService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array BollingerBands(Collection $candlesCollection, int $period = 20, float $multiplier = 2)
  * @method static array MACD(Collection $candlesCollection, int $shortPeriod = 12, int $longPeriod = 26, int $signalPeriod = 9)
  * @method static array superTrend(array $highPriceArray, array $lowPriceArray, array $closePriceArray, int $period = 14, float $multiplier = 1.5)
+ * @method static CandleCollection VWMA(CandleCollection $candleCollection, int $period = 14)
  */
 class Indicator extends Facade
 {

@@ -31,6 +31,11 @@ class CandleCollection extends Collection
         return $this->map(fn(Candle $candle) => $candle->getClose());
     }
 
+    public function volumes(): Collection
+    {
+        return $this->map(fn(Candle $candle) => $candle->getVolume());
+    }
+
     public function lastCandle(): Candle
     {
         return $this->first();

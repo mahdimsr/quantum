@@ -12,6 +12,7 @@ use App\Services\Indicator\Technical\RSI;
 use App\Services\Indicator\Technical\SMA;
 use App\Services\Indicator\Technical\StandardDeviation;
 use App\Services\Indicator\Technical\SuperTrend;
+use App\Services\Indicator\Technical\VWMA;
 use Illuminate\Support\Collection;
 
 class IndicatorService
@@ -93,5 +94,12 @@ class IndicatorService
     public function superTrend(array $highPriceArray,array $lowPriceArray, array $closePriceArray, int $period = 14, float $multiplier = 1.5): array
     {
         return SuperTrend::period($period)->multiplier($multiplier)->highPriceArray($highPriceArray)->lowPriceArray($lowPriceArray)->closePriceArray($closePriceArray)->run();
+    }
+
+    public function VWMA(CandleCollection $candleCollection, int $period = 14): CandleCollection
+    {
+        $vwma = new VWMA($candleCollection,$period);
+
+        return $vwma->run();
     }
 }
