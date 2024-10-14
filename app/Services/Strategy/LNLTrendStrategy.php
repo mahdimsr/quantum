@@ -36,4 +36,14 @@ class LNLTrendStrategy
     {
         return $this->collection()->currentTrendCloud() == $this->collection()->currentTrendLine();
     }
+
+    public function isBullish(): bool
+    {
+        return $this->currentTrend() == 'bullish';
+    }
+
+    public function isBearish(): bool
+    {
+        return $this->currentTrend() == 'bearish';
+    }
 }
