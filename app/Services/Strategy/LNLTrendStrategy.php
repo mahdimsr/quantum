@@ -26,4 +26,14 @@ class LNLTrendStrategy
 
         return new LNLTrendCollection($this->candleCollection);
     }
+
+    public function currentTrend(): string
+    {
+        return $this->collection()->currentTrendCloud();
+    }
+
+    public function isPowerTrend(): bool
+    {
+        return $this->collection()->currentTrendCloud() == $this->collection()->currentTrendLine();
+    }
 }

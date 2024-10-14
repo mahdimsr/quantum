@@ -23,6 +23,16 @@ class LNLTrendCollection extends CandleCollection
         $this->candleCollection =$this->calculateTrendCloud($this->candleCollection);
     }
 
+    public function currentTrendCloud(): string
+    {
+        return $this->candleCollection->first()->getMeta()['lnl-trend-cloud'];
+    }
+
+    public function currentTrendLine(): string
+    {
+        return $this->candleCollection->first()->getMeta()['lnl-trend-line'];
+    }
+
     private function calculateTrendLine(): CandleCollection
     {
         $vwma8Collection  = Indicator::VWMA($this->candleCollection, 8);
