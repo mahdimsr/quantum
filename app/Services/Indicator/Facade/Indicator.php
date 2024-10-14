@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static float|int RSI(Collection $candlesCollection, int $period = 14)
- * @method static array EMA(Collection $candlesCollection, int $period = 9)
+ * @method static CandleCollection EMA(Collection $candlesCollection, int $period = 9)
  * @method static array EMAWithSimpleValues(array $values, int $period = 9)
  * @method static CandleCollection SMA(Collection $candlesCollection, int $period = 7)
  * @method static array StandardDeviation(Collection $candlesCollection, int $period = 5)

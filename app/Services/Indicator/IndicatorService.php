@@ -30,7 +30,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function EMA(CandleCollection $candlesCollection, int $period = 9): array
+    public function EMA(CandleCollection $candlesCollection, int $period = 9): CandleCollection
     {
         $ema = new EMA($candlesCollection,$period);
 
