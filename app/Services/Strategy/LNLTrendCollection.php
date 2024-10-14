@@ -18,73 +18,82 @@ class LNLTrendCollection extends CandleCollection
 
         $this->candleCollection = CandleCollection::make($items);
 
-        $this->calculateTrendLine();
+        $this->candleCollection = $this->calculateTrendLine();
 
-        $this->calculateTrendCloud();
+        $this->candleCollection =$this->calculateTrendCloud($this->candleCollection);
     }
 
-    private function calculateTrendLine(): void
+    private function calculateTrendLine(): CandleCollection
     {
-        $ema8  = Indicator::EMA($this->candleCollection, 8);
-        $ema13 = Indicator::EMA($this->candleCollection, 13);
-        $ema21 = Indicator::EMA($this->candleCollection, 21);
-        $ema34 = Indicator::EMA($this->candleCollection, 34);
+        $vwma8Collection  = Indicator::VWMA($this->candleCollection, 8);
+        $vwma13Collection = Indicator::VWMA($vwma8Collection, 13);
+        $vwma21Collection = Indicator::VWMA($vwma13Collection, 21);
+        $vwma34Collection = Indicator::VWMA($vwma21Collection, 34);
 
-        $this->candleCollection->map(function (Candle $candle, $key) use ($ema8, $ema13, $ema21, $ema34) {
+        return $vwma34Collection->map(function (Candle $candle, $key) {
 
             $bullish = false;
             $bearish = false;
 
-            if ($ema8[$key] > $ema13[$key] and $ema13[$key] > $ema21[$key] and $ema21[$key] > $ema34[$key]) {
+            $vwma8 = $candle->getMeta()['vwma-8'];
+            $vwma13 = $candle->getMeta()['vwma-13'];
+            $vwma21 = $candle->getMeta()['vwma-21'];
+            $vwma34 = $candle->getMeta()['vwma-34'];
+
+            if ($vwma8 > $vwma13 and $vwma13 > $vwma21 and $vwma21 > $vwma34) {
 
                 $bullish = true;
             }
 
-            if ($ema8[$key] < $ema13[$key] and $ema13[$key] < $ema21[$key] and $ema21[$key] < $ema34[$key]) {
+            if ($vwma8 < $vwma13 and $vwma13 < $vwma21 and $vwma21 < $vwma34) {
 
                 $bearish = true;
             }
 
             $trend = 'normal';
 
-            if ($bullish and $candle->getClose() >= $ema13[$key]) {
+            if ($bullish and $candle->getClose() >= $vwma13) {
 
                 $trend = 'bullish';
 
-            } else if ($bearish and $candle->getClose() <= $ema13[$key]) {
+            } else if ($bearish and $candle->getClose() <= $vwma13) {
 
                 $trend = 'bearish';
             }
 
-            $candle->setMeta(['lnl-trend-line' => $trend]);
+            $candle->setMeta([
+                'lnl-trend-line' => $trend,
+            ]);
+
+            return $candle;
         });
     }
 
-    private function calculateTrendCloud(): void
+    private function calculateTrendCloud(CandleCollection $trendLineCandleCollection): CandleCollection
     {
+
         $highs = $this->candleCollection->highs()->toArray();
         $lows = $this->candleCollection->lows()->toArray();
         $closes = $this->candleCollection->closes()->toArray();
 
         $trueRange = Indicator::trueRange($highs, $lows, $closes);
 
-        $ema13 = Indicator::EMA($this->candleCollection, 13);
-        $trEma13 = Indicator::EMAWithSimpleValues($trueRange, 13);
+        $emaTr = Indicator::EMAWithSimpleValues($trueRange, 8);
 
-        $atr = collect($trEma13)->map(fn($value) => (self::$atrLength/100) * $value )->toArray();
+        $atr = collect($emaTr)->map(fn($value) => (self::$atrLength/100) * $value )->toArray();
 
-        $this->candleCollection->map(function (Candle $candle, $key) use ($atr, $ema13) {
+        return $trendLineCandleCollection->map(function (Candle $candle, $key) use ($atr, $emaTr) {
 
             $isUp = false;
             $isDown = false;
             $T = 0;
 
-            if ($candle->getClose() > ($ema13[$key] + $atr[$key])) {
+            if ($candle->getClose() > ($emaTr[$key] + $atr[$key])) {
                 $isUp = true;
                 $T = 1;
             }
 
-            if ($candle->getClose() < ($ema13[$key] - $atr[$key])) {
+            if ($candle->getClose() < ($emaTr[$key] - $atr[$key])) {
                 $isDown = true;
                 $T = -1;
             }
@@ -98,6 +107,8 @@ class LNLTrendCollection extends CandleCollection
                 $candle->setMeta(['lnl-trend-cloud' => 'bearish']);
             }
 
+
+            return $candle;
         });
     }
 }
