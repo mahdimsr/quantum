@@ -49,7 +49,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function SMA(CandleCollection $candlesCollection, int $period = 7): array
+    public function SMA(CandleCollection $candlesCollection, int $period = 7): CandleCollection
     {
         $sma = new SMA($candlesCollection,$period);
 
