@@ -21,27 +21,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->call(function () {
 
-            $allCoin = Coin::all();
-
-            foreach ($allCoin as $coin) {
-
-                Artisan::call('strategy:short-trend',[
-                    'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_FOUR_HOURS->value,
-                ]);
-            }
-
-            foreach ($allCoin as $coin) {
-
-                Artisan::call('strategy:utbot',[
-                    'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_FOUR_HOURS->value,
-                ]);
-            }
-
-        })->everyFourHours();
     }
 
     /**
