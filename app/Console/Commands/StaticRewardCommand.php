@@ -23,8 +23,6 @@ class StaticRewardCommand extends Command
      */
     public function handle()
     {
-        dd('here');
-
         $coin = Coin::findByName($this->argument('coin'));
         $profitPercent = $this->argument('profit-percent');
         $leverage = $this->argument('leverage');
@@ -38,6 +36,8 @@ class StaticRewardCommand extends Command
 
             $this->error("$coin->name candles is empty");
 
+            $coin->delete();
+
             return 0;
         }
 
@@ -46,18 +46,26 @@ class StaticRewardCommand extends Command
         $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 10);
         $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-        if ($utBotStrategy->isBuy() and $lnlTrendStrategy->isBullish()) {
+        if ($utBotStrategy->isBuy(3) and $lnlTrendStrategy->isBullish()) {
 
             Notification::send(User::mahdi(), new SignalNotification($coin,'buy', 'Static Reward'));
 
             $this->info('Buy Signal Sent...');
+
+            return 1;
         }
 
-        if ($utBotStrategy->isSell() and $lnlTrendStrategy->isBearish()) {
+        if ($utBotStrategy->isSell(3) and $lnlTrendStrategy->isBearish()) {
 
             Notification::send(User::mahdi(), new SignalNotification($coin,'sell', 'Static Reward'));
 
             $this->info('Sell Signal Sent...');
+
+            return 1;
         }
+
+        $this->comment('No Signal detected ...');
+
+        return 1;
     }
 }

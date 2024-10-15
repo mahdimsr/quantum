@@ -15,9 +15,10 @@ class CoinTableSeeder extends Seeder
 
         if ($coinsResponse->data()->isNotEmpty()) {
 
-            $coinsResponse->data()->each(fn(CoinRepository $coinRepository) => Coin::query()->updateOrCreate([
-                'name' => $coinRepository->getName(),
-            ]));
+            $coinsResponse->data()->each(function(CoinRepository $coinRepository) {
+
+                Coin::query()->updateOrCreate(['name' => $coinRepository->getName()]);
+            });
         }
     }
 }

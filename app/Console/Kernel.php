@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\StaticRewardCommand;
 use App\Enums\CoinEnum;
 use App\Enums\CoinStatusEnum;
 use App\Enums\StrategyEnum;
@@ -21,7 +22,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $coins = Coin::all();
 
+        foreach ($coins as $coin) {
+
+            $schedule->command('app:static-reward-strategy', [$coin->name])->everyMinute()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
+        }
     }
 
     /**
