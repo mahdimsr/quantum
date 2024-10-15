@@ -54,7 +54,7 @@ class UTBotAlertStrategy
     {
         if ($recentCandles) {
 
-            $recentSignal = $this->signalOfRecentCandles();
+            $recentSignal = $this->signalOfRecentCandles($recentCandles);
 
             if ($recentSignal) {
 
@@ -71,7 +71,7 @@ class UTBotAlertStrategy
     {
         if ($recentCandles) {
 
-            $recentSignal = $this->signalOfRecentCandles();
+            $recentSignal = $this->signalOfRecentCandles($recentCandles);
 
             if ($recentSignal) {
 

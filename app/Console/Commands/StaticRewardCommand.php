@@ -46,7 +46,8 @@ class StaticRewardCommand extends Command
         $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 5);
         $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-        if ($utBotStrategy->isBuy(3) and $lnlTrendStrategy->isBullish()) {
+
+        if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
 
             Notification::send(User::mahdi(), new SignalNotification($coin->name,'buy', 'Static Reward'));
 
@@ -55,7 +56,7 @@ class StaticRewardCommand extends Command
             return 1;
         }
 
-        if ($utBotStrategy->isSell(3) and $lnlTrendStrategy->isBearish()) {
+        if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
 
             Notification::send(User::mahdi(), new SignalNotification($coin->name,'sell', 'Static Reward'));
 
@@ -63,6 +64,7 @@ class StaticRewardCommand extends Command
 
             return 1;
         }
+
 
         $this->comment('No Signal detected ...');
 
