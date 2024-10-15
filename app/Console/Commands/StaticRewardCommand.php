@@ -48,7 +48,7 @@ class StaticRewardCommand extends Command
 
         if ($utBotStrategy->isBuy(3) and $lnlTrendStrategy->isBullish()) {
 
-            Notification::send(User::mahdi(), new SignalNotification($coin,'buy', 'Static Reward'));
+            Notification::send(User::mahdi(), new SignalNotification($coin->name,'buy', 'Static Reward'));
 
             $this->info('Buy Signal Sent...');
 
@@ -57,7 +57,7 @@ class StaticRewardCommand extends Command
 
         if ($utBotStrategy->isSell(3) and $lnlTrendStrategy->isBearish()) {
 
-            Notification::send(User::mahdi(), new SignalNotification($coin,'sell', 'Static Reward'));
+            Notification::send(User::mahdi(), new SignalNotification($coin->name,'sell', 'Static Reward'));
 
             $this->info('Sell Signal Sent...');
 
