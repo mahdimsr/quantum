@@ -13,11 +13,12 @@ class CandleResponseAdapter extends BingXResponse implements CandleResponseContr
     {
         $data = $this->response['data'];
 
+        if (count($data) == 0) {
 
-        $data = collect($data)->map(function ($item) {
+            return CandleCollection::make([]);
+        }
 
-            return Candle::fromArray($item);
-        });
+        $data = collect($data)->map(fn($item) => Candle::fromArray($item));
 
         return CandleCollection::make($data);
     }

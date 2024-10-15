@@ -1,5 +1,5 @@
 <?php
 
-namespace Modules\ccxt;
+namespace Modules\CCXT;
 
 class AuthenticationError extends ExchangeError {};
