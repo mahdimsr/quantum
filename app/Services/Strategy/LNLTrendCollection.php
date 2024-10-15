@@ -81,6 +81,7 @@ class LNLTrendCollection extends CandleCollection
 
     private function calculateTrendCloud(CandleCollection $trendLineCandleCollection): CandleCollection
     {
+        $trendLineCandleCollection = Indicator::EMA($trendLineCandleCollection, 13);
 
         $highs = $this->candleCollection->highs()->toArray();
         $lows = $this->candleCollection->lows()->toArray();
@@ -92,18 +93,22 @@ class LNLTrendCollection extends CandleCollection
 
         $atr = collect($emaTr)->map(fn($value) => (self::$atrLength/100) * $value )->toArray();
 
-        return $trendLineCandleCollection->map(function (Candle $candle, $key) use ($atr, $emaTr) {
+        return $trendLineCandleCollection->map(function (Candle $candle, $key) use ($atr) {
 
             $isUp = false;
             $isDown = false;
             $T = 0;
 
-            if ($candle->getClose() > ($emaTr[$key] + $atr[$key])) {
+            $candle->setMeta([
+                'atr' => $atr[$key]
+            ]);
+
+            if ($candle->getClose() > ($candle->getMeta()['ema-13'] + $atr[$key])) {
                 $isUp = true;
                 $T = 1;
             }
 
-            if ($candle->getClose() < ($emaTr[$key] - $atr[$key])) {
+            if ($candle->getClose() < ($candle->getMeta()['ema-13'] - $atr[$key])) {
                 $isDown = true;
                 $T = -1;
             }
