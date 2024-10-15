@@ -43,7 +43,7 @@ class StaticRewardCommand extends Command
 
         $this->info("Setting ut-bot and lnl-trend...");
 
-        $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 10);
+        $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 5);
         $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
         if ($utBotStrategy->isBuy(3) and $lnlTrendStrategy->isBullish()) {

@@ -55,13 +55,13 @@ class SignalNotification extends Notification
         $positionTitle = in_array($this->position , ['long', 'buy']) ? "Long 🟢" : "Short 🔴";
         $nowDateTimeString = Carbon::now()->toDateTimeString();
 
-        $message = "Symbol: $this->symbol \n";
+        $message = "Strategy: $this->strategy \n";
+        $message .= "Symbol: $this->symbol \n";
         $message .= "Position: $positionTitle\n";
         $message .= "Now: $nowDateTimeString\n";
 
         return TelegramMessage::create()
             ->to($notifiable->telegram_chat_id)
-            ->content($this->strategy)
             ->line($message);
     }
 }

@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
 
         foreach ($coins as $coin) {
 
-            $schedule->command('app:static-reward-strategy', [$coin->name])->everyMinute()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
+            $schedule->command('app:static-reward-strategy', [$coin->name])->everyThirtyMinutes()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
         }
     }
 
