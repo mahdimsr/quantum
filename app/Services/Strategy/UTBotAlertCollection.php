@@ -36,6 +36,11 @@ class UTBotAlertCollection extends CandleCollection
         return $this->candleCollection->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()))->first();
     }
 
+    public function recentSignal(int $candleIndex = 3): ?Candle
+    {
+        return $this->candleCollection->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()))->take($candleIndex)->first();
+    }
+
     private function calculateAverageTrueRange(): void
     {
         $highs = $this->candleCollection->highs()->toArray();

@@ -45,13 +45,42 @@ class UTBotAlertStrategy
         return $this->UTBotAlertCollection->lastSignal();
     }
 
-    public function isBuy(): bool
+    public function signalOfRecentCandles(int $count = 3): ?Candle
     {
+        return $this->UTBotAlertCollection->recentSignal($count);
+    }
+
+    public function isBuy(?int $recentCandles = null): bool
+    {
+        if ($recentCandles) {
+
+            $recentSignal = $this->signalOfRecentCandles();
+
+            if ($recentSignal) {
+
+                return $recentSignal->getMeta()['signal'] == 'buy';
+            }
+
+            return false;
+        }
+
         return $this->lastSignalCandle()->getMeta()['signal'] == 'buy';
     }
 
-    public function isSell(): bool
+    public function isSell(?int $recentCandles = null): bool
     {
+        if ($recentCandles) {
+
+            $recentSignal = $this->signalOfRecentCandles();
+
+            if ($recentSignal) {
+
+                return $recentSignal->getMeta()['signal'] == 'sell';
+            }
+
+            return false;
+        }
+
         return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
     }
 
