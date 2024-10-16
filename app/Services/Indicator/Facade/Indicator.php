@@ -59,10 +59,9 @@ class Indicator extends Facade
 
         for ($i = 1; $i <= $count; $i++) {
 
-//            $averageTrueRange[$i] = ($averageTrueRange[$i - 1] * ($length - 1) + $trueRange[$i]) / $length;
             $value = $alpha * $trueRange[$count - $i] + (1- $alpha) * $averageTrueRange[$i - 1];
 
-            $value = round($value,4);
+            $value = round($value,8);
 
             $averageTrueRange[$i] = $value;
         }

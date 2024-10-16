@@ -175,6 +175,13 @@ class Candle
         $this->meta = array_merge($meta, $this->meta);
     }
 
+    public function resetMeta(string $key, mixed $value): void
+    {
+        unset($this->meta[$key]);
+
+        $this->setMeta([$key => $value]);
+    }
+
     public function isBullish(): bool
     {
         return $this->isBullish;

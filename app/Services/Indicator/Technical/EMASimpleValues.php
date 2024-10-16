@@ -29,7 +29,7 @@ class EMASimpleValues
 
             $exactValue = $alpha * $this->values[$i] + (1 - $alpha) * $preEma;
 
-            $ema[$i] = round($exactValue, 4);
+            $ema[$i] = round($exactValue, 8);
         }
 
         return $ema;

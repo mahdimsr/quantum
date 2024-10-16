@@ -65,7 +65,7 @@ class VWMA extends IndicatorStructure
             $vwma = $candle->getMeta()["close-volume-sma-$this->period"] / $candle->getMeta()["volume-sma-$this->period"];
 
              $candle->setMeta([
-                 "vwma-$this->period" => round($vwma, 4),
+                 "vwma-$this->period" => round($vwma, 8),
             ]);
 
              return $candle;

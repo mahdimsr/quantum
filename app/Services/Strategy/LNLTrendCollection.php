@@ -20,7 +20,9 @@ class LNLTrendCollection extends CandleCollection
 
         $this->candleCollection = $this->calculateTrendLine();
 
-        $this->candleCollection =$this->calculateTrendCloud($this->candleCollection);
+        $this->candleCollection = $this->calculateTrendCloud($this->candleCollection);
+
+        $this->candleCollection = $this->calculateNotDefinedCloud($this->candleCollection);
     }
 
     public function currentTrendCloud(): string
@@ -115,13 +117,42 @@ class LNLTrendCollection extends CandleCollection
 
             if ($isUp) {
 
-                $candle->setMeta(['lnl-trend-cloud' => 'bullish']);
+                $candle->setMeta([
+                    'lnl-trend-cloud' => 'bullish',
+                ]);
+
+            } else if ($isDown) {
+
+                $candle->setMeta([
+                    'lnl-trend-cloud' => 'bearish',
+                ]);
 
             } else {
 
-                $candle->setMeta(['lnl-trend-cloud' => 'bearish']);
+                $candle->setMeta([
+                    'lnl-trend-cloud' => 'not-defined',
+                ]);
             }
 
+
+            return $candle;
+        });
+    }
+
+    private function calculateNotDefinedCloud(CandleCollection $lnlTrendCollection): CandleCollection
+    {
+        return $lnlTrendCollection->filter(function (Candle $candle, $key) {
+
+            return $candle->getMeta()['lnl-trend-cloud'] == 'not-defined';
+
+        })->map(function (Candle $candle, $key) use ($lnlTrendCollection) {
+
+            $lastValidCloudCandle = $lnlTrendCollection->filter(fn(Candle $candle, $index) => $index > $key and $candle->getMeta()['lnl-trend-cloud'] != 'not-defined')->first();
+
+            if ($lastValidCloudCandle) {
+
+                $candle->resetMeta('lnl-trend-cloud', $lastValidCloudCandle->getMeta()['lnl-trend-cloud']);
+            }
 
             return $candle;
         });

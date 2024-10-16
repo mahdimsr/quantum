@@ -26,7 +26,7 @@ class EMA extends IndicatorStructure
         return $this->candlesCollection->map(function (Candle $candle, $key) use ($ema) {
 
             $candle->setMeta([
-                "ema-$this->period" => round($ema[$key], 4),
+                "ema-$this->period" => round($ema[$key], 8),
             ]);
 
             return $candle;

@@ -16,7 +16,7 @@ class SMA extends IndicatorStructure
             $sma = $sum / $this->period;
 
             $candle->setMeta([
-                "sma-$this->period" => round($sma, 4),
+                "sma-$this->period" => round($sma, 8),
             ]);
 
 
