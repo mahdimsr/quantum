@@ -20,4 +20,9 @@ abstract class BingXResponse
     {
         return $this->response['msg'];
     }
+
+    public function isSuccess(): bool
+    {
+        return $this->code() == 0;
+    }
 }

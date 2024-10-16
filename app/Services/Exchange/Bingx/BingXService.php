@@ -2,6 +2,7 @@
 
 namespace App\Services\Exchange\Bingx;
 
+use App\Services\Exchange\Bingx\Response\AssetResponseAdapter;
 use App\Services\Exchange\Bingx\Response\CandleResponseAdapter;
 use App\Services\Exchange\Bingx\Response\CoinResponseAdapter;
 use App\Services\Exchange\BingX\Response\SetLeverageResponseAdapter;
@@ -9,6 +10,7 @@ use App\Services\Exchange\Bingx\Response\SetOrderResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Target;
+use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\CoinsRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
@@ -22,7 +24,7 @@ use Illuminate\Support\Str;
 use Modules\CCXT\bingx;
 use Illuminate\Support\Facades\Config;
 
-class BingXService implements CandleRequestContract, CoinsRequestContract, SetLeverageRequestContract, OrderRequestContract
+class BingXService implements CandleRequestContract, CoinsRequestContract, SetLeverageRequestContract, OrderRequestContract, AssetRequestContract
 {
     private bingx $bingxClient;
 
@@ -107,5 +109,14 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
         }
 
         return new SetOrderResponseAdapter($data);
+    }
+
+    public function futuresBalance(): ?AssetBalanceContract
+    {
+        $data = $this->bingxClient->swap_v2_private_get_user_balance([
+            'timestamp' => now()->timestamp
+        ]);
+
+        return new AssetResponseAdapter($data);
     }
 }
