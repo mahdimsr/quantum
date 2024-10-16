@@ -46,8 +46,6 @@ class StaticRewardCommand extends Command
         $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 5);
         $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-        dd($utBotStrategy->isBuy(1) , $lnlTrendStrategy->collection()->get(1));
-
         if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
 
             Notification::send(User::mahdi(), new SignalNotification($coin->name,'buy', 'Static Reward'));
