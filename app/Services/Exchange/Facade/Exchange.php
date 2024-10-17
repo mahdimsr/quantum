@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\Facade;
  * @method static SetOrderResponseContract setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null)
  * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
- * @method static PositionLevelCollection positionLevel(string $symbol)
  * @method static PositionResponseContract setTakeProfit(string $symbol, PriceTypeEnum $takeProfitType, float $takeProfitPrice)
  * @method static PositionResponseContract setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice)
  * @method static PositionResponseContract currentPosition(string $symbol)

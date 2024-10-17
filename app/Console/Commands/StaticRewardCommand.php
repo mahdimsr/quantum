@@ -6,7 +6,10 @@ use App\Enums\StrategyEnum;
 use App\Models\Coin;
 use App\Models\User;
 use App\Notifications\SignalNotification;
+use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
+use App\Services\OrderService;
 use App\Services\Strategy\LNLTrendStrategy;
 use App\Services\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
@@ -39,7 +42,7 @@ class StaticRewardCommand extends Command
 
         $this->info("Getting Candles of $coin->name");
 
-        $candlesResponse = Exchange::candles($coin->symbol('-'),$timeframe,100);
+        $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
 
         if ($candlesResponse->data()->isEmpty()) {
 
@@ -57,7 +60,12 @@ class StaticRewardCommand extends Command
 
         if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
 
-            Notification::send(User::mahdi(), new SignalNotification($coin->name,'buy', 'Static Reward'));
+            OrderService::openOrder(
+                $coin,
+                $utBotStrategy->currentPrice(),
+                TypeEnum::LIMIT,
+                SideEnum::LONG
+            );
 
             $this->info('Buy Signal Sent...');
 
@@ -66,7 +74,13 @@ class StaticRewardCommand extends Command
 
         if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
 
-            Notification::send(User::mahdi(), new SignalNotification($coin->name,'sell', 'Static Reward'));
+
+            OrderService::openOrder(
+                $coin,
+                $utBotStrategy->currentPrice(),
+                TypeEnum::LIMIT,
+                SideEnum::SHORT
+            );
 
             $this->info('Sell Signal Sent...');
 

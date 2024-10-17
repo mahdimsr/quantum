@@ -84,4 +84,9 @@ class UTBotAlertStrategy
         return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
     }
 
+    public function currentPrice(): mixed
+    {
+        return $this->collection()->get(0)->getClose();
+    }
+
 }
