@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property OrderStatusEnum status
  * @property string price
  *
+ * @property Coin coin
  */
 class Order extends Model
 {

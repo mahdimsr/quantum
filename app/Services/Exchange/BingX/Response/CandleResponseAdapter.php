@@ -1,7 +1,7 @@
 <?php  #items: array:500 [▶]
 
 
-namespace App\Services\Exchange\Bingx\Response;
+namespace App\Services\Exchange\BingX\Response;
 
 use App\Services\Exchange\Repository\Candle;
 use App\Services\Exchange\Repository\CandleCollection;

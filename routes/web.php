@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\Exchange\BingX\BingXService;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,13 +16,24 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
+
+    $bingxService = app(BingxService::class);
+
+//    dd($bingxService->orders('FTM-USDT'));
+
+
+
+
+
+    // set order
+
     $coin = \App\Models\Coin::findByName('FTM');
 
     $pendingOrder = \App\Services\OrderService::openOrder(
         $coin,
-        0.73,
+        0.7360,
         \App\Services\Exchange\Enums\TypeEnum::LIMIT,
-        \App\Services\Exchange\Enums\SideEnum::BUY,
+        \App\Services\Exchange\Enums\SideEnum::SHORT,
     );
 
     dd($pendingOrder);

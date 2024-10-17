@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Exchange\Bingx\Response;
+namespace App\Services\Exchange\BingX\Response;
 
 use App\Services\Exchange\Responses\AssetBalanceContract;
 

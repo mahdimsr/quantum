@@ -4,19 +4,22 @@ namespace App\Listeners;
 
 use App\Enums\OrderStatusEnum;
 use App\Events\PendingOrderCreated;
-use App\Services\Exchange\Bingx\BingXService;
+use App\Services\Exchange\BingX\BingXService;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Target;
 use App\Services\Order\Calculate;
 
 class BingXOpenOrderListener
 {
-    /**
-     * Create the event listener.
-     */
+    private BingXService $bingXService;
+    private mixed $balance;
+    private int $leverage;
+
     public function __construct()
     {
-        //
+        $this->bingXService = app(BingXService::class);
+        $this->balance = $this->bingXService->futuresBalance()->balance();
+        $this->leverage = 5;
     }
 
     /**
@@ -25,21 +28,34 @@ class BingXOpenOrderListener
     public function handle(PendingOrderCreated $event): void
     {
         $currentPrice = $event->pendingOrder->price;
-        $balance = 19;
-        $leverage = 5;
 
-        $asset = $balance * $currentPrice;
-        $amount = Calculate::maxOrderAmount($currentPrice, $asset, $leverage);
+        $this->bingXService->setLeverage(
+            $event->pendingOrder->coin->symbol('-'),
+            $event->pendingOrder->side,
+            $this->leverage,
+        );
 
-        $tpPrice = Calculate::target($currentPrice, 1);
-        $slPrice = Calculate::target($tpPrice, -2);
+
+        $asset = $this->balance * $currentPrice;
+        $amount = Calculate::maxOrderAmount($currentPrice, $asset, $this->leverage);
+
+        if ($event->pendingOrder->side->isShort()) {
+
+            $tpPrice = Calculate::target($currentPrice, -2);
+            $slPrice = Calculate::target($currentPrice, 2);
+        }
+
+        if ($event->pendingOrder->side->isLONG()) {
+
+            $tpPrice = Calculate::target($currentPrice, 2);
+            $slPrice = Calculate::target($currentPrice, -2);
+        }
+
 
         $tpTarget = Target::create(TypeEnum::TAKE_PROFIT->value, $tpPrice, $tpPrice);
         $slTarget = Target::create(TypeEnum::STOP->value, $slPrice, $slPrice);
 
-        $bingxService = app(BingXService::class);
-
-        $setOrderResponse = $bingxService->setOrder(
+        $setOrderResponse = $this->bingXService->setOrder(
             $event->pendingOrder->coin->symbol('-'),
             $event->pendingOrder->type,
             $event->pendingOrder->side,

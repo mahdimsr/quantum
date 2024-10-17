@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Exchange\Bingx;
+namespace App\Services\Exchange\BingX;
 
-use App\Services\Exchange\Bingx\Response\AssetResponseAdapter;
-use App\Services\Exchange\Bingx\Response\CandleResponseAdapter;
-use App\Services\Exchange\Bingx\Response\CoinResponseAdapter;
+use App\Services\Exchange\BingX\Response\AssetResponseAdapter;
+use App\Services\Exchange\BingX\Response\CandleResponseAdapter;
+use App\Services\Exchange\BingX\Response\CoinResponseAdapter;
 use App\Services\Exchange\BingX\Response\SetLeverageResponseAdapter;
-use App\Services\Exchange\Bingx\Response\SetOrderResponseAdapter;
+use App\Services\Exchange\BingX\Response\SetOrderResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Target;
@@ -70,7 +70,7 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
     {
         $data = $this->bingxClient->swap_v2_private_post_trade_leverage([
             'symbol' => $symbol,
-            'side' => Str::of($side->value)->upper()->toString(),
+            'side' => Str::of($side->convertToLongShort())->upper()->toString(),
             'leverage' => $leverage,
             'timestamp' => now()->timestamp
         ]);
@@ -83,7 +83,7 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
         $params = [
             'symbol' => $symbol,
             'type' => Str::of($typeEnum->value)->upper()->toString(),
-            'side' => Str::of($sideEnum->value)->upper()->toString(),
+            'side' => Str::of($sideEnum->convertToBuySell())->upper()->toString(),
             'positionSide' => Str::of($positionSide->convertToLongShort())->upper()->toString(),
             'quantity' => $amount,
             'price' => $price,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Exchange\Bingx\Response;
+namespace App\Services\Exchange\BingX\Response;
 
 use App\Services\Exchange\Repository\Coin;
 use App\Services\Exchange\Repository\CoinCollection;
