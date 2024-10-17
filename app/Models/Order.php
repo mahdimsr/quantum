@@ -34,6 +34,11 @@ class Order extends Model
         'status' => OrderStatusEnum::class,
     ];
 
+    public static function findByClientId(string $clientId): null|Order|Model
+    {
+        return self::query()->where('client_id', $clientId)->first();
+    }
+
     protected static function booted(): void
     {
         self::observe(OrderObserver::class);

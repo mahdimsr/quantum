@@ -19,7 +19,7 @@ Route::get('/', function () {
 
     $bingxService = app(BingxService::class);
 
-    dd($bingxService->currentPosition('FTM-USDT')->position()->pnlPercent());
+    dd($bingxService->closePositionByPositionId('1846872424261578752'));
 
 
 

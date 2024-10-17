@@ -11,4 +11,6 @@ use App\Services\Exchange\Responses\PositionResponseContract;
 interface PositionRequestContract
 {
     public function currentPosition(string $symbol): ?PositionResponseContract;
+
+    public function closePositionByPositionId(string $positionId): ?ClosePositionResponseContract;
 }

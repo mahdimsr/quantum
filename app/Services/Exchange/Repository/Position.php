@@ -57,7 +57,7 @@ class Position
         return $this->markPrice;
     }
 
-    public function pnlPercent(): string
+    public function getPnlPercent(): string
     {
         return $this->pnlRatio * 100;
     }

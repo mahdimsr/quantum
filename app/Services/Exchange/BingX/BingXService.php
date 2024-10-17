@@ -4,6 +4,7 @@ namespace App\Services\Exchange\BingX;
 
 use App\Services\Exchange\BingX\Response\AssetResponseAdapter;
 use App\Services\Exchange\BingX\Response\CandleResponseAdapter;
+use App\Services\Exchange\BingX\Response\ClosePositionResponseAdapter;
 use App\Services\Exchange\BingX\Response\CoinResponseAdapter;
 use App\Services\Exchange\BingX\Response\PositionResponseAdapter;
 use App\Services\Exchange\BingX\Response\SetLeverageResponseAdapter;
@@ -19,6 +20,7 @@ use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\CoinsResponseContract;
 use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\PositionResponseContract;
@@ -148,5 +150,17 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
         ]);
 
         return new PositionResponseAdapter($data);
+    }
+
+    public function closePositionByPositionId(string $positionId): ?ClosePositionResponseContract
+    {
+        $data = $this->bingxClient->swap_v1_private_post_trade_closeposition([
+            'positionId' => $positionId,
+            'timestamp' => now()->timestamp
+        ]);
+
+        dd($data);
+
+        return new ClosePositionResponseAdapter($data);
     }
 }
