@@ -6,6 +6,8 @@ use App\Events\OrderClosedEvent;
 use App\Events\PendingOrderCreated;
 use App\Listeners\BingXOpenOrderListener;
 use App\Listeners\ChangeOrderStatusListener;
+use App\Listeners\OrderClosedNotifyListener;
+use App\Listeners\OrderOpenedNotifyListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,10 +27,12 @@ class EventServiceProvider extends ServiceProvider
 
         PendingOrderCreated::class => [
             BingXOpenOrderListener::class,
+            OrderOpenedNotifyListener::class,
         ],
 
         OrderClosedEvent::class => [
-            ChangeOrderStatusListener::class
+            ChangeOrderStatusListener::class,
+            OrderClosedNotifyListener::class,
         ]
     ];
 

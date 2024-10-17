@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Enums\OrderStatusEnum;
-use App\Enums\PositionTypeEnum;
 use App\Observers\OrderObserver;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string balance
  *
  * @property Coin coin
+ *
+ * @method static Builder status(OrderStatusEnum $orderStatusEnum)
  */
 class Order extends Model
 {
@@ -34,14 +36,19 @@ class Order extends Model
         'status' => OrderStatusEnum::class,
     ];
 
-    public static function findByClientId(string $clientId): null|Order|Model
-    {
-        return self::query()->where('client_id', $clientId)->first();
-    }
-
     protected static function booted(): void
     {
         self::observe(OrderObserver::class);
+    }
+
+    public function scopeStatus(Builder $query, OrderStatusEnum $orderStatusEnum): void
+    {
+        $query->where('status', $orderStatusEnum->value);
+    }
+
+    public static function findByClientId(string $clientId): null|Order|Model
+    {
+        return self::query()->where('client_id', $clientId)->first();
     }
 
     public function coin()
