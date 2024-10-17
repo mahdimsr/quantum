@@ -18,7 +18,8 @@ class BingXOpenOrderListener
     public function __construct()
     {
         $this->bingXService = app(BingXService::class);
-        $this->balance = $this->bingXService->futuresBalance()->balance();
+        $exchangeBalance = $this->bingXService->futuresBalance()->balance();
+        $this->balance = round($exchangeBalance, 2);
         $this->leverage = 5;
     }
 
@@ -42,9 +43,10 @@ class BingXOpenOrderListener
         if ($quantity < 1) {
 
             $quantity = round($quantity, 4, PHP_ROUND_HALF_DOWN);
+
         } else {
 
-            $quantity = round($quantity, 1, PHP_ROUND_HALF_DOWN);
+            $quantity = round($quantity, 1, PHP_ROUND_HALF_DOWN) - 1;
         }
 
         if ($event->pendingOrder->side->isShort()) {
