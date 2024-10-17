@@ -11,6 +11,7 @@ use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
 use App\Services\Exchange\Repository\Target;
+use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static CandleResponseContract candles(string $symbol, string $period, string $limit = null)
  * @method static CoinsResponseContract coins()
  * @method static SetLeverageResponseContract setLeverage(string $symbol, SideEnum $side, string $leverage)
- * @method static OrderListResponseAdapter orders(string $marketType)
+ * @method static OrderListResponseContract orders(?string $symbol = null)
  * @method static SetOrderResponseContract setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null)
  * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
  * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)

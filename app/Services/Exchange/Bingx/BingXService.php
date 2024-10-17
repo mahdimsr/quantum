@@ -18,6 +18,7 @@ use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\CoinsResponseContract;
+use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\SetOrderResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
 use Illuminate\Support\Str;
@@ -118,5 +119,22 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
         ]);
 
         return new AssetResponseAdapter($data);
+    }
+
+    public function orders(?string $symbol = null): OrderListResponseContract
+    {
+        $params = [];
+
+        if ($symbol) {
+
+            $params = array_merge($params, [
+                'symbol' => $symbol
+            ]);
+        }
+
+
+        $data = $this->bingxClient->swap_v2_private_get_user_positions($params);
+
+        dd($data);
     }
 }
