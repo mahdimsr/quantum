@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property TypeEnum type
  * @property OrderStatusEnum status
  * @property string price
+ * @property string balance
  *
  * @property Coin coin
  */

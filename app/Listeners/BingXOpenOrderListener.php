@@ -71,7 +71,8 @@ class BingXOpenOrderListener
 
             $event->pendingOrder->update([
                 'status' => OrderStatusEnum::PENDING,
-                'exchange_order_id' => $setOrderResponse->order()->getOrderId()
+                'exchange_order_id' => $setOrderResponse->order()->getOrderId(),
+                'balance' => $this->balance
             ]);
         }
     }

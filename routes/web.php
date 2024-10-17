@@ -19,7 +19,7 @@ Route::get('/', function () {
 
     $bingxService = app(BingxService::class);
 
-//    dd($bingxService->orders('FTM-USDT'));
+    dd($bingxService->currentPosition('FTM-USDT')->position()->pnlPercent());
 
 
 
@@ -32,7 +32,7 @@ Route::get('/', function () {
     $pendingOrder = \App\Services\OrderService::openOrder(
         $coin,
         0.7360,
-        \App\Services\Exchange\Enums\TypeEnum::LIMIT,
+        \App\Services\Exchange\Enums\TypeEnum::MARKET,
         \App\Services\Exchange\Enums\SideEnum::SHORT,
     );
 

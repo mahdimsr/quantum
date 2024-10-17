@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('status');
             $table->string('price');
+            $table->string('balance')->nullable();
             $table->timestamps();
         });
     }
