@@ -15,7 +15,7 @@ class PositionResponseAdapter extends BingXResponse implements PositionResponseC
     {
         parent::__construct($response);
 
-        $this->symbolDataObject = $this->response['data'][0];
+        $this->symbolDataObject = $this->response['data'];
     }
 
     public function position(): ?Position

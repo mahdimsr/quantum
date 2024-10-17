@@ -26,15 +26,6 @@ class StaticRewardCommand extends Command
      */
     public function handle()
     {
-        $balance = Exchange::futuresBalance()->balance();
-
-        if ($balance < 5) {
-
-            $this->warn('balance not enough to put order');
-
-            return 0;
-        }
-
         $coin = Coin::findByName($this->argument('coin'));
         $profitPercent = $this->argument('profit-percent');
         $leverage = $this->argument('leverage');
