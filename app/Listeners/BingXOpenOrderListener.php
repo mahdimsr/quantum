@@ -37,7 +37,15 @@ class BingXOpenOrderListener
 
 
         $amount = Calculate::maxOrderAmount($this->balance, $currentPrice, $this->leverage);
-        $quantity =  round(($this->balance  / $currentPrice) * $this->leverage, 4, PHP_ROUND_HALF_DOWN);
+        $quantity =  ($this->balance  / $currentPrice) * $this->leverage;
+
+        if ($quantity < 1) {
+
+            $quantity = round($quantity, 4, PHP_ROUND_HALF_DOWN);
+        } else {
+
+            $quantity = round($quantity, 1, PHP_ROUND_HALF_DOWN);
+        }
 
         if ($event->pendingOrder->side->isShort()) {
 
