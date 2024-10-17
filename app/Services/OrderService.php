@@ -16,7 +16,7 @@ class OrderService
     {
         $pendingOrder = Order::query()->create([
            'symbol' => $coin->symbol('-'),
-           'coin' => $coin->name,
+           'coin_name' => $coin->name,
            'side' => Str::of($sideEnum->value)->upper()->toString(),
            'type' => Str::of($typeEnum->value)->upper()->toString(),
            'status' => Str::of(OrderStatusEnum::ONLY_CREATED->value)->upper()->toString(),

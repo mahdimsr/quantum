@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('client_id')->unique()->nullable();
             $table->string('exchange')->nullable();
+            $table->string('exchange_order_id')->nullable();
             $table->string('symbol');
-            $table->string('coin');
+            $table->string('coin_name');
             $table->string('side');
             $table->string('type');
             $table->string('status');

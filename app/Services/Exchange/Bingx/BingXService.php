@@ -84,7 +84,7 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
             'symbol' => $symbol,
             'type' => Str::of($typeEnum->value)->upper()->toString(),
             'side' => Str::of($sideEnum->value)->upper()->toString(),
-            'positionSide' => Str::of($positionSide->value)->upper()->toString(),
+            'positionSide' => Str::of($positionSide->convertToLongShort())->upper()->toString(),
             'quantity' => $amount,
             'price' => $price,
             'timestamp' => now()->timestamp,

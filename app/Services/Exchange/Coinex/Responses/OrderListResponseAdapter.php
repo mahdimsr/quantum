@@ -30,9 +30,9 @@ class OrderListResponseAdapter implements OrderListResponseContract
 
     public function data(): OrderCollection
     {
-        $data = $this->response['data'];
+        $data = $this->response['data']['order'];
 
-        $data = collect($data)->map(fn($item) => Order::create($item['symbol'], $item['side'], $item['type'], $item['price'],$item['origQty'],$item['clientOrderId']));
+        $data = collect($data)->map(fn($item) => Order::create($item['symbol'], $item['side'], $item['type'], $item['price'],$item['origQty'],$item['clientOrderId'], $item['orderId']));
 
         return OrderCollection::make($data);
     }

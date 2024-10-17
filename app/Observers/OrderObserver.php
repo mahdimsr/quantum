@@ -9,18 +9,18 @@ class OrderObserver
 {
     public function creating(Order $order): void
     {
-        if (! $order->coin) {
+        if (! $order->coin_name) {
 
-            $order->coin = explode('-', $order->symbol)[0];
+            $order->coin_name = explode('-', $order->symbol)[0];
         }
 
         if (! $order->client_id) {
 
-            $order->client_id = $order->coin .'-'. now()->timestamp;
+            $order->client_id = $order->coin_name .'-'. now()->timestamp;
         }
 
-        $order->side = Str::of($order->side)->upper()->toString();
-        $order->type = Str::of($order->type)->upper()->toString();
-        $order->status = Str::of($order->status)->upper()->toString();
+        $order->side = Str::of($order->side->value)->upper()->toString();
+        $order->type = Str::of($order->type->value)->upper()->toString();
+        $order->status = Str::of($order->status->value)->upper()->toString();
     }
 }

@@ -33,4 +33,41 @@ class Order
 
         return $order;
     }
+
+    public function getOrderId(): mixed
+    {
+        return $this->order_id;
+    }
+
+    public function getClientId(): mixed
+    {
+        return $this->client_id;
+    }
+
+    public function getSymbol(): string
+    {
+        return $this->symbol;
+    }
+
+    public function getSide(): SideEnum
+    {
+        return $this->side;
+    }
+
+    public function getType(): TypeEnum
+    {
+        return $this->type;
+    }
+
+    public function getPrice(): mixed
+    {
+        return $this->price;
+    }
+
+    public function getQuantity(): mixed
+    {
+        return $this->quantity;
+    }
+
+
 }

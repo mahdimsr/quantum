@@ -25,6 +25,11 @@ class BingXOpenOrderListener
     public function handle(PendingOrderCreated $event): void
     {
         $currentPrice = $event->pendingOrder->price;
+        $balance = 19;
+        $leverage = 5;
+
+        $asset = $balance * $currentPrice;
+        $amount = Calculate::maxOrderAmount($currentPrice, $asset, $leverage);
 
         $tpPrice = Calculate::target($currentPrice, 1);
         $slPrice = Calculate::target($tpPrice, -2);
@@ -35,11 +40,11 @@ class BingXOpenOrderListener
         $bingxService = app(BingXService::class);
 
         $setOrderResponse = $bingxService->setOrder(
-            $event->pendingOrder->coin()->symbol('-'),
+            $event->pendingOrder->coin->symbol('-'),
             $event->pendingOrder->type,
             $event->pendingOrder->side,
             $event->pendingOrder->side,
-            $currentPrice,
+            $amount,
             $currentPrice,
             $event->pendingOrder->client_id,
             $tpTarget,
@@ -49,7 +54,8 @@ class BingXOpenOrderListener
         if ($setOrderResponse->isSuccess()) {
 
             $event->pendingOrder->update([
-                'status' => OrderStatusEnum::PENDING
+                'status' => OrderStatusEnum::PENDING,
+                'exchange_order_id' => $setOrderResponse->order()->getOrderId()
             ]);
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatusEnum;
 use App\Enums\PositionTypeEnum;
 use App\Observers\OrderObserver;
 use App\Services\Exchange\Enums\SideEnum;
@@ -12,12 +13,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id
  * @property string client_id
  * @property string exchange
+ * @property string exchange_order_id
  * @property string symbol
- * @property string coin
+ * @property string coin_name
  * @property SideEnum side
  * @property TypeEnum type
- * @property string status
+ * @property OrderStatusEnum status
  * @property string price
+ *
  */
 class Order extends Model
 {
@@ -26,6 +29,7 @@ class Order extends Model
     protected $casts = [
         'side' => SideEnum::class,
         'type' => TypeEnum::class,
+        'status' => OrderStatusEnum::class,
     ];
 
     protected static function booted(): void
@@ -35,6 +39,6 @@ class Order extends Model
 
     public function coin()
     {
-        return $this->hasOne(Coin::class, 'name', 'coin');
+        return $this->hasOne(Coin::class, 'name', 'coin_name');
     }
 }
