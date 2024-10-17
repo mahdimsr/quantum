@@ -51,8 +51,8 @@ class BingXOpenOrderListener
 
         if ($event->pendingOrder->side->isShort()) {
 
-            $tpPrice = Calculate::target($currentPrice, -1);
-            $slPrice = Calculate::target($currentPrice, 2);
+            $tpPrice = Calculate::target($currentPrice, -2);
+            $slPrice = Calculate::target($currentPrice, 1);
         }
 
         if ($event->pendingOrder->side->isLONG()) {
