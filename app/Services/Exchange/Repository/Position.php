@@ -4,6 +4,7 @@ namespace App\Services\Exchange\Repository;
 
 class Position
 {
+    protected ?string $orderId;
     protected string $positionId;
     protected string $symbol;
     protected string $unrealizeProfit;
@@ -20,6 +21,7 @@ class Position
     {
         $position = new self();
 
+        $position->orderId = array_key_exists('orderId', $item) ? $item['orderId'] : null;
         $position->positionId = $item['positionId'];
         $position->symbol = $item['symbol'];
         $position->unrealizeProfit = $item['unrealizedProfit'];
@@ -58,5 +60,10 @@ class Position
     public function pnlPercent(): string
     {
         return $this->pnlRatio * 100;
+    }
+
+    public function getOrderId(): ?string
+    {
+        return $this->orderId;
     }
 }
