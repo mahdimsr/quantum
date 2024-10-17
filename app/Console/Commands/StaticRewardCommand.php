@@ -72,7 +72,7 @@ class StaticRewardCommand extends Command
             return 1;
         }
 
-        if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
+        if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish() or true) {
 
 
             OrderService::openOrder(

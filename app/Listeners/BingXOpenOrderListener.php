@@ -36,8 +36,8 @@ class BingXOpenOrderListener
         );
 
 
-        $asset = $this->balance * $currentPrice;
-        $amount = Calculate::maxOrderAmount($currentPrice, $asset, $this->leverage);
+        $amount = Calculate::maxOrderAmount($this->balance, $currentPrice, $this->leverage);
+        $quantity =  round(($this->balance  / $currentPrice) * $this->leverage, 4, PHP_ROUND_HALF_DOWN);
 
         if ($event->pendingOrder->side->isShort()) {
 
@@ -51,7 +51,6 @@ class BingXOpenOrderListener
             $slPrice = Calculate::target($currentPrice, -2);
         }
 
-
         $tpTarget = Target::create(TypeEnum::TAKE_PROFIT->value, $tpPrice, $tpPrice);
         $slTarget = Target::create(TypeEnum::STOP->value, $slPrice, $slPrice);
 
@@ -60,8 +59,8 @@ class BingXOpenOrderListener
             $event->pendingOrder->type,
             $event->pendingOrder->side,
             $event->pendingOrder->side,
-            $amount,
-            $currentPrice,
+            $quantity,
+            $event->pendingOrder->price,
             $event->pendingOrder->client_id,
             $tpTarget,
             $slTarget,
