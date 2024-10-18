@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\OrderStatusEnum;
 use App\Events\OrderClosedEvent;
 use App\Models\Coin;
 use App\Services\Exchange\BingX\BingXService;
@@ -40,6 +41,15 @@ class ClosePositionCommand extends Command
 
             $this->info('positions exists with position_id: ' . $position->getPositionId());
 
+            $pendingOrder = $this->coin->orders()->status(OrderStatusEnum::PENDING)->first();
+
+            if ($pendingOrder) {
+
+                $pendingOrder->update([
+                    'position_id' => $position->getPositionId(),
+                ]);
+            }
+
             if ($position->getPnlPercent() >= $this->tpPercent) {
 
                 $this->comment('closing position');
@@ -50,7 +60,7 @@ class ClosePositionCommand extends Command
 
                     $this->info('position closed');
 
-                    event(new OrderClosedEvent($closePositionResponse->order_id()));
+                    event(new OrderClosedEvent($closePositionResponse->position_id()));
 
                 } else {
 

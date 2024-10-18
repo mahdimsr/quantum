@@ -14,9 +14,9 @@ class OrderClosedEvent
 
     public Order $order;
 
-    public function __construct(string $orderId)
+    public function __construct(string $positionId)
     {
-        $this->order = Order::findByClientId($orderId);
+        $this->order = Order::findByPositionId($positionId);
     }
 
     /**

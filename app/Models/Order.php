@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int id
  * @property string client_id
+ * @property string position_id
  * @property string exchange
  * @property string exchange_order_id
  * @property string symbol
@@ -49,6 +50,11 @@ class Order extends Model
     public static function findByClientId(string $clientId): null|Order|Model
     {
         return self::query()->where('client_id', $clientId)->first();
+    }
+
+    public static function findByPositionId(string $positionId): null|Order|Model
+    {
+        return self::query()->where('position_id', $positionId)->first();
     }
 
     public function coin()
