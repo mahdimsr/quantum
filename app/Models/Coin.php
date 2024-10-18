@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 /**
@@ -32,6 +33,11 @@ class Coin extends Model
         'status' => CoinStatusEnum::class,
     ];
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'name', 'coin_name');
+    }
+
     public function scopeStrategy(Builder $builder, StrategyEnum $strategyEnum)
     {
         $builder->whereJsonContains('strategies', $strategyEnum->value);
@@ -42,20 +48,18 @@ class Coin extends Model
         $builder->where('status', $coinStatusEnum->value);
     }
 
-    public function fee(): Attribute
-    {
-        return Attribute::make(
-            get: fn(?string $value) => Str::of($value)->toFloat(),
-        );
-    }
-
     public static function findByName(string $name): Model|self
     {
         return self::query()->where('name', $name)->firstOrFail();
     }
 
-    public function USDTSymbol(): string
+    public function symbol(?string $separator = null, string $symbol = 'USDT'): string
     {
-        return $this->name . 'USDT';
+        if ($separator) {
+
+            return $this->name . $separator . $symbol;
+        }
+
+        return $this->name . $symbol;
     }
 }

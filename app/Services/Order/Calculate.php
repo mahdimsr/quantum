@@ -48,8 +48,8 @@ class Calculate
         return $targetPrice;
     }
 
-    public static function maxOrderAmount($price, $totalAsset, $leverage): float
+    public static function maxOrderAmount($balance, $currentPrice, $leverage): float
     {
-        return ($leverage * $totalAsset) / $price;
+        return ($leverage * $balance) / $currentPrice;
     }
 }

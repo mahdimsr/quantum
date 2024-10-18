@@ -4,6 +4,7 @@ namespace App\Services\Exchange\Responses;
 
 use App\Enums\PositionTypeEnum;
 use App\Enums\PriceTypeEnum;
+use App\Services\Exchange\Repository\Position;
 
 interface PositionResponseContract
 {
@@ -11,19 +12,5 @@ interface PositionResponseContract
 
     public function message(): string;
 
-    public function positionId(): mixed;
-
-    public function symbol(): string;
-
-    public function positionType(): PositionTypeEnum;
-
-    public function stopLossPrice(): mixed;
-
-    public function stopLossPriceType(): PriceTypeEnum;
-
-    public function takeProfitPrice(): mixed;
-
-    public function takeProfitPriceType(): PriceTypeEnum;
-
-    public function averageEntryPrice();
+    public function position(): ?Position;
 }

@@ -6,11 +6,13 @@ use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\Exceptions\RSIException;
 use App\Services\Indicator\Technical\BollingerBands;
 use App\Services\Indicator\Technical\EMA;
+use App\Services\Indicator\Technical\EMASimpleValues;
 use App\Services\Indicator\Technical\MACD;
 use App\Services\Indicator\Technical\RSI;
 use App\Services\Indicator\Technical\SMA;
 use App\Services\Indicator\Technical\StandardDeviation;
 use App\Services\Indicator\Technical\SuperTrend;
+use App\Services\Indicator\Technical\VWMA;
 use Illuminate\Support\Collection;
 
 class IndicatorService
@@ -28,7 +30,7 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function EMA(CandleCollection $candlesCollection, int $period = 9): array
+    public function EMA(CandleCollection $candlesCollection, int $period = 9): CandleCollection
     {
         $ema = new EMA($candlesCollection,$period);
 
@@ -38,7 +40,17 @@ class IndicatorService
     /**
      * @throws \Exception
      */
-    public function SMA(CandleCollection $candlesCollection, int $period = 7): array
+    public function EMAWithSimpleValues(array $values, int $period = 9): array
+    {
+        $ema = new EMASimpleValues($values, $period);
+
+        return $ema->run();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function SMA(CandleCollection $candlesCollection, int $period = 7): CandleCollection
     {
         $sma = new SMA($candlesCollection,$period);
 
@@ -82,5 +94,12 @@ class IndicatorService
     public function superTrend(array $highPriceArray,array $lowPriceArray, array $closePriceArray, int $period = 14, float $multiplier = 1.5): array
     {
         return SuperTrend::period($period)->multiplier($multiplier)->highPriceArray($highPriceArray)->lowPriceArray($lowPriceArray)->closePriceArray($closePriceArray)->run();
+    }
+
+    public function VWMA(CandleCollection $candleCollection, int $period = 14): CandleCollection
+    {
+        $vwma = new VWMA($candleCollection,$period);
+
+        return $vwma->run();
     }
 }

@@ -2,60 +2,63 @@
 
 namespace App\Models;
 
-use App\Services\Exchange\Repository\Order as OrderRepository;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\OrderStatusEnum;
+use App\Observers\OrderObserver;
+use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TypeEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
+/**
+ * @property int id
+ * @property string client_id
+ * @property string position_id
+ * @property string exchange
+ * @property string exchange_order_id
+ * @property string symbol
+ * @property string coin_name
+ * @property SideEnum side
+ * @property TypeEnum type
+ * @property OrderStatusEnum status
+ * @property string price
+ * @property string balance
+ *
+ * @property Coin coin
+ *
+ * @method static Builder status(OrderStatusEnum $orderStatusEnum)
+ */
 class Order extends Model
 {
     protected $guarded = ['id'];
 
-    public static function storeOrderRecord(OrderRepository $order, $futuresOrderPrices)
+    protected $casts = [
+        'side' => SideEnum::class,
+        'type' => TypeEnum::class,
+        'status' => OrderStatusEnum::class,
+    ];
+
+    protected static function booted(): void
     {
-      return self::query()
-          ->create([
-            'order_id' => $order->getOrderId(),
-            'market' => $order->getMarket(),
-            'market_type' => $order->getMarketType(),
-            'side' => $order->getSide(),
-            'type' => $order->getType(),
-            'amount' => $order->getAmount(),
-            'current_price' => $futuresOrderPrices['current_price'],
-            'price' => $order->getPrice(),
-            'stop_loss_price' => $futuresOrderPrices['stop_loss_price'],
-            'take_profit_price' => $futuresOrderPrices['take_profit_price'],
-            'has_stop_loss' => false,
-            'has_take_profit' => false,
-        ]);
+        self::observe(OrderObserver::class);
     }
 
-    public function stop_loss_price()
+    public function scopeStatus(Builder $query, OrderStatusEnum $orderStatusEnum): void
     {
-        return Attribute::make(
-            get: fn(string $value) => Str::of($value)->toFloat()
-        );
+        $query->where('status', $orderStatusEnum->value);
     }
 
-    public function take_profit_price()
+    public static function findByClientId(string $clientId): null|Order|Model
     {
-        return Attribute::make(
-            get: fn(string $value) => Str::of($value)->toFloat()
-        );
+        return self::query()->where('client_id', $clientId)->first();
     }
 
-    public function current_price()
+    public static function findByPositionId(string $positionId): null|Order|Model
     {
-        return Attribute::make(
-            get: fn(string $value) => Str::of($value)->toFloat()
-        );
+        return self::query()->where('position_id', $positionId)->first();
     }
 
-    public function coin(): Coin
+    public function coin()
     {
-        $coinName = Str::of($this->market)->replace('USDT','')->trim()->toString();
-
-        return Coin::findByName($coinName);
+        return $this->hasOne(Coin::class, 'name', 'coin_name');
     }
 }

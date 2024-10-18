@@ -2,17 +2,25 @@
 
 namespace App\Services\Indicator\Technical;
 
+use App\Services\Exchange\Repository\Candle;
+use App\Services\Exchange\Repository\CandleCollection;
+
 class SMA extends IndicatorStructure
 {
-    public function run(): array
+    public function run(): CandleCollection
     {
-        $closeDataArray = $this->candlesCollection->closes()->toArray();
+        return $this->candlesCollection->map(function (Candle $candle, $key) {
 
-        $sma = [];
-        for ($i = $this->period - 1; $i < count($closeDataArray); $i++) {
-            $sma[] = array_sum(array_slice($closeDataArray, $i - $this->period + 1, $this->period)) / $this->period;
-        }
+            $sum = $this->candlesCollection->closes()->slice($key, $this->period)->sum();
 
-        return $sma;
+            $sma = $sum / $this->period;
+
+            $candle->setMeta([
+                "sma-$this->period" => round($sma, 8),
+            ]);
+
+
+            return $candle;
+        });
     }
 }

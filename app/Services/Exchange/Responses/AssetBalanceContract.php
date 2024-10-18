@@ -6,5 +6,7 @@ use App\Services\Exchange\Repository\AssetCollection;
 
 interface AssetBalanceContract
 {
-    public function data(): AssetCollection;
+    public function message(): string;
+    public function isSuccess(): bool;
+    public function balance(): mixed;
 }

@@ -10,8 +10,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
+use NotificationChannels\Telegram\TelegramMessage;
 
-class SignalNotification extends Notification implements TelegramBotNotification
+class SignalNotification extends Notification
 {
     use Queueable;
 
@@ -29,7 +30,7 @@ class SignalNotification extends Notification implements TelegramBotNotification
 
     public function via(object $notifiable): array
     {
-        return [TelegramBotChannel::class];
+        return ['telegram'];
     }
 
 
@@ -49,7 +50,7 @@ class SignalNotification extends Notification implements TelegramBotNotification
         ];
     }
 
-    public function toTelegramBot(): string
+    public function toTelegram(object $notifiable)
     {
         $positionTitle = in_array($this->position , ['long', 'buy']) ? "Long 🟢" : "Short 🔴";
         $nowDateTimeString = Carbon::now()->toDateTimeString();
@@ -59,6 +60,8 @@ class SignalNotification extends Notification implements TelegramBotNotification
         $message .= "Position: $positionTitle\n";
         $message .= "Now: $nowDateTimeString\n";
 
-        return $message;
+        return TelegramMessage::create()
+            ->to($notifiable->telegram_chat_id)
+            ->line($message);
     }
 }

@@ -2,17 +2,21 @@
 
 namespace App\Console;
 
+use App\Console\Commands\StaticRewardCommand;
 use App\Enums\CoinEnum;
 use App\Enums\CoinStatusEnum;
+use App\Enums\OrderStatusEnum;
 use App\Enums\StrategyEnum;
 use App\Enums\TimeframeEnum;
 use App\Models\Coin;
+use App\Models\Order;
 use App\Services\Exchange\Enums\ExchangeResolutionEnum;
 use App\Services\Exchange\Enums\SymbolEnum;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Queue;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,35 +25,21 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->call(function () {
+        $coins = Coin::all();
 
-            $bollingerBandCoins = Coin::strategy(StrategyEnum::SIMPLE_BOLLINGER_BAND)
-                ->status(CoinStatusEnum::AVAILABLE)
-                ->get();
+        foreach ($coins as $coin) {
 
-            foreach ($bollingerBandCoins as $coin) {
+            $schedule->command('app:static-reward-strategy', [$coin->name])->hourly()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
+        }
 
-                Artisan::call('strategy:bollinger-band',[
-                    'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_HOUR,
-                ]);
-            }
+        $pendingOrders = Order::status(OrderStatusEnum::PENDING)->get();
 
-            $utBotCoins = Coin::strategy(StrategyEnum::UT_BOT_ALERT)
-                ->status(CoinStatusEnum::AVAILABLE)
-                ->get();
+        foreach ($pendingOrders as $order) {
 
-
-
-            foreach ($bollingerBandCoins as $coin) {
-
-                Artisan::call('strategy:utbot',[
-                    'coin' => $coin->name,
-                    'timeframe' => TimeframeEnum::EVERY_HOUR,
-                ]);
-            }
-
-        })->hourlyAt(15);
+            $schedule->command('app:close-position-command', [
+                $order->coin_name,
+            ])->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
+        }
     }
 
     /**

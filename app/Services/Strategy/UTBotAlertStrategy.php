@@ -9,6 +9,9 @@ use App\Services\Indicator\Facade\Indicator;
 class UTBotAlertStrategy
 {
     private CandleCollection $candles;
+    private ?UTBotAlertCollection $UTBotAlertCollection;
+    private int $sensitivity;
+    private int $atrPeriod;
     private array $nLoss;
 
     protected array $closeValues;
@@ -18,150 +21,72 @@ class UTBotAlertStrategy
     protected array $ema;
     protected array $ATRTrailingStop;
 
-    public function __construct(CandleCollection $candles, int $multiplier = 1)
+    public function __construct(CandleCollection $candles, int $sensitivity = 1, int $atrPeriod = 10)
     {
         $this->candles = $candles;
+        $this->sensitivity = $sensitivity;
+        $this->atrPeriod = $atrPeriod;
 
-        $this->closeValues = $candles->closes()->toArray();
-        $this->highValues = $candles->highs()->toArray();
-        $this->lowsValues = $candles->lows()->toArray();
-
-        $atr = Indicator::averageTrueRange($this->highValues, $this->lowsValues, $this->closeValues, 10);
-
-        $this->nLoss = collect($atr)->map(fn($atrValue) => $atrValue * 1)->toArray();
-
-
-        $this->ATRTrailingStop = $this->calculateATRTrailingStop();
-        $this->calculatePosition($this->closeValues, $this->ATRTrailingStop);
-        $this->calculateCrossOvers();
-        $this->calculateSignal();
-
+        $this->UTBotAlertCollection = $this->collection();
     }
 
-    protected function calculateATRTrailingStop(): array
+    public function collection(): ?UTBotAlertCollection
     {
-        $xATRTrailingStop = array_fill(0, count($this->closeValues), 0.0);
+        if (isset($this->UTBotAlertCollection) and $this->UTBotAlertCollection) {
 
-        for ($i = 1; $i < count($this->closeValues); $i++) {
-            // Use the previous value of xATRTrailingStop or 0 if it was not set
-            $prevXATRTrailingStop = $xATRTrailingStop[$i - 1] ?? 0.0;
-            $prevNLoss = $this->nLoss[$i - 1] ?? 0.0;
-
-            if ($this->closeValues[$i] > $prevXATRTrailingStop && $this->closeValues[$i - 1] > $prevXATRTrailingStop) {
-                $xATRTrailingStop[$i] = max($prevXATRTrailingStop, $this->closeValues[$i] - $prevNLoss);
-            } elseif ($this->closeValues[$i] < $prevXATRTrailingStop && $this->closeValues[$i - 1] < $prevXATRTrailingStop) {
-                $xATRTrailingStop[$i] = min($prevXATRTrailingStop, $this->closeValues[$i] + $prevNLoss);
-            } else {
-                $xATRTrailingStop[$i] = ($this->closeValues[$i] > $prevXATRTrailingStop) ? $this->closeValues[$i] - $prevNLoss : $this->closeValues[$i] + $prevNLoss;
-            }
+            return $this->UTBotAlertCollection;
         }
 
-        $this->candles = $this->candles->mergeDataInMeta($xATRTrailingStop, 'atr');
-
-        return $xATRTrailingStop;
+        return new UTBotAlertCollection($this->candles, $this->sensitivity, $this->atrPeriod);
     }
 
-    protected function calculatePosition(array $src, array $xATRTrailingStop): array
+    public function lastSignalCandle(): Candle
     {
-        $pos = [];
-        $pos[0] = 0; // Initialize the first position to 0
+        return $this->UTBotAlertCollection->lastSignal();
+    }
 
-        for ($i = 1; $i < count($src); $i++) {
-            $prevSrc = $src[$i - 1];
-            $prevXATRTrailingStop = $xATRTrailingStop[$i - 1] ?? 0;
-            $prevPos = $pos[$i - 1] ?? 0;
+    public function signalOfRecentCandles(int $count = 3): ?Candle
+    {
+        return $this->UTBotAlertCollection->recentSignal($count);
+    }
 
-            if ($prevSrc < $prevXATRTrailingStop && $src[$i] > $prevXATRTrailingStop) {
-                $pos[$i] = 1;
-            } elseif ($prevSrc > $prevXATRTrailingStop && $src[$i] < $prevXATRTrailingStop) {
-                $pos[$i] = -1;
-            } else {
-                $pos[$i] = $prevPos;
+    public function isBuy(?int $recentCandles = null): bool
+    {
+        if ($recentCandles) {
+
+            $recentSignal = $this->signalOfRecentCandles($recentCandles);
+
+            if ($recentSignal) {
+
+                return $recentSignal->getMeta()['signal'] == 'buy';
             }
 
+            return false;
         }
 
-        $this->candles = $this->candles->mergeDataInMeta($pos, 'pos');
-
-        return $pos;
+        return $this->lastSignalCandle()->getMeta()['signal'] == 'buy';
     }
 
-    protected function calculateEMA(): void
+    public function isSell(?int $recentCandles = null): bool
     {
-        $this->ema = Indicator::EMA($this->candles, 2);
+        if ($recentCandles) {
 
-        $this->candles = $this->candles->mergeDataInMeta($this->ema, 'ema');
-    }
+            $recentSignal = $this->signalOfRecentCandles($recentCandles);
 
-    protected function calculateCrossOvers(): void
-    {
-        $this->calculateEMA();
+            if ($recentSignal) {
 
-        $aboveCrossOver = Indicator::crossover($this->ema, $this->ATRTrailingStop);
-
-        $aboveCrossOver = collect($aboveCrossOver)->map(fn($value) => !$value ? 'below' : 'above')->all();
-
-        $this->candles = $this->candles->mergeDataInMeta($aboveCrossOver, 'cross');
-    }
-
-    protected function calculateSignal(): void
-    {
-        $this->candles = $this->candles->each(function (Candle $candle, int $index) {
-
-            $meta = $candle->getMeta();
-
-            $additionalMeta = [];
-
-            if ($candle->getClose() > $meta['atr'] and $meta['cross'] == 'above') {
-
-                $additionalMeta = ['signal' => 'buy', 'candle_signal' => 'buy'];
+                return $recentSignal->getMeta()['signal'] == 'sell';
             }
 
-            if ($candle->getClose() < $meta['atr'] and $meta['cross'] == 'below') {
+            return false;
+        }
 
-                $additionalMeta = ['signal' => 'sell', 'candle_signal' => 'sell'];
-            }
-
-            if (count($additionalMeta) == 0 and $index != 0) {
-
-                $preCandle = $this->candles->toArray()[$index - 1];
-
-                $preOrder = array_key_exists('signal', $preCandle->getMeta()) ? $preCandle->getMeta()['signal'] : 'not defined';
-
-                $additionalMeta = ['signal' => $preOrder];
-            }
-
-            $candle->setMeta($additionalMeta);
-        });
+        return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
     }
 
-    public function getCalculatedCandles(): UTBotAlertCollection
+    public function currentPrice(): mixed
     {
-        return UTBotAlertCollection::make($this->candles);
+        return $this->collection()->get(0)->getClose();
     }
 
-    public function lastSignal(): Candle
-    {
-        return $this->getCalculatedCandles()->signals()->lastCandle();
-    }
-
-    public function buy(): bool
-    {
-        return $this->lastSignal()->hasBuySignal();
-    }
-
-    public function sell(): bool
-    {
-        return $this->lastSignal()->hasSellSignal();
-    }
-
-    public function hasRecentlySignal(): bool
-    {
-        $index = $this->getCalculatedCandles()->search(function (Candle $candle) {
-
-            return $candle === $this->lastSignal();
-        });
-
-        return ($this->getCalculatedCandles()->count() - $index) <= 3;
-    }
 }

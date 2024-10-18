@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 class Candle
 {
     private mixed $time;
+    private mixed $dateTimeString;
     private mixed $open;
     private mixed $high;
     private mixed $low;
@@ -26,7 +27,8 @@ class Candle
         self::validateArrayKeys($data);
 
         $candle = new Candle();
-        $candle->setTime(Carbon::createFromTimestampMs($data['time'])->toDateTimeString());
+        $candle->setTime($data['time']);
+        $candle->setDateTimeString(Carbon::createFromTimestampMs($data['time'])->toDateTimeString());
         $candle->setOpen($data['open']);
         $candle->setHigh($data['high']);
         $candle->setLow($data['low']);
@@ -173,6 +175,13 @@ class Candle
         $this->meta = array_merge($meta, $this->meta);
     }
 
+    public function resetMeta(string $key, mixed $value): void
+    {
+        unset($this->meta[$key]);
+
+        $this->setMeta([$key => $value]);
+    }
+
     public function isBullish(): bool
     {
         return $this->isBullish;
@@ -193,5 +202,15 @@ class Candle
     public function hasBuySignal(): bool
     {
         return array_key_exists('signal', $this->meta) and in_array(Str::lower($this->meta['signal']),['buy', 'long']);
+    }
+
+    public function getDateTimeString(): mixed
+    {
+        return $this->dateTimeString;
+    }
+
+    public function setDateTimeString(mixed $dateTimeString): void
+    {
+        $this->dateTimeString = $dateTimeString;
     }
 }

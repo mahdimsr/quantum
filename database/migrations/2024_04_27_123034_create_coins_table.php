@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('coins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->float('percent_tolerance');
             $table->timestamps();
         });
     }

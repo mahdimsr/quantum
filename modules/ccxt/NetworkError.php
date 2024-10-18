@@ -3,6 +3,6 @@
 namespace Modules\CCXT;
 
 
-use ccxt\OperationFailed;
+use Modules\CCXT\OperationFailed;
 
 class NetworkError extends OperationFailed {};

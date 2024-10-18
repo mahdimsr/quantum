@@ -2,9 +2,9 @@
 
 namespace App\Services\Exchange\Coinex\Responses;
 
-use App\Services\Exchange\Responses\AdjustPositionLeverageContract;
+use App\Services\Exchange\Responses\SetLeverageResponseContract;
 
-class AdjustPositionLeverageResponse extends ResponseAdapter implements AdjustPositionLeverageContract
+class SetLeverageResponseResponse extends ResponseAdapter implements SetLeverageResponseContract
 {
     public function margin_mode(): string
     {

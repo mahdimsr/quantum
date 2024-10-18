@@ -13,18 +13,17 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id');
-            $table->string('market');
-            $table->string('market_type');
+            $table->string('client_id')->unique()->nullable();
+            $table->string('position_id')->unique()->nullable();
+            $table->string('exchange')->nullable();
+            $table->string('exchange_order_id')->nullable();
+            $table->string('symbol');
+            $table->string('coin_name');
             $table->string('side');
             $table->string('type');
-            $table->string('amount');
-            $table->string('current_price');
+            $table->string('status');
             $table->string('price');
-            $table->string('stop_loss_price');
-            $table->string('take_profit_price');
-            $table->boolean('has_stop_loss');
-            $table->boolean('has_take_profit');
+            $table->string('balance')->nullable();
             $table->timestamps();
         });
     }
