@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Events\OrderClosedEvent;
 use App\Events\PendingOrderCreated;
-use App\Listeners\BingXOpenOrderListener;
-use App\Listeners\ChangeOrderStatusListener;
+use App\Listeners\OpenStaticRewardOrderListener;
+use App\Listeners\ChangeClosedOrderStatusListener;
 use App\Listeners\OrderClosedNotifyListener;
 use App\Listeners\OrderOpenedNotifyListener;
 use Illuminate\Auth\Events\Registered;
@@ -26,12 +26,12 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         PendingOrderCreated::class => [
-            BingXOpenOrderListener::class,
+            OpenStaticRewardOrderListener::class,
             OrderOpenedNotifyListener::class,
         ],
 
         OrderClosedEvent::class => [
-            ChangeOrderStatusListener::class,
+            ChangeClosedOrderStatusListener::class,
             OrderClosedNotifyListener::class,
         ]
     ];

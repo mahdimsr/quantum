@@ -7,7 +7,7 @@ use App\Events\OrderClosedEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class ChangeOrderStatusListener
+class ChangeClosedOrderStatusListener
 {
     /**
      * Create the event listener.

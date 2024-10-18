@@ -9,7 +9,7 @@ use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Target;
 use App\Services\Order\Calculate;
 
-class BingXOpenOrderListener
+class OpenStaticRewardOrderListener
 {
     private BingXService $bingXService;
     private mixed $balance;
@@ -83,6 +83,10 @@ class BingXOpenOrderListener
                 'exchange_order_id' => $setOrderResponse->order()->getOrderId(),
                 'balance' => $this->balance
             ]);
+
+        } else {
+
+            $event->pendingOrder->forceDelete();
         }
     }
 }
