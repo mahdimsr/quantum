@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Queue;
 
 class Kernel extends ConsoleKernel
 {
@@ -36,7 +37,7 @@ class Kernel extends ConsoleKernel
         foreach ($pendingOrders as $order) {
 
             $schedule->command('app:close-position-command', [
-                'coin' => $order->coin_name,
+                $order->coin_name,
             ])->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
         }
     }
