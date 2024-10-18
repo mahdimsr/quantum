@@ -159,8 +159,6 @@ class BingXService implements CandleRequestContract, CoinsRequestContract, SetLe
             'timestamp' => now()->timestamp
         ]);
 
-        dd($data);
-
         return new ClosePositionResponseAdapter($data);
     }
 }
