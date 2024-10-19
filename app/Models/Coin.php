@@ -35,7 +35,7 @@ class Coin extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class, 'name', 'coin_name');
+        return $this->hasMany(Order::class, 'coin_name', 'name');
     }
 
     public function scopeStrategy(Builder $builder, StrategyEnum $strategyEnum)
