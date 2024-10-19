@@ -33,7 +33,7 @@ class OrderClosedNotification extends Notification
     public function toTelegram(object $notifiable)
     {
         $message = "⚠️ Order Close ⚠️ \n";
-        $message .= "Coin: " . $this->order->coin . "\n";
+        $message .= "Coin: " . $this->order->coin_name . "\n";
 
         return TelegramMessage::create()
             ->to($notifiable->telegram_chat_id)
