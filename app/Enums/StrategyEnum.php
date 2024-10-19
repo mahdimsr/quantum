@@ -8,7 +8,13 @@ enum StrategyEnum: string
 {
     use OptionValues;
 
-    case SIMPLE_BOLLINGER_BAND = 'simple_bollinger_band';
-    case UT_BOT_ALERT = 'ut_bot_alert';
-    case SHORT_TREND = 'short_trend';
+    case Static_Profit = 'Static_Profit';
+
+    public function description(): string
+    {
+        return match ($this) {
+
+            self::Static_Profit => 'in static profit strategy, quantum looking for specific pnl percent and then close position, current pnl percentage profit is 1 percent',
+        };
+    }
 }
