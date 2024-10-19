@@ -8,7 +8,7 @@ enum StrategyEnum: string
 {
     use OptionValues;
 
-    case Static_Profit = 'Static_Profit';
+    case Static_Profit = 'Static Profit';
 
     public function description(): string
     {
