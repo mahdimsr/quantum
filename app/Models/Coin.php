@@ -38,14 +38,9 @@ class Coin extends Model
         return $this->hasMany(Order::class, 'coin_name', 'name');
     }
 
-    public function scopeStrategy(Builder $builder, StrategyEnum $strategyEnum)
+    public function strategies(): HasMany
     {
-        $builder->whereJsonContains('strategies', $strategyEnum->value);
-    }
-
-    public function scopeStatus(Builder $builder, CoinStatusEnum $coinStatusEnum)
-    {
-        $builder->where('status', $coinStatusEnum->value);
+        return $this->hasMany(CoinStrategy::class);
     }
 
     public static function findByName(string $name): Model|self

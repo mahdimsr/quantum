@@ -15,6 +15,8 @@ class CoinStrategy extends Model
 {
     public $timestamps = false;
 
+    protected $guarded = ['id'];
+
     public function coin(): BelongsTo
     {
         return $this->belongsTo(Coin::class);
