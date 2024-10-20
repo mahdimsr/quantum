@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property OrderStatusEnum status
  * @property string price
  * @property string balance
+ * @property string tp
+ * @property string sl
  *
  * @property Coin coin
  *

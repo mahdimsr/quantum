@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('status');
             $table->string('price');
             $table->string('balance')->nullable();
+            $table->string('tp')->nullable();
+            $table->string('sl')->nullable();
             $table->timestamps();
         });
     }
