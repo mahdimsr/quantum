@@ -52,4 +52,9 @@ class Calculate
     {
         return ($leverage * $balance) / $currentPrice;
     }
+
+    public static function quantity($balance, $currentPrice, $leverage): float
+    {
+        return ($balance  / $currentPrice) * $leverage;
+    }
 }

@@ -35,8 +35,7 @@ class OpenStaticRewardOrderListener
         );
 
 
-        $amount = Calculate::maxOrderAmount($this->balance, $currentPrice, $event->pendingOrder->leverage);
-        $quantity =  ($this->balance  / $currentPrice) * $event->pendingOrder->leverage;
+        $quantity =  Calculate::quantity($this->balance, $currentPrice, $event->pendingOrder->leverage);
 
         if ($quantity < 1) {
 
