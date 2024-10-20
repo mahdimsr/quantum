@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Enums\StrategyEnum;
 use App\Models\Coin;
+use App\Models\User;
+use App\Notifications\ExceptionNotification;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
@@ -12,6 +14,7 @@ use App\Services\OrderService;
 use App\Services\Strategy\LNLTrendStrategy;
 use App\Services\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class StaticRewardCommand extends Command
 {
@@ -26,6 +29,18 @@ class StaticRewardCommand extends Command
     {
         $leverage = $this->argument('leverage');
         $timeframe = $this->argument('timeframe');
+
+        $exchangeBalance = Exchange::futuresBalance()->balance();
+        $strategyBalance = User::mahdi()->strategies()->where('name', StrategyEnum::Static_Profit->value)->first();
+
+        if ($exchangeBalance < $strategyBalance) {
+
+            $this->alert("this strategy for you has balance: $strategyBalance, but your exchange balance is: $exchangeBalance");
+
+            Notification::send(User::mahdi(), new ExceptionNotification('Balance not enough to reach static-reward strategy'));
+
+            return 0;
+        }
 
         $staticRewardCoins = Coin::withStrategy(StrategyEnum::Static_Profit)->get();
 

@@ -8,17 +8,16 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Telegram\TelegramMessage;
 
-class ExceptionNotification extends Notification implements TelegramBotNotification
+class ExceptionNotification extends Notification
 {
     use Queueable;
 
-    protected string $symbol;
     protected string $errorMessage;
 
-    public function __construct(string $symbol, string $errorMessage)
+    public function __construct(string $errorMessage)
     {
-        $this->symbol = $symbol;
         $this->errorMessage = $errorMessage;
     }
 
@@ -29,7 +28,7 @@ class ExceptionNotification extends Notification implements TelegramBotNotificat
      */
     public function via(object $notifiable): array
     {
-        return [TelegramBotChannel::class];
+        return ['telegram'];
     }
 
     /**
@@ -55,13 +54,14 @@ class ExceptionNotification extends Notification implements TelegramBotNotificat
         ];
     }
 
-    public function toTelegramBot(): string
+    public function toTelegram(object $notifiable): string
     {
 
         $message = "🧨🧨Exception🧨🧨" . "\n";
-        $message .= "symbol: $this->symbol \n";
         $message .= "error: $this->errorMessage";
 
-        return $message;
+        return TelegramMessage::create()
+            ->to($notifiable->telegram_chat_id)
+            ->line($message);
     }
 }
