@@ -25,12 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $coins = Coin::all();
+        $schedule->command('app:static-reward-strategy')->hourly()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
 
-        foreach ($coins as $coin) {
-
-            $schedule->command('app:static-reward-strategy', [$coin->name])->hourly()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
-        }
 
         $pendingOrders = Order::status(OrderStatusEnum::PENDING)->get();
 
@@ -47,7 +43,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

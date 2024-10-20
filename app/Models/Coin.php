@@ -19,9 +19,8 @@ use Illuminate\Support\Str;
  * @property int fee
  * @property CoinStatusEnum status
  * @property int order
- * @property array strategies
  *
- * @method static Builder strategy(StrategyEnum $strategyEnum)
+ * @method static Builder withStrategy(StrategyEnum $strategyEnum)
  * @method static Builder status(CoinStatusEnum $coinStatusEnum)
  */
 class Coin extends Model
@@ -41,6 +40,14 @@ class Coin extends Model
     public function strategies(): HasMany
     {
         return $this->hasMany(CoinStrategy::class);
+    }
+
+    public function scopeWithStrategies(Builder $builder, StrategyEnum $strategyEnum): Builder
+    {
+        $builder->whereHas('strategies', function (Builder $strategyQuery) use ($strategyEnum) {
+
+            $strategyQuery->where('name', $strategyEnum->name);
+        });
     }
 
     public static function findByName(string $name): Model|self
