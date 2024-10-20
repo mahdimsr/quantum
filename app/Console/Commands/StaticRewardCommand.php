@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\OrderStatusEnum;
 use App\Enums\StrategyEnum;
 use App\Models\Coin;
+use App\Models\Order;
 use App\Models\User;
 use App\Notifications\ExceptionNotification;
 use App\Services\Exchange\Enums\SideEnum;
@@ -15,6 +17,7 @@ use App\Services\Strategy\LNLTrendStrategy;
 use App\Services\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 
 class StaticRewardCommand extends Command
 {
@@ -70,17 +73,20 @@ class StaticRewardCommand extends Command
                 $sl = Calculate::target($utBotStrategy->currentPrice(), -0.5);
                 $tp = Calculate::target($utBotStrategy->currentPrice(), 0.5);
 
-                OrderService::openOrder(
-                    $coin,
-                    $utBotStrategy->currentPrice(),
-                    TypeEnum::LIMIT,
-                    SideEnum::LONG,
-                    $sl,
-                    $tp,
-                    $leverage
-                );
+                $pendingOrder = Order::query()->create([
+                    'symbol' => $coin->symbol('-'),
+                    'coin_name' => $coin->name,
+                    'side' => Str::of(SideEnum::LONG->value)->upper()->toString(),
+                    'type' => Str::of(TypeEnum::LIMIT->value)->upper()->toString(),
+                    'status' => Str::of(OrderStatusEnum::ONLY_CREATED->value)->upper()->toString(),
+                    'price' => $utBotStrategy->currentPrice(),
+                    'sl' => $sl,
+                    'tp' => $tp,
+                    'leverage' => $leverage,
+                    'balance' => $exchangeBalance,
+                ]);
 
-                $this->info('Buy Signal Sent ...');
+                $this->info('Buy Signal ...');
 
                 return 1;
             }
@@ -90,17 +96,20 @@ class StaticRewardCommand extends Command
                 $sl = Calculate::target($utBotStrategy->currentPrice(), 0.5);
                 $tp = Calculate::target($utBotStrategy->currentPrice(), - 0.5);
 
-                OrderService::openOrder(
-                    $coin,
-                    $utBotStrategy->currentPrice(),
-                    TypeEnum::LIMIT,
-                    SideEnum::SHORT,
-                    $sl,
-                    $tp,
-                    $leverage
-                );
+                $pendingOrder = Order::query()->create([
+                    'symbol' => $coin->symbol('-'),
+                    'coin_name' => $coin->name,
+                    'side' => Str::of(SideEnum::SHORT->value)->upper()->toString(),
+                    'type' => Str::of(TypeEnum::LIMIT->value)->upper()->toString(),
+                    'status' => Str::of(OrderStatusEnum::ONLY_CREATED->value)->upper()->toString(),
+                    'price' => $utBotStrategy->currentPrice(),
+                    'sl' => $sl,
+                    'tp' => $tp,
+                    'leverage' => $leverage,
+                    'balance' => $exchangeBalance,
+                ]);
 
-                $this->info('Sell Signal Sent ...');
+                $this->info('Sell Signal ...');
 
                 return 1;
             }
