@@ -28,14 +28,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:static-reward-strategy')->hourly()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
 
 
-        $pendingOrders = Order::status(OrderStatusEnum::PENDING)->get();
+        $schedule->command('app:close-position-command')->hourlyAt(45)->appendOutputTo(storage_path('logs/commands/close-position.log'));
 
-        foreach ($pendingOrders as $order) {
-
-            $schedule->command('app:close-position-command', [
-                $order->coin_name,
-            ])->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
-        }
     }
 
     /**

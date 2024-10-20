@@ -22,9 +22,8 @@ class StaticRewardCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        $profitPercent = $this->argument('profit-percent');
         $leverage = $this->argument('leverage');
         $timeframe = $this->argument('timeframe');
 
