@@ -4,16 +4,14 @@ namespace App\Console\Commands;
 
 use App\Enums\StrategyEnum;
 use App\Models\Coin;
-use App\Models\User;
-use App\Notifications\SignalNotification;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
+use App\Services\Order\Calculate;
 use App\Services\OrderService;
 use App\Services\Strategy\LNLTrendStrategy;
 use App\Services\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Notification;
 
 class StaticRewardCommand extends Command
 {
@@ -55,29 +53,40 @@ class StaticRewardCommand extends Command
 
             if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
 
+                $sl = Calculate::target($utBotStrategy->currentPrice(), -0.5);
+                $tp = Calculate::target($utBotStrategy->currentPrice(), 0.5);
+
                 OrderService::openOrder(
                     $coin,
                     $utBotStrategy->currentPrice(),
                     TypeEnum::LIMIT,
-                    SideEnum::LONG
+                    SideEnum::LONG,
+                    $sl,
+                    $tp,
+                    $leverage
                 );
 
-                $this->info('Buy Signal Sent...');
+                $this->info('Buy Signal Sent ...');
 
                 return 1;
             }
 
             if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
 
+                $sl = Calculate::target($utBotStrategy->currentPrice(), 0.5);
+                $tp = Calculate::target($utBotStrategy->currentPrice(), - 0.5);
 
                 OrderService::openOrder(
                     $coin,
                     $utBotStrategy->currentPrice(),
                     TypeEnum::LIMIT,
-                    SideEnum::SHORT
+                    SideEnum::SHORT,
+                    $sl,
+                    $tp,
+                    $leverage
                 );
 
-                $this->info('Sell Signal Sent...');
+                $this->info('Sell Signal Sent ...');
 
                 return 1;
             }

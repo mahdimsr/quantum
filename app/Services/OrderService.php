@@ -12,19 +12,21 @@ use Illuminate\Support\Str;
 
 class OrderService
 {
-    public static function openOrder(Coin $coin, mixed $currentPrice, TypeEnum $typeEnum, SideEnum $sideEnum): Order
+    public static function openOrder(Coin $coin, mixed $currentPrice, TypeEnum $typeEnum, SideEnum $sideEnum, ?string $sl = null, ?string $tp = null, ?string $leverage = null): Order
     {
         $pendingOrder = Order::query()->create([
-           'symbol' => $coin->symbol('-'),
-           'coin_name' => $coin->name,
-           'side' => Str::of($sideEnum->value)->upper()->toString(),
-           'type' => Str::of($typeEnum->value)->upper()->toString(),
-           'status' => Str::of(OrderStatusEnum::ONLY_CREATED->value)->upper()->toString(),
-           'price' => $currentPrice,
+            'symbol' => $coin->symbol('-'),
+            'coin_name' => $coin->name,
+            'side' => Str::of($sideEnum->value)->upper()->toString(),
+            'type' => Str::of($typeEnum->value)->upper()->toString(),
+            'status' => Str::of(OrderStatusEnum::ONLY_CREATED->value)->upper()->toString(),
+            'price' => $currentPrice,
+            'sl' => $sl,
+            'tp' => $tp,
         ]);
 
         event(new PendingOrderCreated($pendingOrder));
 
         return $pendingOrder;
-   }
+    }
 }

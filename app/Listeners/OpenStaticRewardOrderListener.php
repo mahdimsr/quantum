@@ -13,14 +13,12 @@ class OpenStaticRewardOrderListener
 {
     private BingXService $bingXService;
     private mixed $balance;
-    private int $leverage;
 
     public function __construct()
     {
         $this->bingXService = app(BingXService::class);
         $exchangeBalance = $this->bingXService->futuresBalance()->balance();
         $this->balance = round($exchangeBalance, 2);
-        $this->leverage = 5;
     }
 
     /**
@@ -33,12 +31,12 @@ class OpenStaticRewardOrderListener
         $this->bingXService->setLeverage(
             $event->pendingOrder->coin->symbol('-'),
             $event->pendingOrder->side,
-            $this->leverage,
+            $event->pendingOrder->leverage,
         );
 
 
-        $amount = Calculate::maxOrderAmount($this->balance, $currentPrice, $this->leverage);
-        $quantity =  ($this->balance  / $currentPrice) * $this->leverage;
+        $amount = Calculate::maxOrderAmount($this->balance, $currentPrice, $event->pendingOrder->leverage);
+        $quantity =  ($this->balance  / $currentPrice) * $event->pendingOrder->leverage;
 
         if ($quantity < 1) {
 
@@ -49,20 +47,8 @@ class OpenStaticRewardOrderListener
             $quantity = round($quantity, 1, PHP_ROUND_HALF_DOWN) - 1;
         }
 
-        if ($event->pendingOrder->side->isShort()) {
-
-            $tpPrice = Calculate::target($currentPrice, -2);
-            $slPrice = Calculate::target($currentPrice, 1);
-        }
-
-        if ($event->pendingOrder->side->isLONG()) {
-
-            $tpPrice = Calculate::target($currentPrice, 2);
-            $slPrice = Calculate::target($currentPrice, -1);
-        }
-
-        $tpTarget = Target::create(TypeEnum::TAKE_PROFIT->value, $tpPrice, $tpPrice);
-        $slTarget = Target::create(TypeEnum::STOP->value, $slPrice, $slPrice);
+        $tpTarget = Target::create(TypeEnum::TAKE_PROFIT->value, $event->pendingOrder->tp, $event->pendingOrder->tp);
+        $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
 
         $setOrderResponse = $this->bingXService->setOrder(
             $event->pendingOrder->coin->symbol('-'),
