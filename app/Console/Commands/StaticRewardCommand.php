@@ -45,7 +45,7 @@ class StaticRewardCommand extends Command
             return 0;
         }
 
-        $staticRewardCoins = Coin::withStrategy(StrategyEnum::Static_Profit)->get();
+        $staticRewardCoins = Coin::withStrategies(StrategyEnum::Static_Profit)->get();
 
         foreach ($staticRewardCoins as $coin) {
 
