@@ -34,7 +34,7 @@ class StaticRewardCommand extends Command
         $timeframe = $this->argument('timeframe');
 
         $exchangeBalance = Exchange::futuresBalance()->balance();
-        $strategyBalance = User::mahdi()->strategies()->where('name', StrategyEnum::Static_Profit->value)->first();
+        $strategyBalance = User::mahdi()->strategies()->where('name', StrategyEnum::Static_Profit->value)->first()->balance;
 
         if ($exchangeBalance < $strategyBalance) {
 
