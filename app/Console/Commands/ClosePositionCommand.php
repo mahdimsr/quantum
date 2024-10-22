@@ -11,7 +11,7 @@ use Illuminate\Console\Command;
 
 class ClosePositionCommand extends Command
 {
-    protected $signature = 'app:close-position-command';
+    protected $signature = 'app:close-position-command {--timeBase} {--percentageBase}';
 
     protected $description = 'Close Position';
 
@@ -47,7 +47,7 @@ class ClosePositionCommand extends Command
                 ]);
 
 
-                if (now()->diffInMinutes($order->created_at) > 45 or $position->getPnlPercent() >= 1.5) {
+                if ($this->option('timeBase') and now()->diffInMinutes($order->created_at) > 45) {
 
                     $this->comment('closing position');
 
@@ -55,7 +55,7 @@ class ClosePositionCommand extends Command
 
                     if ($closePositionResponse->isSuccess()) {
 
-                        $this->info('position closed');
+                        $this->info('position closed after 45 minutes');
 
                         event(new OrderClosedEvent($order));
 
@@ -65,6 +65,26 @@ class ClosePositionCommand extends Command
                     }
 
                 }
+
+                if ($this->option('percentageBase') and $position->getPnlPercent() >= 1.5) {
+
+                    $this->comment('closing position');
+
+                    $closePositionResponse = $this->bingXService->closePositionByPositionId($position->getPositionId());
+
+                    if ($closePositionResponse->isSuccess()) {
+
+                        $this->info('position closed after 1.5 percent profit');
+
+                        event(new OrderClosedEvent($order));
+
+                    } else {
+
+                        $this->error('closing position failed');
+                    }
+                }
+
+                $this->warn('no option set');
 
                 return 1;
             }
