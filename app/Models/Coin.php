@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CoinStatusEnum;
 use App\Enums\StrategyEnum;
+use App\Observers\CoinObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -33,6 +34,11 @@ class Coin extends Model
         'strategies' => 'array',
         'status' => CoinStatusEnum::class,
     ];
+
+    protected static function booted()
+    {
+        static::observe(CoinObserver::class);
+    }
 
     public function orders(): HasMany
     {
