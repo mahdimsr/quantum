@@ -6,6 +6,7 @@ use App\Enums\CoinStatusEnum;
 use App\Enums\StrategyEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,6 +20,7 @@ use Illuminate\Support\Str;
  * @property int fee
  * @property CoinStatusEnum status
  * @property int order
+ * @property Collection coinStrategies
  *
  * @method static Builder withStrategies(StrategyEnum $strategyEnum)
  * @method static Builder status(CoinStatusEnum $coinStatusEnum)
@@ -37,14 +39,14 @@ class Coin extends Model
         return $this->hasMany(Order::class, 'coin_name', 'name');
     }
 
-    public function strategies(): HasMany
+    public function coinStrategies(): HasMany
     {
         return $this->hasMany(CoinStrategy::class);
     }
 
     public function scopeWithStrategies(Builder $builder, StrategyEnum $strategyEnum)
     {
-        $builder->whereHas('strategies', function (Builder $strategyQuery) use ($strategyEnum) {
+        $builder->whereHas('coinStrategies', function (Builder $strategyQuery) use ($strategyEnum) {
 
             $strategyQuery->where('name', $strategyEnum->name);
         });

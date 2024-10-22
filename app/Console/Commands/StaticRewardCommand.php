@@ -47,6 +47,8 @@ class StaticRewardCommand extends Command
 
         $staticRewardCoins = Coin::withStrategies(StrategyEnum::Static_Profit)->get();
 
+        dd($staticRewardCoins->count());
+
         foreach ($staticRewardCoins as $coin) {
 
             $this->info("Getting Candles of $coin->name");
@@ -68,7 +70,7 @@ class StaticRewardCommand extends Command
             $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 5);
             $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-            if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
+            if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish() or $coin->name == 'FTM') {
 
                 $sl = Calculate::target($utBotStrategy->currentPrice(), -0.5);
                 $tp = Calculate::target($utBotStrategy->currentPrice(), 0.5);
