@@ -48,7 +48,7 @@ class Coin extends Model
     {
         $builder->whereHas('coinStrategies', function (Builder $strategyQuery) use ($strategyEnum) {
 
-            $strategyQuery->where('name', $strategyEnum->name);
+            $strategyQuery->where('name', $strategyEnum->value);
         });
     }
 
