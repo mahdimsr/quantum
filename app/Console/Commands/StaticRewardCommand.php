@@ -21,47 +21,75 @@ use Illuminate\Support\Str;
 
 class StaticRewardCommand extends Command
 {
-    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=10} {timeframe=1h}';
+    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=10} {timeframe=1h} {--coin=}';
 
     protected $description = 'Static Reward Strategy';
+
+    private int $leverage;
+    private string $timeframe;
+    private mixed $strategyBalance;
 
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        $leverage = $this->argument('leverage');
-        $timeframe = $this->argument('timeframe');
+        $this->leverage = $this->argument('leverage');
+        $this->timeframe = $this->argument('timeframe');
 
         $exchangeBalance = Exchange::futuresBalance()->balance();
-        $strategyBalance = User::mahdi()->strategies()->where('name', StrategyEnum::Static_Profit->value)->first()->balance;
+        $this->strategyBalance = User::mahdi()->strategies()->where('name', StrategyEnum::Static_Profit->value)->first()->balance;
 
-        if ($exchangeBalance < $strategyBalance) {
+        if ($exchangeBalance < $this->strategyBalance) {
 
-            $this->alert("this strategy for you has balance: $strategyBalance, but your exchange balance is: $exchangeBalance");
+            $this->alert("this strategy for you has balance: $this->strategyBalance, but your exchange balance is: $exchangeBalance");
 
             Notification::send(User::mahdi(), new ExceptionNotification('Balance not enough to reach static-reward strategy'));
 
             return 0;
         }
 
-        $staticRewardCoins = Coin::withStrategies(StrategyEnum::Static_Profit)->get();
 
-        foreach ($staticRewardCoins as $coin) {
+        if ($this->option('coin')) {
 
-            $this->info("Getting Candles of $coin->name");
+            $coin = Coin::findByName($this->option('coin'));
 
-            $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
+            $this->calculate($coin);
 
 
-            if ($candlesResponse->data()->isEmpty()) {
+        } else {
 
-                $this->error("$coin->name candles is empty");
+            $staticRewardCoins = Coin::withStrategies(StrategyEnum::Static_Profit)->get();
 
-                $coin->delete();
+            foreach ($staticRewardCoins as $coin) {
+
+                sleep(1);
+
+                $this->calculate($coin);
             }
+        }
 
-            if ($candlesResponse->data()->isNotEmpty()) {
+
+        $this->comment('No Signal detected ...');
+
+        return 1;
+    }
+
+    private function calculate(Coin $coin)
+    {
+        $this->info("Getting Candles of $coin->name");
+
+        $candlesResponse = Exchange::candles($coin->symbol('-'), $this->timeframe, 100);
+
+
+        if ($candlesResponse->data()->isEmpty()) {
+
+            $this->error("$coin->name candles is empty");
+
+            $coin->delete();
+        }
+
+        if ($candlesResponse->data()->isNotEmpty()) {
 
             $this->info("Setting ut-bot and lnl-trend...");
 
@@ -82,8 +110,8 @@ class StaticRewardCommand extends Command
                     'price' => $utBotStrategy->currentPrice(),
                     'sl' => $sl,
                     'tp' => $tp,
-                    'leverage' => $leverage,
-                    'balance' => $strategyBalance,
+                    'leverage' => $this->leverage,
+                    'balance' => $this->strategyBalance,
                 ]);
 
                 $this->info('Buy Signal ...');
@@ -105,21 +133,14 @@ class StaticRewardCommand extends Command
                     'price' => $utBotStrategy->currentPrice(),
                     'sl' => $sl,
                     'tp' => $tp,
-                    'leverage' => $leverage,
-                    'balance' => $strategyBalance,
+                    'leverage' => $this->leverage,
+                    'balance' => $this->strategyBalance,
                 ]);
 
                 $this->info('Sell Signal ...');
 
                 return 1;
             }
-          }
-
         }
-
-
-        $this->comment('No Signal detected ...');
-
-        return 1;
     }
 }
