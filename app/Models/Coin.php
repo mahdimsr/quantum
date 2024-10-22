@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
  * @property CoinStatusEnum status
  * @property int order
  *
- * @method static Builder withStrategy(StrategyEnum $strategyEnum)
+ * @method static Builder withStrategies(StrategyEnum $strategyEnum)
  * @method static Builder status(CoinStatusEnum $coinStatusEnum)
  */
 class Coin extends Model
