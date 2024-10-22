@@ -54,7 +54,7 @@ class ExceptionNotification extends Notification
         ];
     }
 
-    public function toTelegram(object $notifiable): string
+    public function toTelegram(object $notifiable)
     {
 
         $message = "🧨🧨Exception🧨🧨" . "\n";
