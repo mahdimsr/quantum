@@ -17,8 +17,6 @@ class OpenStaticRewardOrderListener
     public function __construct()
     {
         $this->bingXService = app(BingXService::class);
-        $exchangeBalance = $this->bingXService->futuresBalance()->balance();
-        $this->balance = round($exchangeBalance, 2);
     }
 
     /**
@@ -27,6 +25,7 @@ class OpenStaticRewardOrderListener
     public function handle(PendingOrderCreated $event): void
     {
         $currentPrice = $event->pendingOrder->price;
+        $this->balance = $event->pendingOrder->balance;
 
         $this->bingXService->setLeverage(
             $event->pendingOrder->coin->symbol('-'),
