@@ -106,7 +106,7 @@ class StaticRewardCommand extends Command
                     'sl' => $sl,
                     'tp' => $tp,
                     'leverage' => $leverage,
-                    'balance' => $exchangeBalance,
+                    'balance' => $strategyBalance,
                 ]);
 
                 $this->info('Sell Signal ...');
