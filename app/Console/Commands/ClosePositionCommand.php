@@ -47,7 +47,7 @@ class ClosePositionCommand extends Command
                 ]);
 
 
-                if (now()->diffInMinutes($order->created_at) > 45) {
+                if (now()->diffInMinutes($order->created_at) > 45 or $position->getPnlPercent() >= 1.5) {
 
                     $this->comment('closing position');
 
