@@ -42,7 +42,7 @@ class Coin extends Model
         return $this->hasMany(CoinStrategy::class);
     }
 
-    public function scopeWithStrategies(Builder $builder, StrategyEnum $strategyEnum): Builder
+    public function scopeWithStrategies(Builder $builder, StrategyEnum $strategyEnum)
     {
         $builder->whereHas('strategies', function (Builder $strategyQuery) use ($strategyEnum) {
 
