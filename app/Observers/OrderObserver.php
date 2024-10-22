@@ -28,7 +28,7 @@ class OrderObserver
 
     public function created(Order $order): void
     {
-        if ($order->status == OrderStatusEnum::PENDING) {
+        if ($order->status == OrderStatusEnum::ONLY_CREATED) {
 
             event(new PendingOrderCreated($order));
         }

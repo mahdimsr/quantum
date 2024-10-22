@@ -59,9 +59,9 @@ class StaticRewardCommand extends Command
                 $this->error("$coin->name candles is empty");
 
                 $coin->delete();
-
-                return 0;
             }
+
+            if ($candlesResponse->data()->isNotEmpty()) {
 
             $this->info("Setting ut-bot and lnl-trend...");
 
@@ -83,7 +83,7 @@ class StaticRewardCommand extends Command
                     'sl' => $sl,
                     'tp' => $tp,
                     'leverage' => $leverage,
-                    'balance' => $exchangeBalance,
+                    'balance' => $strategyBalance,
                 ]);
 
                 $this->info('Buy Signal ...');
@@ -113,6 +113,8 @@ class StaticRewardCommand extends Command
 
                 return 1;
             }
+          }
+
         }
 
 
