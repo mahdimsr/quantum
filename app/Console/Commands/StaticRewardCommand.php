@@ -21,7 +21,7 @@ use Illuminate\Support\Str;
 
 class StaticRewardCommand extends Command
 {
-    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=5} {timeframe=1h}';
+    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=10} {timeframe=1h}';
 
     protected $description = 'Static Reward Strategy';
 
