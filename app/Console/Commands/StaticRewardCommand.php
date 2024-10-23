@@ -21,7 +21,7 @@ use Illuminate\Support\Str;
 
 class StaticRewardCommand extends Command
 {
-    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=10} {timeframe=1h} {--coin=}';
+    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=5} {timeframe=1h} {--coin=}';
 
     protected $description = 'Static Reward Strategy';
 
@@ -98,7 +98,7 @@ class StaticRewardCommand extends Command
 
             if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
 
-                $sl = Calculate::target($utBotStrategy->currentPrice(), -0.5);
+                $sl = Calculate::target($utBotStrategy->currentPrice(), -1);
                 $tp = Calculate::target($utBotStrategy->currentPrice(), 0.5);
 
                 $pendingOrder = Order::query()->create([
@@ -121,7 +121,7 @@ class StaticRewardCommand extends Command
 
             if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
 
-                $sl = Calculate::target($utBotStrategy->currentPrice(), 0.5);
+                $sl = Calculate::target($utBotStrategy->currentPrice(), 1);
                 $tp = Calculate::target($utBotStrategy->currentPrice(), - 0.5);
 
                 $pendingOrder = Order::query()->create([
