@@ -47,7 +47,7 @@ class ClosePositionCommand extends Command
                 ]);
 
 
-                if ($this->option('timeBase') and now()->diffInMinutes($order->created_at) > 45) {
+                if ($this->option('timeBase') and now()->diffInMinutes($order->created_at) > 120) {
 
                     $this->comment('closing position');
 
@@ -55,7 +55,7 @@ class ClosePositionCommand extends Command
 
                     if ($closePositionResponse->isSuccess()) {
 
-                        $this->info('position closed after 45 minutes');
+                        $this->info('position closed after 120 minutes');
 
                         event(new OrderClosedEvent($order));
 
@@ -66,7 +66,7 @@ class ClosePositionCommand extends Command
 
                 }
 
-                if ($this->option('percentageBase') and $position->getPnlPercent() >= 1.5) {
+                if ($this->option('percentageBase') and $position->getPnlPercent() >= 1) {
 
                     $this->comment('closing position');
 
@@ -74,7 +74,7 @@ class ClosePositionCommand extends Command
 
                     if ($closePositionResponse->isSuccess()) {
 
-                        $this->info('position closed after 1.5 percent profit');
+                        $this->info('position closed after 1 percent profit');
 
                         event(new OrderClosedEvent($order));
 
