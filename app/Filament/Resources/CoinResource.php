@@ -43,7 +43,7 @@ class CoinResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('strategies.name')
+                TextColumn::make('coinStrategies.name')
                           ->badge()
                           ->color('info'),
             ])
