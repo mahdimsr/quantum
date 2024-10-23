@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('app:static-reward-strategy')->hourly()->appendOutputTo(storage_path('logs/commands/static-reward.log'));
+        $schedule->command('app:static-reward-strategy')->hourlyAt(15)->appendOutputTo(storage_path('logs/commands/static-reward.log'));
 
 
         $schedule->command('app:close-position-command --timeBase')->hourlyAt(50)->appendOutputTo(storage_path('logs/commands/close-position.log'));

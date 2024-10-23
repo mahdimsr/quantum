@@ -103,7 +103,7 @@ class StaticRewardCommand extends Command
 
             if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
 
-                $sl = Calculate::target($utBotStrategy->currentPrice(), -1);
+                $sl = Calculate::target($utBotStrategy->currentPrice(), -0.3);
                 $tp = Calculate::target($utBotStrategy->currentPrice(), 0.5);
 
                 $pendingOrder = Order::query()->create([
@@ -126,7 +126,7 @@ class StaticRewardCommand extends Command
 
             if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
 
-                $sl = Calculate::target($utBotStrategy->currentPrice(), 1);
+                $sl = Calculate::target($utBotStrategy->currentPrice(), 0.3);
                 $tp = Calculate::target($utBotStrategy->currentPrice(), - 0.5);
 
                 $pendingOrder = Order::query()->create([

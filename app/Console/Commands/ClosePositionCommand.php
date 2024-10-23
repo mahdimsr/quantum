@@ -66,7 +66,7 @@ class ClosePositionCommand extends Command
 
                 }
 
-                if ($this->option('percentageBase') and $position->getPnlPercent() >= 1) {
+                if ($this->option('percentageBase') and $position->getPnlPercent() >= 2) {
 
                     $this->comment('closing position');
 
