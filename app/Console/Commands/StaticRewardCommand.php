@@ -65,7 +65,12 @@ class StaticRewardCommand extends Command
 
                 sleep(1);
 
-                $this->calculate($coin);
+                $result = $this->calculate($coin);
+
+                if ($result == 1 ) {
+
+                    break;
+                }
             }
         }
 
