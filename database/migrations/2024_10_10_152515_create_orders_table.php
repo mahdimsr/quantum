@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('balance')->nullable();
             $table->string('tp')->nullable();
             $table->string('sl')->nullable();
+            $table->string('strategy')->nullable();
             $table->timestamps();
         });
     }

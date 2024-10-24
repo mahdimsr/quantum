@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatusEnum;
+use App\Enums\StrategyEnum;
 use App\Observers\OrderObserver;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string balance
  * @property string tp
  * @property string sl
+ * @property string strategy
  *
  * @property Coin coin
  *
@@ -38,6 +40,7 @@ class Order extends Model
         'side' => SideEnum::class,
         'type' => TypeEnum::class,
         'status' => OrderStatusEnum::class,
+        'strategy' => StrategyEnum::class,
     ];
 
     protected static function booted(): void
