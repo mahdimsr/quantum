@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\OrderClosedEvent;
 use App\Events\PendingOrderCreated;
+use App\Listeners\OpenDynamicRewardOrderListener;
 use App\Listeners\OpenStaticRewardOrderListener;
 use App\Listeners\ChangeClosedOrderStatusListener;
 use App\Listeners\OrderClosedNotifyListener;
@@ -26,7 +27,8 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         PendingOrderCreated::class => [
-            OpenStaticRewardOrderListener::class,
+//            OpenStaticRewardOrderListener::class,
+            OpenDynamicRewardOrderListener::class,
             OrderOpenedNotifyListener::class,
         ],
 
