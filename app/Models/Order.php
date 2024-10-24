@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string balance
  * @property string tp
  * @property string sl
- * @property string strategy
+ * @property StrategyEnum strategy
  *
  * @property Coin coin
  *
