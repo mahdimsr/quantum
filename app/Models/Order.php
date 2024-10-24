@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Coin coin
  *
  * @method static Builder status(OrderStatusEnum $orderStatusEnum)
+ * @method static Builder strategy(StrategyEnum $strategyEnum)
  */
 class Order extends Model
 {
@@ -51,6 +52,11 @@ class Order extends Model
     public function scopeStatus(Builder $query, OrderStatusEnum $orderStatusEnum): void
     {
         $query->where('status', $orderStatusEnum->value);
+    }
+
+    public function scopeStrategy(Builder $query, StrategyEnum $strategyEnum): void
+    {
+        $query->where('strategy', $strategyEnum->value);
     }
 
     public static function findByClientId(string $clientId): null|Order|Model
