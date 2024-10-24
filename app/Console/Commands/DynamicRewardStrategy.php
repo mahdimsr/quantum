@@ -23,6 +23,13 @@ class DynamicRewardStrategy extends Command
 
     public function handle(): int
     {
+        if (Order::status(OrderStatusEnum::PENDING)->exists()) {
+
+            $this->warn('pending order exists...');
+
+            return 0;
+        }
+
         $coin = Coin::findByName($this->option('coin'));
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');

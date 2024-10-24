@@ -11,7 +11,7 @@ use Illuminate\Console\Command;
 
 class UpdateDynamicRewardOrderCommand extends Command
 {
-    protected $signature = 'app:update-dynamic-reward-order {--timeframe=1h}';
+    protected $signature = 'app:update-dynamic-reward-order {--timeframe=1m}';
 
 
     protected $description = 'close order or update sl';
@@ -38,6 +38,8 @@ class UpdateDynamicRewardOrderCommand extends Command
 
                 if ($positionResponse->isSuccess()) {
 
+                    $this->info("Found Position for $order->coin_name");
+
                     $order->update([
                         'position_id' => $positionResponse->position()->getPositionId(),
                     ]);
@@ -48,10 +50,12 @@ class UpdateDynamicRewardOrderCommand extends Command
 
             if ($order->side->isLong()) {
 
-                if ($utbotStrategySmall->isSell(0)){
+                if ($utbotStrategySmall->isSell()){
 
                     // close
                     if ($order->position_id) {
+
+                        $this->comment("closing Long Position");
 
                         $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
 
@@ -65,10 +69,12 @@ class UpdateDynamicRewardOrderCommand extends Command
 
             if ($order->side->isShort()) {
 
-                if ($utbotStrategyBig->isBuy(0)){
+                if ($utbotStrategyBig->isBuy()){
 
                     // close
                     if ($order->position_id) {
+
+                        $this->comment("closing Short Position");
 
                         $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
 

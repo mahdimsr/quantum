@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Enums\OrderStatusEnum;
 use App\Enums\StrategyEnum;
 use App\Events\PendingOrderCreated;
+use App\Models\Order;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
 use App\Services\Exchange\Repository\Target;
@@ -51,8 +52,7 @@ class OpenDynamicRewardOrderListener
 
                 $event->pendingOrder->update([
                     'status' => OrderStatusEnum::PENDING,
-                    'exchange_order_id' => $setOrderResponse->order()->getOrderId(),
-                    'balance' => $this->balance
+                    'exchange_order_id' => $setOrderResponse->order()->getOrderId()
                 ]);
 
             } else {

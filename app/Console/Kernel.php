@@ -25,12 +25,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('app:static-reward-strategy')->hourlyAt(15)->appendOutputTo(storage_path('logs/commands/static-reward.log'));
+//        $schedule->command('app:static-reward-strategy')->hourlyAt(15)->appendOutputTo(storage_path('logs/commands/static-reward.log'));
 
+//        $schedule->command('app:close-position-command --timeBase')->hourlyAt(50)->appendOutputTo(storage_path('logs/commands/close-position.log'));
 
-        $schedule->command('app:close-position-command --timeBase')->hourlyAt(50)->appendOutputTo(storage_path('logs/commands/close-position.log'));
+//        $schedule->command('app:close-position-command --percentageBase')->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
 
-        $schedule->command('app:close-position-command --percentageBase')->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
+        $schedule->command('app:dynamic-reward-strategy',['FTM'])->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
+        $schedule->command('app:update-dynamic-reward-order')->hourlyAt(15)->appendOutputTo(storage_path('logs/commands/close-dynamic-reward.log'));
 
     }
 
