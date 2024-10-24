@@ -31,7 +31,7 @@ enum SideEnum: string
         return $this == self::SHORT or $this == self::SELL;
     }
 
-    public function isLONG(): bool
+    public function isLong(): bool
     {
         return $this == self::LONG or $this == self::BUY;
     }
