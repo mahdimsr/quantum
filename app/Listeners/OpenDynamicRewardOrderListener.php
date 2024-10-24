@@ -23,7 +23,7 @@ class OpenDynamicRewardOrderListener
         if ($event->pendingOrder->strategy == StrategyEnum::DYNAMIC_REWARD) {
 
             $currentPrice = $event->pendingOrder->price;
-            $this->balance = $event->pendingOrder->balance;
+            $balance = $event->pendingOrder->balance;
 
             Exchange::setLeverage(
                 $event->pendingOrder->coin->symbol('-'),
@@ -31,7 +31,7 @@ class OpenDynamicRewardOrderListener
                 $event->pendingOrder->leverage
             );
 
-            $quantity =  Calculate::quantity($this->balance, $currentPrice, $event->pendingOrder->leverage);
+            $quantity =  Calculate::quantity($balance, $currentPrice, $event->pendingOrder->leverage);
 
             $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
 

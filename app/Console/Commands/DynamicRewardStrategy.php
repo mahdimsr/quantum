@@ -27,6 +27,7 @@ class DynamicRewardStrategy extends Command
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');
 
+        $balance = 10;
 
         $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
 
@@ -61,6 +62,7 @@ class DynamicRewardStrategy extends Command
                         'price' => $price,
                         'sl' => $sl,
                         'strategy' => StrategyEnum::DYNAMIC_REWARD,
+                        'balance' => $balance,
                     ]);
 
                     event(new PendingOrderCreated($order));
@@ -95,6 +97,7 @@ class DynamicRewardStrategy extends Command
                         'price' => $price,
                         'sl' => $sl,
                         'strategy' => StrategyEnum::DYNAMIC_REWARD,
+                        'balance' => $balance,
                     ]);
 
                     event(new PendingOrderCreated($order));
