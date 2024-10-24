@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Enums\OrderStatusEnum;
+use App\Events\PendingOrderCreated;
 use App\Models\Order;
 use Illuminate\Support\Str;
 
@@ -22,5 +24,13 @@ class OrderObserver
         $order->side = Str::of($order->side->value)->upper()->toString();
         $order->type = Str::of($order->type->value)->upper()->toString();
         $order->status = Str::of($order->status->value)->upper()->toString();
+    }
+
+    public function created(Order $order): void
+    {
+        if ($order->status == OrderStatusEnum::ONLY_CREATED) {
+
+            event(new PendingOrderCreated($order));
+        }
     }
 }

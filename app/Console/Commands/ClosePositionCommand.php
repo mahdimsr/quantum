@@ -5,18 +5,17 @@ namespace App\Console\Commands;
 use App\Enums\OrderStatusEnum;
 use App\Events\OrderClosedEvent;
 use App\Models\Coin;
+use App\Models\Order;
 use App\Services\Exchange\BingX\BingXService;
 use Illuminate\Console\Command;
 
 class ClosePositionCommand extends Command
 {
-    protected $signature = 'app:close-position-command {coin} {profit-percent=1}';
+    protected $signature = 'app:close-position-command {--timeBase} {--percentageBase}';
 
     protected $description = 'Close Position';
 
     private BingXService $bingXService;
-    private ?Coin $coin;
-    private ?int $tpPercent;
 
 
     public function __construct()
@@ -26,50 +25,70 @@ class ClosePositionCommand extends Command
         $this->bingXService = app(BingXService::class);
     }
 
-    public function handle()
+    public function handle(): int
     {
-        $this->coin = Coin::findByName($this->argument('coin'));
-        $this->tpPercent = $this->argument('profit-percent');
+        $pendingOrders = Order::status(OrderStatusEnum::PENDING)->get();
 
-        $this->info('getting position of: ' . $this->coin->name);
+        foreach ($pendingOrders as $order) {
 
-        $currentPositionResponse = $this->bingXService->currentPosition($this->coin->symbol('-'));
+            $this->info('getting position of: ' . $order->coin_name);
 
-        if ($currentPositionResponse->isSuccess() and $currentPositionResponse->position()) {
 
-            $position = $currentPositionResponse->position();
+            $currentPositionResponse = $this->bingXService->currentPosition($order->coin->symbol('-'));
 
-            $this->info('positions exists with position_id: ' . $position->getPositionId());
+            if ($currentPositionResponse->isSuccess() and $currentPositionResponse->position()) {
 
-            $pendingOrder = $this->coin->orders()->status(OrderStatusEnum::PENDING)->first();
+                $position = $currentPositionResponse->position();
 
-            if ($pendingOrder) {
+                $this->info('positions exists with position_id: ' . $position->getPositionId());
 
-                $pendingOrder->update([
+                $order->update([
                     'position_id' => $position->getPositionId(),
                 ]);
-            }
 
-            if ($position->getPnlPercent() >= $this->tpPercent) {
 
-                $this->comment('closing position');
+                if ($this->option('timeBase') and now()->diffInMinutes($order->created_at) > 120) {
 
-                $closePositionResponse = $this->bingXService->closePositionByPositionId($position->getPositionId());
+                    $this->comment('closing position');
 
-                if ($closePositionResponse->isSuccess()) {
+                    $closePositionResponse = $this->bingXService->closePositionByPositionId($position->getPositionId());
 
-                    $this->info('position closed');
+                    if ($closePositionResponse->isSuccess()) {
 
-                    event(new OrderClosedEvent($closePositionResponse->position_id()));
+                        $this->info('position closed after 120 minutes');
 
-                } else {
+                        event(new OrderClosedEvent($order));
 
-                    $this->error('closing position failed');
+                    } else {
+
+                        $this->error('closing position failed');
+                    }
+
                 }
 
+                if ($this->option('percentageBase') and $position->getPnlPercent() >= 2) {
+
+                    $this->comment('closing position');
+
+                    $closePositionResponse = $this->bingXService->closePositionByPositionId($position->getPositionId());
+
+                    if ($closePositionResponse->isSuccess()) {
+
+                        $this->info('position closed after 1 percent profit');
+
+                        event(new OrderClosedEvent($order));
+
+                    } else {
+
+                        $this->error('closing position failed');
+                    }
+                }
+
+                $this->warn('no option set');
+
+                return 1;
             }
 
-            return 1;
         }
 
         $this->warn('no positions founded');

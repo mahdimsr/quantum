@@ -19,11 +19,14 @@ return new class extends Migration
             $table->string('exchange_order_id')->nullable();
             $table->string('symbol');
             $table->string('coin_name');
+            $table->string('leverage')->nullable();
             $table->string('side');
             $table->string('type');
             $table->string('status');
             $table->string('price');
             $table->string('balance')->nullable();
+            $table->string('tp')->nullable();
+            $table->string('sl')->nullable();
             $table->timestamps();
         });
     }

@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Enums\CoinStatusEnum;
 use App\Enums\StrategyEnum;
+use App\Observers\CoinObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,9 +21,9 @@ use Illuminate\Support\Str;
  * @property int fee
  * @property CoinStatusEnum status
  * @property int order
- * @property array strategies
+ * @property Collection coinStrategies
  *
- * @method static Builder strategy(StrategyEnum $strategyEnum)
+ * @method static Builder withStrategies(StrategyEnum $strategyEnum)
  * @method static Builder status(CoinStatusEnum $coinStatusEnum)
  */
 class Coin extends Model
@@ -33,19 +35,27 @@ class Coin extends Model
         'status' => CoinStatusEnum::class,
     ];
 
+    protected static function booted()
+    {
+        static::observe(CoinObserver::class);
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'coin_name', 'name');
     }
 
-    public function scopeStrategy(Builder $builder, StrategyEnum $strategyEnum)
+    public function coinStrategies(): HasMany
     {
-        $builder->whereJsonContains('strategies', $strategyEnum->value);
+        return $this->hasMany(CoinStrategy::class);
     }
 
-    public function scopeStatus(Builder $builder, CoinStatusEnum $coinStatusEnum)
+    public function scopeWithStrategies(Builder $builder, StrategyEnum $strategyEnum)
     {
-        $builder->where('status', $coinStatusEnum->value);
+        $builder->whereHas('coinStrategies', function (Builder $strategyQuery) use ($strategyEnum) {
+
+            $strategyQuery->where('name', $strategyEnum->value);
+        });
     }
 
     public static function findByName(string $name): Model|self

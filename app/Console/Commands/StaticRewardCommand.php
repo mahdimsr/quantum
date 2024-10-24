@@ -2,85 +2,150 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\OrderStatusEnum;
 use App\Enums\StrategyEnum;
 use App\Models\Coin;
+use App\Models\Order;
 use App\Models\User;
-use App\Notifications\SignalNotification;
+use App\Notifications\ExceptionNotification;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
+use App\Services\Order\Calculate;
 use App\Services\OrderService;
 use App\Services\Strategy\LNLTrendStrategy;
 use App\Services\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 
 class StaticRewardCommand extends Command
 {
-    protected $signature = 'app:static-reward-strategy {coin} {profit-percent=1} {leverage=5} {timeframe=1h}';
+    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=5} {timeframe=1h} {--coin=}';
 
     protected $description = 'Static Reward Strategy';
+
+    private int $leverage;
+    private string $timeframe;
+    private mixed $strategyBalance;
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        $coin = Coin::findByName($this->argument('coin'));
-        $profitPercent = $this->argument('profit-percent');
-        $leverage = $this->argument('leverage');
-        $timeframe = $this->argument('timeframe');
+        $this->leverage = $this->argument('leverage');
+        $this->timeframe = $this->argument('timeframe');
 
-        $this->info("Getting Candles of $coin->name");
+        $exchangeBalance = Exchange::futuresBalance()->balance();
+        $this->strategyBalance = User::mahdi()->strategies()->where('name', StrategyEnum::Static_Profit->value)->first()->balance;
 
-        $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
+        if ($exchangeBalance < $this->strategyBalance) {
 
-        if ($candlesResponse->data()->isEmpty()) {
+            $this->alert("this strategy for you has balance: $this->strategyBalance, but your exchange balance is: $exchangeBalance");
 
-            $this->error("$coin->name candles is empty");
-
-            $coin->delete();
+            Notification::send(User::mahdi(), new ExceptionNotification('Balance not enough to reach static-reward strategy'));
 
             return 0;
         }
 
-        $this->info("Setting ut-bot and lnl-trend...");
 
-        $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 5);
-        $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
+        if ($this->option('coin')) {
 
-        if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
+            $coin = Coin::findByName($this->option('coin'));
 
-            OrderService::openOrder(
-                $coin,
-                $utBotStrategy->currentPrice(),
-                TypeEnum::LIMIT,
-                SideEnum::LONG
-            );
-
-            $this->info('Buy Signal Sent...');
-
-            return 1;
-        }
-
-        if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
+            $this->calculate($coin);
 
 
-            OrderService::openOrder(
-                $coin,
-                $utBotStrategy->currentPrice(),
-                TypeEnum::LIMIT,
-                SideEnum::SHORT
-            );
+        } else {
 
-            $this->info('Sell Signal Sent...');
+            $staticRewardCoins = Coin::withStrategies(StrategyEnum::Static_Profit)->get();
 
-            return 1;
+            foreach ($staticRewardCoins as $coin) {
+
+                sleep(1);
+
+                $result = $this->calculate($coin);
+
+                if ($result == 1 ) {
+
+                    break;
+                }
+            }
         }
 
 
         $this->comment('No Signal detected ...');
 
         return 1;
+    }
+
+    private function calculate(Coin $coin)
+    {
+        $this->info("Getting Candles of $coin->name");
+
+        $candlesResponse = Exchange::candles($coin->symbol('-'), $this->timeframe, 100);
+
+
+        if ($candlesResponse->data()->isEmpty()) {
+
+            $this->error("$coin->name candles is empty");
+
+            $coin->delete();
+        }
+
+        if ($candlesResponse->data()->isNotEmpty()) {
+
+            $this->info("Setting ut-bot and lnl-trend...");
+
+            $utBotStrategy = new UTBotAlertStrategy($candlesResponse->data(), 1, 5);
+            $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
+
+            if ($utBotStrategy->isBuy(1) and $lnlTrendStrategy->isBullish()) {
+
+                $sl = Calculate::target($utBotStrategy->currentPrice(), -0.3);
+                $tp = Calculate::target($utBotStrategy->currentPrice(), 0.5);
+
+                $pendingOrder = Order::query()->create([
+                    'symbol' => $coin->symbol('-'),
+                    'coin_name' => $coin->name,
+                    'side' => Str::of(SideEnum::LONG->value)->upper()->toString(),
+                    'type' => Str::of(TypeEnum::LIMIT->value)->upper()->toString(),
+                    'status' => Str::of(OrderStatusEnum::ONLY_CREATED->value)->upper()->toString(),
+                    'price' => $utBotStrategy->currentPrice(),
+                    'sl' => $sl,
+                    'tp' => $tp,
+                    'leverage' => $this->leverage,
+                    'balance' => $this->strategyBalance,
+                ]);
+
+                $this->info('Buy Signal ...');
+
+                return 1;
+            }
+
+            if ($utBotStrategy->isSell(1) and $lnlTrendStrategy->isBearish()) {
+
+                $sl = Calculate::target($utBotStrategy->currentPrice(), 0.3);
+                $tp = Calculate::target($utBotStrategy->currentPrice(), - 0.5);
+
+                $pendingOrder = Order::query()->create([
+                    'symbol' => $coin->symbol('-'),
+                    'coin_name' => $coin->name,
+                    'side' => Str::of(SideEnum::SHORT->value)->upper()->toString(),
+                    'type' => Str::of(TypeEnum::LIMIT->value)->upper()->toString(),
+                    'status' => Str::of(OrderStatusEnum::ONLY_CREATED->value)->upper()->toString(),
+                    'price' => $utBotStrategy->currentPrice(),
+                    'sl' => $sl,
+                    'tp' => $tp,
+                    'leverage' => $this->leverage,
+                    'balance' => $this->strategyBalance,
+                ]);
+
+                $this->info('Sell Signal ...');
+
+                return 1;
+            }
+        }
     }
 }

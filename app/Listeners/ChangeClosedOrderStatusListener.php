@@ -23,7 +23,7 @@ class ChangeClosedOrderStatusListener
     public function handle(OrderClosedEvent $event): void
     {
         $event->order->update([
-           'status' => OrderStatusEnum::DONE
+           'status' => OrderStatusEnum::CLOSED
         ]);
     }
 }

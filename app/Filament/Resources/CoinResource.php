@@ -12,6 +12,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,41 +32,6 @@ class CoinResource extends Resource
                     ->required()
                     ->minValue(1)
                     ->maxValue(191),
-
-                Forms\Components\TextInput::make('percent_tolerance')
-                    ->required(),
-
-                Forms\Components\TextInput::make('leverage')
-                    ->type('number')
-                    ->columnSpan('sm')
-                    ->required(),
-
-                Forms\Components\TextInput::make('fee')
-                    ->type('number')
-                    ->columnSpan('sm')
-                    ->default(0),
-
-                Forms\Components\TextInput::make('order')
-                    ->type('number')
-                    ->columnSpan('sm')
-                    ->required(),
-
-                Forms\Components\Select::make('strategies')
-                    ->options(StrategyEnum::optionCases())
-                    ->searchable()
-                    ->multiple()
-                    ->preload()
-                    ->required()
-                    ->columnSpan('md'),
-
-
-
-                Forms\Components\Select::make('status')
-                    ->options(CoinStatusEnum::optionCases())
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->columnSpan('md'),
             ]);
 
     }
@@ -77,16 +43,9 @@ class CoinResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('order')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('leverage')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\SelectColumn::make('strategy_type')
-                    ->options(StrategyEnum::optionCases()),
-                Tables\Columns\SelectColumn::make('status')
-                    ->options(CoinStatusEnum::optionCases()),
+                TextColumn::make('coinStrategies.name')
+                          ->badge()
+                          ->color('info'),
             ])
 
             ->filters([
@@ -105,7 +64,7 @@ class CoinResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\StrategiesRelationManager::class,
         ];
     }
 

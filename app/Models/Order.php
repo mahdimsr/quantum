@@ -17,11 +17,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property string exchange_order_id
  * @property string symbol
  * @property string coin_name
+ * @property string leverage
  * @property SideEnum side
  * @property TypeEnum type
  * @property OrderStatusEnum status
  * @property string price
  * @property string balance
+ * @property string tp
+ * @property string sl
  *
  * @property Coin coin
  *
