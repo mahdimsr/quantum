@@ -11,7 +11,7 @@ use Illuminate\Console\Command;
 
 class UpdateDynamicRewardOrderCommand extends Command
 {
-    protected $signature = 'app:update-dynamic-reward-order {--timeframe=1m}';
+    protected $signature = 'app:update-dynamic-reward-order {--timeframe=1h}';
 
 
     protected $description = 'close order or update sl';
@@ -69,7 +69,7 @@ class UpdateDynamicRewardOrderCommand extends Command
 
             if ($order->side->isShort()) {
 
-                if ($utbotStrategyBig->isBuy()){
+                if ($utbotStrategySmall->isBuy()){
 
                     // close
                     if ($order->position_id) {
