@@ -16,7 +16,7 @@ use Illuminate\Console\Command;
 
 class DynamicRewardStrategy extends Command
 {
-    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1h} {--leverage=5}';
+    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1h} {--leverage=10}';
 
     protected $description = 'Dynamic Reward Strategy';
 
@@ -34,7 +34,7 @@ class DynamicRewardStrategy extends Command
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');
 
-        $balance = 10;
+        $balance = 30;
 
         $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
 
