@@ -44,44 +44,39 @@ class DynamicRewardStrategy extends Command
             $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
             $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-            if ($lnlTrendStrategy->isBullish() and $utbotStrategyBig->isBuy()) {
+            if ($utbotStrategySmall->isBuy() and $utbotStrategyBig->isBuy()) {
 
-                if ($utbotStrategySmall->isBuy(1)) {
+                $this->info('Buy Order');
 
-                    $this->info('Buy Order');
+                $price = $utbotStrategySmall->collection()->get(0)->getClose();
 
-                    $price = $utbotStrategySmall->collection()->get(0)->getClose();
+                // current trailing-stop or previous open
 
-                    // current trailing-stop or previous open
+                $sl = min(
+                    $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop'),
+                    $utbotStrategyBig->collection()->get(1)->getOpen()
+                );
 
-                    $sl = min(
-                        $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop'),
-                        $utbotStrategyBig->collection()->get(1)->getOpen()
-                    );
+                $order = Order::query()->create([
+                    'symbol' => $coin->symbol('-'),
+                    'coin_name' => $coin->name,
+                    'leverage' => $leverage,
+                    'side' => SideEnum::BUY,
+                    'type' => TypeEnum::MARKET,
+                    'status' => OrderStatusEnum::ONLY_CREATED,
+                    'price' => $price,
+                    'sl' => $sl,
+                    'strategy' => StrategyEnum::DYNAMIC_REWARD,
+                    'balance' => $balance,
+                ]);
 
-                    $order = Order::query()->create([
-                        'symbol' => $coin->symbol('-'),
-                        'coin_name' => $coin->name,
-                        'leverage' => $leverage,
-                        'side' => SideEnum::BUY,
-                        'type' => TypeEnum::MARKET,
-                        'status' => OrderStatusEnum::ONLY_CREATED,
-                        'price' => $price,
-                        'sl' => $sl,
-                        'strategy' => StrategyEnum::DYNAMIC_REWARD,
-                        'balance' => $balance,
-                    ]);
+                event(new PendingOrderCreated($order));
 
-                    event(new PendingOrderCreated($order));
-
-                    return 1;
-                }
+                return 1;
 
             }
 
-            if ($lnlTrendStrategy->isBearish() and $utbotStrategyBig->isSell()) {
-
-                if ($utbotStrategySmall->isSell(1)) {
+            if ($utbotStrategySmall->isSell() and $utbotStrategyBig->isSell()) {
 
                     $this->info('Sell Order');
 
@@ -110,8 +105,6 @@ class DynamicRewardStrategy extends Command
                     event(new PendingOrderCreated($order));
 
                     return 1;
-
-                }
             }
 
             $this->warn('No entry found');
