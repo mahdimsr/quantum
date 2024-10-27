@@ -34,7 +34,7 @@ class DynamicRewardStrategy extends Command
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');
 
-        $balance = 30;
+        $balance = 40;
 
         $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
 
