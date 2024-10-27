@@ -31,8 +31,10 @@ class Kernel extends ConsoleKernel
 
 //        $schedule->command('app:close-position-command --percentageBase')->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
 
-        $schedule->command('app:dynamic-reward-strategy',['--coin' => 'FTM'])->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
-        $schedule->command('app:update-dynamic-reward-order')->hourlyAt(15)->appendOutputTo(storage_path('logs/commands/close-dynamic-reward.log'));
+        $schedule->command('app:dynamic-reward-strategy',['--coin' => 'FTM'])->hourly()->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
+        $schedule->command('app:dynamic-reward-strategy',['--coin' => 'LINK'])->hourly()->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
+        $schedule->command('app:dynamic-reward-strategy',['--coin' => 'FIL'])->hourly()->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
+        $schedule->command('app:update-dynamic-reward-order')->hourly()->appendOutputTo(storage_path('logs/commands/close-dynamic-reward.log'));
 
     }
 
