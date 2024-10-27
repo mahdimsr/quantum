@@ -45,9 +45,9 @@ class UTBotAlertStrategy
         return $this->UTBotAlertCollection->lastSignal();
     }
 
-    public function signalOfRecentCandles(int $count = 3): ?Candle
+    public function signalOfRecentCandles(int $index = 3): ?Candle
     {
-        return $this->UTBotAlertCollection->recentSignal($count);
+        return $this->UTBotAlertCollection->recentSignal($index);
     }
 
     public function isBuy(?int $recentCandles = null): bool
