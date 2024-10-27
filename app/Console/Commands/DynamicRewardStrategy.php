@@ -23,9 +23,19 @@ class DynamicRewardStrategy extends Command
 
     public function handle(): int
     {
-        if (Order::status(OrderStatusEnum::PENDING)->exists()) {
+        /*if (Order::status(OrderStatusEnum::PENDING)->exists()) {
 
             $this->warn('pending order exists...');
+
+            return 0;
+        }*/
+
+        $balance = 40;
+        $availableBalance = Exchange::futuresBalance()->balance();
+
+        if ($availableBalance < $balance) {
+
+            $this->warn("balance not enough, available balance is: $availableBalance");
 
             return 0;
         }
@@ -34,7 +44,6 @@ class DynamicRewardStrategy extends Command
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');
 
-        $balance = 40;
 
         $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
 
