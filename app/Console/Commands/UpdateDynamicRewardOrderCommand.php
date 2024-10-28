@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\OrderStatusEnum;
 use App\Enums\StrategyEnum;
 use App\Events\OrderClosedEvent;
 use App\Models\Order;
@@ -23,7 +24,7 @@ class UpdateDynamicRewardOrderCommand extends Command
     {
         $timeframe = $this->option('timeframe');
 
-        $orders = Order::strategy(StrategyEnum::DYNAMIC_REWARD)->get();
+        $orders = Order::strategy(StrategyEnum::DYNAMIC_REWARD)->status(OrderStatusEnum::PENDING)->get();
 
         foreach ($orders as $order) {
 
