@@ -33,9 +33,9 @@ class UpdateDynamicRewardOrderCommand extends Command
             $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
             $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
 
-            if (! $order->position_id) {
+            $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
 
-                $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
+            if (!$order->position_id) {
 
                 if ($positionResponse->isSuccess()) {
 
@@ -47,45 +47,59 @@ class UpdateDynamicRewardOrderCommand extends Command
                 }
             }
 
-            // TODO: update sl
+            // maybe position reached SL/TP
 
-            if ($order->side->isLong()) {
+            if (!$positionResponse->position()) {
 
-                if ($utbotStrategyBig->isSell()){
+                $order->update([
+                    'status' => OrderStatusEnum::FAILED
+                ]);
 
-                    // close
-                    if ($order->position_id) {
+            } else {
 
-                        $this->comment("closing Long Position");
 
-                        $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
+                // TODO: update sl
 
-                        if ($closePositionResponse->isSuccess()) {
+                if ($order->side->isLong()) {
 
-                            event(new OrderClosedEvent($order));
+                    if ($utbotStrategyBig->isSell()) {
+
+                        // close
+                        if ($order->position_id) {
+
+                            $this->comment("closing Long Position");
+
+                            $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
+
+                            if ($closePositionResponse->isSuccess()) {
+
+                                event(new OrderClosedEvent($order));
+                            }
                         }
                     }
                 }
-            }
 
-            if ($order->side->isShort()) {
+                if ($order->side->isShort()) {
 
-                if ($utbotStrategyBig->isBuy()){
+                    if ($utbotStrategyBig->isBuy()) {
 
-                    // close
-                    if ($order->position_id) {
+                        // close
+                        if ($order->position_id) {
 
-                        $this->comment("closing Short Position");
+                            $this->comment("closing Short Position");
 
-                        $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
+                            $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
 
-                        if ($closePositionResponse->isSuccess()) {
+                            if ($closePositionResponse->isSuccess()) {
 
-                            event(new OrderClosedEvent($order));
+                                event(new OrderClosedEvent($order));
+                            }
                         }
                     }
                 }
+
             }
+
         }
     }
 }
