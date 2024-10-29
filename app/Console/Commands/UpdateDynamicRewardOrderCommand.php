@@ -62,7 +62,7 @@ class UpdateDynamicRewardOrderCommand extends Command
 
                 if ($order->side->isLong()) {
 
-                    if ($utbotStrategyBig->isSell()) {
+                    if ($utbotStrategyBig->sellSignal(1)) {
 
                         // close
                         if ($order->position_id) {
@@ -81,7 +81,7 @@ class UpdateDynamicRewardOrderCommand extends Command
 
                 if ($order->side->isShort()) {
 
-                    if ($utbotStrategyBig->isBuy()) {
+                    if ($utbotStrategyBig->buySignal(1)) {
 
                         // close
                         if ($order->position_id) {
