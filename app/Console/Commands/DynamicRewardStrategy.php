@@ -53,7 +53,7 @@ class DynamicRewardStrategy extends Command
             $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
             $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-            if ($utbotStrategyBig->isBullish() and $utbotStrategySmall->buySignal(1)) {
+            if ($lnlTrendStrategy->isBullish() and $utbotStrategyBig->isBullish() and $utbotStrategySmall->buySignal(1)) {
 
                 $this->info('Buy Order');
 
@@ -85,7 +85,7 @@ class DynamicRewardStrategy extends Command
 
             }
 
-            if ($utbotStrategyBig->isBearish() and $utbotStrategySmall->sellSignal(1)) {
+            if ($lnlTrendStrategy->isBearish() and $utbotStrategyBig->isBearish() and $utbotStrategySmall->sellSignal(1)) {
 
                     $this->info('Sell Order');
 
