@@ -62,7 +62,7 @@ class UTBotAlertStrategy
         return $this->UTBotAlertCollection->lastSignal();
     }
 
-    public function isBuy(): bool
+    public function isBullish(): bool
     {
         return $this->lastSignalCandle()->getMeta()['signal'] == 'buy';
     }
@@ -72,7 +72,7 @@ class UTBotAlertStrategy
         return $this->signalExists($candleIndex, 'buy');
     }
 
-    public function isSell(): bool
+    public function isBearish(): bool
     {
         return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
     }
