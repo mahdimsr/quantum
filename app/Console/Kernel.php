@@ -40,11 +40,11 @@ class Kernel extends ConsoleKernel
                 Artisan::call('app:dynamic-reward-strategy', ['--coin' => $coin->name]);
             }
 
-        })->hourly()->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
+        })->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
 
 
         $schedule->command('app:update-dynamic-reward-order')
-            ->everyThirtyMinutes()
+            ->everyFifteenMinutes()
             ->appendOutputTo(storage_path('logs/commands/close-dynamic-reward.log'));
 
     }

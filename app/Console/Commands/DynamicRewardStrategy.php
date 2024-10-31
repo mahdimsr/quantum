@@ -39,9 +39,7 @@ class DynamicRewardStrategy extends Command
 
         if ($availableBalance < $balance) {
 
-            $this->warn("balance not enough, available balance is: $availableBalance");
-
-            return 0;
+            $balance = $availableBalance;
         }
 
 
