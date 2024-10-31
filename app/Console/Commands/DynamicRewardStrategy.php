@@ -7,6 +7,7 @@ use App\Enums\StrategyEnum;
 use App\Events\PendingOrderCreated;
 use App\Models\Coin;
 use App\Models\Order;
+use App\Models\User;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
@@ -34,7 +35,7 @@ class DynamicRewardStrategy extends Command
             return 0;
         }
 
-        $balance = 40;
+        $balance = User::mahdi()->strategyBalance(StrategyEnum::DYNAMIC_REWARD);
         $availableBalance = Exchange::futuresBalance()->balance();
 
         if ($availableBalance < $balance) {
