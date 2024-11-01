@@ -165,8 +165,13 @@ class Candle
         $this->volume = $volume;
     }
 
-    public function getMeta(): array
+    public function getMeta(?string $key = null): mixed
     {
+        if ($key and array_key_exists($key, $this->meta)){
+
+            return $this->meta[$key];
+        }
+
         return $this->meta;
     }
 

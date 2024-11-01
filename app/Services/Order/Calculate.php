@@ -55,6 +55,17 @@ class Calculate
 
     public static function quantity($balance, $currentPrice, $leverage): float
     {
-        return ($balance  / $currentPrice) * $leverage;
+        $quantity =  ($balance  / $currentPrice) * $leverage;
+
+        if ($quantity < 1) {
+
+            $quantity = round($quantity, 4, PHP_ROUND_HALF_DOWN);
+
+        } else {
+
+            $quantity = round($quantity, 1, PHP_ROUND_HALF_DOWN) - 1;
+        }
+
+        return $quantity;
     }
 }

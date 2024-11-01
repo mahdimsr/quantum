@@ -5,6 +5,7 @@ namespace App\Services\Strategy;
 use App\Services\Exchange\Repository\Candle;
 use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\Facade\Indicator;
+use Illuminate\Support\Str;
 
 class UTBotAlertStrategy
 {
@@ -40,48 +41,45 @@ class UTBotAlertStrategy
         return new UTBotAlertCollection($this->candles, $this->sensitivity, $this->atrPeriod);
     }
 
+    private function signalExists(int $candleIndex, string $signal): bool
+    {
+        $candle = $this->collection()->get($candleIndex);
+
+        if ($candle and array_key_exists('signal', $candle->getMeta())) {
+
+
+            $lowerSignal = Str::lower($signal);
+            $lowerCandleSignal = Str::lower($candle->getMeta()['signal']);
+
+            return $lowerCandleSignal == $lowerSignal;
+        }
+
+        return false;
+    }
+
     public function lastSignalCandle(): Candle
     {
         return $this->UTBotAlertCollection->lastSignal();
     }
 
-    public function signalOfRecentCandles(int $count = 3): ?Candle
+    public function isBullish(): bool
     {
-        return $this->UTBotAlertCollection->recentSignal($count);
-    }
-
-    public function isBuy(?int $recentCandles = null): bool
-    {
-        if ($recentCandles) {
-
-            $recentSignal = $this->signalOfRecentCandles($recentCandles);
-
-            if ($recentSignal) {
-
-                return $recentSignal->getMeta()['signal'] == 'buy';
-            }
-
-            return false;
-        }
-
         return $this->lastSignalCandle()->getMeta()['signal'] == 'buy';
     }
 
-    public function isSell(?int $recentCandles = null): bool
+    public function buySignal(int $candleIndex = 0): bool
     {
-        if ($recentCandles) {
+        return $this->signalExists($candleIndex, 'buy');
+    }
 
-            $recentSignal = $this->signalOfRecentCandles($recentCandles);
-
-            if ($recentSignal) {
-
-                return $recentSignal->getMeta()['signal'] == 'sell';
-            }
-
-            return false;
-        }
-
+    public function isBearish(): bool
+    {
         return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
+    }
+
+    public function sellSignal(int $candleIndex = 0): bool
+    {
+        return $this->signalExists($candleIndex, 'sell');
     }
 
     public function currentPrice(): mixed

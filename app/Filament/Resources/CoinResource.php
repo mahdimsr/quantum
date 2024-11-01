@@ -49,7 +49,9 @@ class CoinResource extends Resource
             ])
 
             ->filters([
-                //
+                Tables\Filters\Filter::make('Dynamic Reward')
+                    ->query(fn(Builder $query) => $query->WithStrategies(StrategyEnum::DYNAMIC_REWARD))
+                ->checkbox(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

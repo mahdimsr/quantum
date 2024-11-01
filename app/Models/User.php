@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StrategyEnum;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,6 +41,11 @@ class User extends Authenticatable implements FilamentUser
     public function strategies(): HasMany
     {
         return $this->hasMany(UserStrategy::class);
+    }
+
+    public function strategyBalance(StrategyEnum $strategyEnum): mixed
+    {
+        return $this->strategies()->where('name', $strategyEnum->value)->first()->balance;
     }
 
     public function canAccessPanel(Panel $panel): bool

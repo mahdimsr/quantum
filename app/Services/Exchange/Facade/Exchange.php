@@ -11,6 +11,7 @@ use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
 use App\Services\Exchange\Repository\Target;
+use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
 use App\Services\Exchange\Responses\AdjustPositionMarginResponseContract;
@@ -28,10 +29,11 @@ use Illuminate\Support\Facades\Facade;
  * @method static OrderListResponseContract orders(?string $symbol = null)
  * @method static SetOrderResponseContract setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null)
  * @method static AdjustPositionMarginResponseContract adjustPositionMargin(string $symbol, string $marketType, string $amount)
- * @method static mixed closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
+ * @method static ClosePositionResponseContract closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionResponseContract setTakeProfit(string $symbol, PriceTypeEnum $takeProfitType, float $takeProfitPrice)
  * @method static PositionResponseContract setStopLoss(string $symbol, PriceTypeEnum $stopLossType, float $stopLossPrice)
  * @method static PositionResponseContract currentPosition(string $symbol)
+ * @method static ClosePositionResponseContract closePositionByPositionId(string $positionId)
  * @method static AssetBalanceContract futuresBalance()
  */
 class Exchange extends Facade

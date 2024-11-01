@@ -3,7 +3,9 @@
 namespace App\Services\Exchange\Enums;
 
 
-enum SideEnum: string
+use Filament\Support\Contracts\HasColor;
+
+enum SideEnum: string implements HasColor
 {
     case LONG = 'LONG';
     case BUY = 'BUY';
@@ -31,8 +33,17 @@ enum SideEnum: string
         return $this == self::SHORT or $this == self::SELL;
     }
 
-    public function isLONG(): bool
+    public function isLong(): bool
     {
         return $this == self::LONG or $this == self::BUY;
+    }
+
+    public function getColor(): string|array|null
+    {
+        return match ($this) {
+
+            self::LONG, self::BUY => 'success',
+            self::SHORT, self::SELL => 'danger',
+        };
     }
 }

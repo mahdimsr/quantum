@@ -33,7 +33,7 @@ class OrderOpenedNotification extends Notification
     {
         $message = "✌️ Order Opened ✌️ \n";
         $message .= "Coin: " . $this->order->coin_name . "\n";
-        $message .= $this->order->side->isLONG() ? "Long 🟢" : "Short 🔴";
+        $message .= $this->order->side->isLong() ? "Long 🟢" : "Short 🔴";
 
         return TelegramMessage::create()
             ->to($notifiable->telegram_chat_id)

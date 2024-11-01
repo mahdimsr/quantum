@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatusEnum;
+use App\Enums\StrategyEnum;
 use App\Observers\OrderObserver;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
@@ -25,10 +26,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string balance
  * @property string tp
  * @property string sl
+ * @property StrategyEnum strategy
  *
  * @property Coin coin
  *
  * @method static Builder status(OrderStatusEnum $orderStatusEnum)
+ * @method static Builder strategy(StrategyEnum $strategyEnum)
  */
 class Order extends Model
 {
@@ -38,6 +41,7 @@ class Order extends Model
         'side' => SideEnum::class,
         'type' => TypeEnum::class,
         'status' => OrderStatusEnum::class,
+        'strategy' => StrategyEnum::class,
     ];
 
     protected static function booted(): void
@@ -48,6 +52,11 @@ class Order extends Model
     public function scopeStatus(Builder $query, OrderStatusEnum $orderStatusEnum): void
     {
         $query->where('status', $orderStatusEnum->value);
+    }
+
+    public function scopeStrategy(Builder $query, StrategyEnum $strategyEnum): void
+    {
+        $query->where('strategy', $strategyEnum->value);
     }
 
     public static function findByClientId(string $clientId): null|Order|Model

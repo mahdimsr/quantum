@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Enums\OrderStatusEnum;
+use App\Enums\StrategyEnum;
+use App\Events\OrderClosedEvent;
+use App\Models\Order;
+use App\Services\Exchange\Facade\Exchange;
+use App\Services\Strategy\UTBotAlertStrategy;
+use Illuminate\Console\Command;
+
+class UpdateDynamicRewardOrderCommand extends Command
+{
+    protected $signature = 'app:update-dynamic-reward-order {--timeframe=1h}';
+
+
+    protected $description = 'close order or update sl';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+        $timeframe = $this->option('timeframe');
+
+        $orders = Order::strategy(StrategyEnum::DYNAMIC_REWARD)->status(OrderStatusEnum::PENDING)->get();
+
+        foreach ($orders as $order) {
+
+            $candlesResponse = Exchange::candles($order->coin->symbol('-'), $timeframe, 100);
+
+            $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
+            $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
+
+            $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
+
+            if (!$order->position_id) {
+
+                if ($positionResponse->isSuccess()) {
+
+                    $this->info("Found Position for $order->coin_name");
+
+                    $order->update([
+                        'position_id' => $positionResponse->position()->getPositionId(),
+                    ]);
+                }
+            }
+
+            // maybe position reached SL/TP
+
+            if (!$positionResponse->position()) {
+
+                $order->update([
+                    'status' => OrderStatusEnum::FAILED
+                ]);
+
+            } else {
+
+
+                // TODO: update sl
+
+                if ($order->side->isLong()) {
+
+                    if ($utbotStrategySmall->sellSignal(1)) {
+
+                        // close
+                        if ($order->position_id) {
+
+                            $this->comment("closing Long Position");
+
+                            $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
+
+                            if ($closePositionResponse->isSuccess()) {
+
+                                event(new OrderClosedEvent($order));
+                            }
+                        }
+                    }
+                }
+
+                if ($order->side->isShort()) {
+
+                    if ($utbotStrategySmall->buySignal(1)) {
+
+                        // close
+                        if ($order->position_id) {
+
+                            $this->comment("closing Short Position");
+
+                            $closePositionResponse = Exchange::closePositionByPositionId($order->position_id);
+
+                            if ($closePositionResponse->isSuccess()) {
+
+                                event(new OrderClosedEvent($order));
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+}
