@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
 
 
         $schedule->command('app:update-dynamic-reward-order')
-            ->everyFifteenMinutes()
+            ->everyTenMinutes()
             ->appendOutputTo(storage_path('logs/commands/close-dynamic-reward.log'));
 
     }

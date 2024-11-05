@@ -12,7 +12,7 @@ use Illuminate\Console\Command;
 
 class UpdateDynamicRewardOrderCommand extends Command
 {
-    protected $signature = 'app:update-dynamic-reward-order {--timeframe=1h}';
+    protected $signature = 'app:update-dynamic-reward-order {--timeframe=15m}';
 
 
     protected $description = 'close order or update sl';
@@ -35,7 +35,7 @@ class UpdateDynamicRewardOrderCommand extends Command
 
             $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
 
-            if (!$order->position_id) {
+            if (! $order->position_id) {
 
                 if ($positionResponse->isSuccess()) {
 
@@ -49,7 +49,7 @@ class UpdateDynamicRewardOrderCommand extends Command
 
             // maybe position reached SL/TP
 
-            if (!$positionResponse->position()) {
+            if (! $positionResponse->position()) {
 
                 $order->update([
                     'status' => OrderStatusEnum::FAILED
@@ -62,7 +62,7 @@ class UpdateDynamicRewardOrderCommand extends Command
 
                 if ($order->side->isLong()) {
 
-                    if ($utbotStrategySmall->sellSignal(1)) {
+                    if ($utbotStrategyBig->sellSignal()) {
 
                         // close
                         if ($order->position_id) {
@@ -81,7 +81,7 @@ class UpdateDynamicRewardOrderCommand extends Command
 
                 if ($order->side->isShort()) {
 
-                    if ($utbotStrategySmall->buySignal(1)) {
+                    if ($utbotStrategyBig->buySignal()) {
 
                         // close
                         if ($order->position_id) {
