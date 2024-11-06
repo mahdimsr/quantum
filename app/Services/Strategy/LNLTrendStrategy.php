@@ -5,7 +5,7 @@ namespace App\Services\Strategy;
 use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\Facade\Indicator;
 
-class LNLTrendStrategy
+class LNLTrendStrategy implements StrategyContract
 {
     private CandleCollection $candleCollection;
     private ?LNLTrendCollection $LNLTrendCollection;
@@ -45,5 +45,20 @@ class LNLTrendStrategy
     public function isBearish(): bool
     {
         return $this->currentTrend() == 'bearish';
+    }
+
+    public function sellSignal(?int $candleIndex = 0): bool
+    {
+        throw new \Exception('not implemented');
+    }
+
+    public function buySignal(?int $candleIndex = 0): bool
+    {
+        throw new \Exception('not implemented');
+    }
+
+    public function currentPrice(): mixed
+    {
+        return $this->collection()->get(0)->getClose();
     }
 }

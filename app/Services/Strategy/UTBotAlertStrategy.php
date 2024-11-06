@@ -7,20 +7,12 @@ use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\Facade\Indicator;
 use Illuminate\Support\Str;
 
-class UTBotAlertStrategy
+class UTBotAlertStrategy implements StrategyContract
 {
     private CandleCollection $candles;
     private ?UTBotAlertCollection $UTBotAlertCollection;
     private int $sensitivity;
     private int $atrPeriod;
-    private array $nLoss;
-
-    protected array $closeValues;
-    protected array $highValues;
-    protected array $lowsValues;
-
-    protected array $ema;
-    protected array $ATRTrailingStop;
 
     public function __construct(CandleCollection $candles, int $sensitivity = 1, int $atrPeriod = 10)
     {
@@ -31,7 +23,7 @@ class UTBotAlertStrategy
         $this->UTBotAlertCollection = $this->collection();
     }
 
-    public function collection(): ?UTBotAlertCollection
+    public function collection(): UTBotAlertCollection
     {
         if (isset($this->UTBotAlertCollection) and $this->UTBotAlertCollection) {
 
@@ -67,7 +59,7 @@ class UTBotAlertStrategy
         return $this->lastSignalCandle()->getMeta()['signal'] == 'buy';
     }
 
-    public function buySignal(int $candleIndex = 0): bool
+    public function buySignal(?int $candleIndex = 0): bool
     {
         return $this->signalExists($candleIndex, 'buy');
     }
@@ -77,7 +69,7 @@ class UTBotAlertStrategy
         return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
     }
 
-    public function sellSignal(int $candleIndex = 0): bool
+    public function sellSignal(?int $candleIndex = 0): bool
     {
         return $this->signalExists($candleIndex, 'sell');
     }
