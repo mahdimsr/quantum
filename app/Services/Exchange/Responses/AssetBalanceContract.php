@@ -9,4 +9,5 @@ interface AssetBalanceContract
     public function message(): string;
     public function isSuccess(): bool;
     public function balance(): mixed;
+    public function availableMargin(): mixed;
 }
