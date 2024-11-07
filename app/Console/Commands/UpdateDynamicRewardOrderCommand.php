@@ -28,12 +28,8 @@ class UpdateDynamicRewardOrderCommand extends Command
 
         foreach ($orders as $order) {
 
-            $candlesResponse = Exchange::candles($order->coin->symbol('-'), $timeframe, 100);
-
-            $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
-            $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
-
             $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
+
 
             if (! $order->position_id) {
 
@@ -44,19 +40,28 @@ class UpdateDynamicRewardOrderCommand extends Command
                     $order->update([
                         'position_id' => $positionResponse->position()->getPositionId(),
                     ]);
+
+                }
+
+                // maybe position reached SL/TP
+
+                if (! $positionResponse->position()) {
+
+                    $order->update([
+                        'status' => OrderStatusEnum::FAILED
+                    ]);
+
                 }
             }
 
-            // maybe position reached SL/TP
 
-            if (! $positionResponse->position()) {
 
-                $order->update([
-                    'status' => OrderStatusEnum::FAILED
-                ]);
+            if ($positionResponse->position()) {
 
-            } else {
+                $candlesResponse = Exchange::candles($order->coin->symbol('-'), $timeframe, 100);
 
+                $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
+                $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
 
                 // TODO: update sl
 

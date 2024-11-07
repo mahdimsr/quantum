@@ -36,11 +36,12 @@ class DynamicRewardStrategy extends Command
         }
 
         $balance = User::mahdi()->strategyBalance(StrategyEnum::DYNAMIC_REWARD);
-        $availableBalance = Exchange::futuresBalance()->balance();
+        $availableBalance = Exchange::futuresBalance()->availableMargin();
 
         if ($availableBalance < $balance) {
 
             $balance = $availableBalance;
+            $leverage = $leverage * 2;
         }
 
 
@@ -52,10 +53,9 @@ class DynamicRewardStrategy extends Command
             $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
             $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-            if ($lnlTrendStrategy->isBullish()) {
+            if ($lnlTrendStrategy->isBullish() and ($utbotStrategyBig->isBullish() or $utbotStrategySmall->isBullish())) {
 
-                if (($utbotStrategyBig->isBullish() and ($utbotStrategySmall->buySignal() or $utbotStrategySmall->buySignal(1)) ) or
-                    ($utbotStrategySmall->isBullish() and ($utbotStrategyBig->buySignal() or $utbotStrategyBig->buySignal(1)) )) {
+                if ($utbotStrategySmall->buySignal() or $utbotStrategySmall->buySignal(1) or $utbotStrategyBig->buySignal() or $utbotStrategyBig->buySignal(1)) {
 
                     $this->info('Buy Order');
 
@@ -88,10 +88,9 @@ class DynamicRewardStrategy extends Command
 
             }
 
-            if ($lnlTrendStrategy->isBearish()) {
+            if ($lnlTrendStrategy->isBearish() and ($utbotStrategyBig->isBearish() or $utbotStrategySmall->isBearish())) {
 
-                if (($utbotStrategyBig->isBearish() and ($utbotStrategySmall->sellSignal() or $utbotStrategySmall->sellSignal(1)) ) or
-                    ($utbotStrategySmall->isBearish() and ($utbotStrategyBig->sellSignal() or $utbotStrategyBig->sellSignal(1)) )) {
+                if ($utbotStrategySmall->sellSignal() or $utbotStrategySmall->sellSignal(1) or $utbotStrategyBig->sellSignal() or $utbotStrategyBig->sellSignal(1)) {
 
                     $this->info('Sell Order');
 
