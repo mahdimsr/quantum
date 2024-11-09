@@ -82,8 +82,8 @@ class OrderResource extends Resource
                 Tables\Actions\Action::make('update position Id')
                     ->color('info')
                     ->requiresConfirmation()
-                    ->visible(fn(Order $order): bool => ! $order->position_id)
-                    ->disabled(fn(Order $order): bool => $order->position_id)
+                    ->visible(fn(Order $order): bool => ! isset($order->position_id))
+                    ->disabled(fn(Order $order): bool => isset($order->position_id))
                     ->action(function (Order $order) {
 
                         $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
