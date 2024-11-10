@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
 
             foreach ($coins as $coin) {
 
-                Artisan::call('app:dynamic-reward-strategy', ['--coin' => $coin->name]);
+                Artisan::call('app:dynamic-reward-strategy', ['--coin' => $coin->name, '--leverage' => 20]);
             }
 
         })->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
