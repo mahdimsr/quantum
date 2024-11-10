@@ -22,14 +22,11 @@ use Illuminate\Support\Str;
 
 class StaticRewardCommand extends Command
 {
-    protected $signature = 'app:static-reward-strategy {profit-percent=1} {leverage=5} {timeframe=1h} {--coin=}';
+    protected $signature = 'app:static-reward-strategy {--leverage=10} {timeframe=1h} {--coin=}';
 
     protected $description = 'Static Reward Strategy';
-    private mixed $strategyBalance;
 
-    /**
-     * Execute the console command.
-     */
+
     public function handle(): int
     {
         $coin = Coin::findByName($this->option('coin'));

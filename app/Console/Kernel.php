@@ -25,6 +25,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->call(function () {
+
+            $coins = Coin::withStrategies(StrategyEnum::Static_Profit)->get();
+
+            foreach ($coins as $coin) {
+
+                Artisan::call('app:static-reward-strategy', ['--coin' => $coin->name, '----leverage' => 10]);
+            }
+
+        });
+
         $schedule->command('app:static-reward-strategy')->hourlyAt(15)->appendOutputTo(storage_path('logs/commands/static-reward.log'));
 
 //        $schedule->command('app:close-position-command --timeBase')->hourlyAt(50)->appendOutputTo(storage_path('logs/commands/close-position.log'));
