@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
 
 //        $schedule->command('app:close-position-command --timeBase')->hourlyAt(50)->appendOutputTo(storage_path('logs/commands/close-position.log'));
 
-//        $schedule->command('app:close-position-command --percentageBase')->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
+        $schedule->command('app:close-position-command --percentageBase')->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
 
         $schedule->call(function () {
 

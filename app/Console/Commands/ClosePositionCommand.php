@@ -3,10 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Enums\OrderStatusEnum;
+use App\Enums\StrategyEnum;
 use App\Events\OrderClosedEvent;
 use App\Models\Coin;
 use App\Models\Order;
 use App\Services\Exchange\BingX\BingXService;
+use App\Services\Exchange\Facade\Exchange;
 use Illuminate\Console\Command;
 
 class ClosePositionCommand extends Command
@@ -15,26 +17,17 @@ class ClosePositionCommand extends Command
 
     protected $description = 'Close Position';
 
-    private BingXService $bingXService;
-
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->bingXService = app(BingXService::class);
-    }
 
     public function handle(): int
     {
-        $pendingOrders = Order::status(OrderStatusEnum::PENDING)->get();
+        $pendingOrders = Order::strategy(StrategyEnum::Static_Profit)->status(OrderStatusEnum::PENDING)->get();
 
         foreach ($pendingOrders as $order) {
 
             $this->info('getting position of: ' . $order->coin_name);
 
 
-            $currentPositionResponse = $this->bingXService->currentPosition($order->coin->symbol('-'));
+            $currentPositionResponse = Exchange::currentPosition($order->coin->symbol('-'));
 
             if ($currentPositionResponse->isSuccess() and $currentPositionResponse->position()) {
 
@@ -51,7 +44,7 @@ class ClosePositionCommand extends Command
 
                     $this->comment('closing position');
 
-                    $closePositionResponse = $this->bingXService->closePositionByPositionId($position->getPositionId());
+                    $closePositionResponse = Exchange::closePositionByPositionId($position->getPositionId());
 
                     if ($closePositionResponse->isSuccess()) {
 
@@ -66,15 +59,15 @@ class ClosePositionCommand extends Command
 
                 }
 
-                if ($this->option('percentageBase') and $position->getPnlPercent() >= 2) {
+                if ($this->option('percentageBase') and $position->getPnlPercent() >= 10) {
 
                     $this->comment('closing position');
 
-                    $closePositionResponse = $this->bingXService->closePositionByPositionId($position->getPositionId());
+                    $closePositionResponse = Exchange::closePositionByPositionId($position->getPositionId());
 
                     if ($closePositionResponse->isSuccess()) {
 
-                        $this->info('position closed after 1 percent profit');
+                        $this->info('position closed after 10 percent profit');
 
                         event(new OrderClosedEvent($order));
 
