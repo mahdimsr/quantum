@@ -3,74 +3,59 @@
 namespace App\Listeners;
 
 use App\Enums\OrderStatusEnum;
+use App\Enums\StrategyEnum;
 use App\Events\PendingOrderCreated;
 use App\Services\Exchange\BingX\BingXService;
 use App\Services\Exchange\Enums\TypeEnum;
+use App\Services\Exchange\Facade\Exchange;
 use App\Services\Exchange\Repository\Target;
 use App\Services\Order\Calculate;
 
 class OpenStaticRewardOrderListener
 {
-    private BingXService $bingXService;
-    private mixed $balance;
-
-    public function __construct()
-    {
-        $this->bingXService = app(BingXService::class);
-    }
-
-    /**
-     * Handle the event.
-     */
     public function handle(PendingOrderCreated $event): void
     {
-        $currentPrice = $event->pendingOrder->price;
-        $this->balance = $event->pendingOrder->balance;
+        if ($event->pendingOrder->strategy->name == StrategyEnum::Static_Profit) {
 
-        $this->bingXService->setLeverage(
-            $event->pendingOrder->coin->symbol('-'),
-            $event->pendingOrder->side,
-            $event->pendingOrder->leverage,
-        );
+            $currentPrice = $event->pendingOrder->price;
+            $balance = $event->pendingOrder->balance;
+
+            Exchange::setLeverage(
+                $event->pendingOrder->coin->symbol('-'),
+                $event->pendingOrder->side,
+                $event->pendingOrder->leverage,
+            );
 
 
-        $quantity =  Calculate::quantity($this->balance, $currentPrice, $event->pendingOrder->leverage);
+            $quantity =  Calculate::quantity($balance, $currentPrice, $event->pendingOrder->leverage);
 
-        if ($quantity < 1) {
+            $tpTarget = Target::create(TypeEnum::TAKE_PROFIT->value, $event->pendingOrder->tp, $event->pendingOrder->tp);
+            $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
 
-            $quantity = round($quantity, 4, PHP_ROUND_HALF_DOWN);
+            $setOrderResponse = Exchange::setOrder(
+                $event->pendingOrder->coin->symbol('-'),
+                $event->pendingOrder->type,
+                $event->pendingOrder->side,
+                $event->pendingOrder->side,
+                $quantity,
+                $event->pendingOrder->price,
+                $event->pendingOrder->client_id,
+                $tpTarget,
+                $slTarget,
+            );
 
-        } else {
+            if ($setOrderResponse->isSuccess()) {
 
-            $quantity = round($quantity, 1, PHP_ROUND_HALF_DOWN) - 1;
-        }
+                $event->pendingOrder->update([
+                    'status' => OrderStatusEnum::PENDING,
+                    'exchange_order_id' => $setOrderResponse->order()->getOrderId(),
+                    'balance' => $balance,
+                ]);
 
-        $tpTarget = Target::create(TypeEnum::TAKE_PROFIT->value, $event->pendingOrder->tp, $event->pendingOrder->tp);
-        $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
+            } else {
 
-        $setOrderResponse = $this->bingXService->setOrder(
-            $event->pendingOrder->coin->symbol('-'),
-            $event->pendingOrder->type,
-            $event->pendingOrder->side,
-            $event->pendingOrder->side,
-            $quantity,
-            $event->pendingOrder->price,
-            $event->pendingOrder->client_id,
-            $tpTarget,
-            $slTarget,
-        );
-
-        if ($setOrderResponse->isSuccess()) {
-
-            $event->pendingOrder->update([
-                'status' => OrderStatusEnum::PENDING,
-                'exchange_order_id' => $setOrderResponse->order()->getOrderId(),
-                'balance' => $this->balance
-            ]);
-
-        } else {
-
-            $event->pendingOrder->forceDelete();
+                $event->pendingOrder->delete();
+            }
         }
     }
 }
