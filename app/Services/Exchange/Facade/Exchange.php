@@ -4,7 +4,7 @@ namespace App\Services\Exchange\Facade;
 
 use App\Enums\PriceTypeEnum;
 use App\Services\Exchange\BingX\BingXService;
-use App\Services\Exchange\Coinex\CoinexService;
+use App\Services\Exchange\Coinex\CoineXService;
 use App\Services\Exchange\Coinex\Responses\OrderListResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
@@ -36,6 +36,6 @@ class Exchange extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return BingXService::class;
+        return CoineXService::class;
     }
 }
