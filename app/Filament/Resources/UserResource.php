@@ -2,14 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ExchangeEnum;
 use App\Filament\Resources\TokenResource\RelationManagers\TokensRelationManager;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,7 +32,7 @@ class UserResource extends Resource
                 TextInput::make('name')->required(),
                 TextInput::make('email')->required(),
                 Password::make('password')->required(),
-                TextInput::make('telegram_chat_id'),
+                TextInput::make('telegram_chat_id')
             ]);
     }
 
@@ -39,6 +42,7 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
+                SelectColumn::make('default_exchange')->options(ExchangeEnum::class),
             ])
             ->filters([
                 //
