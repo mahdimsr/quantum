@@ -43,6 +43,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(UserStrategy::class);
     }
 
+    public function exchangeTokens(): HasMany
+    {
+        return $this->hasMany(UserToken::class);
+    }
+
     public function strategyBalance(StrategyEnum $strategyEnum): mixed
     {
         return $this->strategies()->where('name', $strategyEnum->value)->first()->balance;

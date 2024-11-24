@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\TokenResource\RelationManagers\TokensRelationManager;
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -56,7 +56,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TokensRelationManager::class,
         ];
     }
 

@@ -16,4 +16,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class UserToken extends Model
 {
     use SoftDeletes;
+
+    protected $guarded = ['id'];
 }
