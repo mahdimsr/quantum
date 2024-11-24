@@ -7,7 +7,7 @@ use App\Enums\StrategyEnum;
 use App\Events\OrderClosedEvent;
 use App\Models\Order;
 use App\Services\Exchange\Facade\Exchange;
-use App\Services\Strategy\UTBotAlertStrategy;
+use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
 
 class UpdateDynamicRewardOrderCommand extends Command

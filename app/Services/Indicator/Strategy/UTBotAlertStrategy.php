@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Services\Strategy;
+namespace App\Services\Indicator\Strategy;
 
 use App\Services\Exchange\Repository\Candle;
 use App\Services\Exchange\Repository\CandleCollection;
-use App\Services\Indicator\Facade\Indicator;
 use Illuminate\Support\Str;
 
 class UTBotAlertStrategy implements StrategyContract

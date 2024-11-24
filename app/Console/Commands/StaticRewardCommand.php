@@ -8,17 +8,12 @@ use App\Events\PendingOrderCreated;
 use App\Models\Coin;
 use App\Models\Order;
 use App\Models\User;
-use App\Notifications\ExceptionNotification;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
-use App\Services\Order\Calculate;
+use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 use App\Services\OrderService;
-use App\Services\Strategy\LNLTrendStrategy;
-use App\Services\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Str;
 
 class StaticRewardCommand extends Command
 {
