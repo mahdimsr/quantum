@@ -4,15 +4,18 @@ namespace App\Services\Exchange\Coinex;
 
 use App\Services\Exchange\Coinex\Responses\AssetBalanceResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\CoinResponseAdapter;
 use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
+use App\Services\Exchange\Requests\CoinsRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\CoinsResponseContract;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Modules\CCXT\coinex;
 
-class CoineXService implements CandleRequestContract, AssetRequestContract
+class CoineXService implements CandleRequestContract, AssetRequestContract, CoinsRequestContract
 {
     private Client $client;
     private coinex $coinexClient;
@@ -57,5 +60,12 @@ class CoineXService implements CandleRequestContract, AssetRequestContract
         $data = $this->coinexClient->v2_private_get_assets_futures_balance();
 
         return new AssetBalanceResponseAdapter($data);
+    }
+
+    public function coins(): CoinsResponseContract
+    {
+        $data = $this->coinexClient->v2_public_get_futures_ticker();
+
+        return new CoinResponseAdapter($data);
     }
 }
