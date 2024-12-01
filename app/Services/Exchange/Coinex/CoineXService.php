@@ -5,17 +5,21 @@ namespace App\Services\Exchange\Coinex;
 use App\Services\Exchange\Coinex\Responses\AssetBalanceResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CoinResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\SetLeverageResponseAdapter;
+use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\CoinsRequestContract;
+use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\CoinsResponseContract;
+use App\Services\Exchange\Responses\SetLeverageResponseContract;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Modules\CCXT\coinex;
 
-class CoineXService implements CandleRequestContract, AssetRequestContract, CoinsRequestContract
+class CoineXService implements CandleRequestContract, AssetRequestContract, CoinsRequestContract, SetLeverageRequestContract
 {
     private Client $client;
     private coinex $coinexClient;
@@ -67,5 +71,17 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
         $data = $this->coinexClient->v2_public_get_futures_ticker();
 
         return new CoinResponseAdapter($data);
+    }
+
+    public function setLeverage(string $symbol, SideEnum $side, string $leverage): SetLeverageResponseContract
+    {
+        $data = $this->coinexClient->v2_private_post_futures_adjust_position_leverage([
+            'market' => $symbol,
+            'market_type' => 'FUTURES',
+            'margin_mode' => 'isolated',
+            'leverage' => intval($leverage),
+        ]);
+
+        return new SetLeverageResponseAdapter($data);
     }
 }
