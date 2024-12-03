@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ExchangeEnum;
 use App\Enums\StrategyEnum;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -26,6 +27,7 @@ class User extends Authenticatable implements FilamentUser
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'default_exchange' => ExchangeEnum::class,
     ];
 
     public static function findByEmail(string $email): Model
@@ -41,6 +43,11 @@ class User extends Authenticatable implements FilamentUser
     public function strategies(): HasMany
     {
         return $this->hasMany(UserStrategy::class);
+    }
+
+    public function exchangeTokens(): HasMany
+    {
+        return $this->hasMany(UserToken::class);
     }
 
     public function strategyBalance(StrategyEnum $strategyEnum): mixed

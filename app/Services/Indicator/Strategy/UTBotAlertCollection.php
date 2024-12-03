@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Strategy;
+namespace App\Services\Indicator\Strategy;
 
 use App\Services\Exchange\Repository\Candle;
 use App\Services\Exchange\Repository\CandleCollection;

@@ -11,8 +11,8 @@ use App\Models\User;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
-use App\Services\Strategy\LNLTrendStrategy;
-use App\Services\Strategy\UTBotAlertStrategy;
+use App\Services\Indicator\Strategy\LNLTrendStrategy;
+use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
 
 class DynamicRewardStrategy extends Command
