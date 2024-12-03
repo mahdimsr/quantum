@@ -137,4 +137,27 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
 
         return new ClosePositionResponseAdapter($data);
     }
+
+    public function setStopLoss(string $symbol, mixed $stopLossPrice, string $stopLossType): ?PositionResponseContract
+    {
+        $data = $this->coinexClient->v2_private_get_futures_pending_position([
+            'market' => $symbol,
+            'market_type' => 'FUTURES',
+            'stop_loss_type' => $stopLossType,
+            'stop_loss_price' => $stopLossPrice
+        ]);
+
+        return new PositionResponseAdapter($data);
+    }
+
+    public function setTakeProfit(string $symbol, mixed $takeProfitPrice, string $takeProfitType): ?PositionResponseContract
+    {
+        $data = $this->coinexClient->v2_private_get_futures_pending_position([
+            'market' => $symbol,
+            'market_type' => 'FUTURES',
+            'take_profit_type' => $takeProfitType,
+            'take_profit_price' => $takeProfitPrice
+        ]);
+
+        return new PositionResponseAdapter($data);    }
 }
