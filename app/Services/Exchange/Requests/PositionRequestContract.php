@@ -12,5 +12,5 @@ interface PositionRequestContract
 {
     public function currentPosition(string $symbol): ?PositionResponseContract;
 
-    public function closePositionByPositionId(string $positionId): ?ClosePositionResponseContract;
+    public function closePositionByPositionId(string $positionId, ?string $symbol = null): ?ClosePositionResponseContract;
 }

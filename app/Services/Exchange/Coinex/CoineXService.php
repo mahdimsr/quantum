@@ -4,8 +4,10 @@ namespace App\Services\Exchange\Coinex;
 
 use App\Services\Exchange\Coinex\Responses\AssetBalanceResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\ClosePositionResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CoinResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\PositionResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\SetLeverageResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
@@ -14,11 +16,14 @@ use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\CoinsRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
+use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
+use App\Services\Exchange\Responses\ClosePositionResponseContract;
 use App\Services\Exchange\Responses\CoinsResponseContract;
 use App\Services\Exchange\Responses\OrderListResponseContract;
+use App\Services\Exchange\Responses\PositionResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
 use App\Services\Exchange\Responses\SetOrderResponseContract;
 use GuzzleHttp\Client;
@@ -26,7 +31,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Modules\CCXT\coinex;
 
-class CoineXService implements CandleRequestContract, AssetRequestContract, CoinsRequestContract, SetLeverageRequestContract, OrderRequestContract
+class CoineXService implements CandleRequestContract, AssetRequestContract, CoinsRequestContract, SetLeverageRequestContract, OrderRequestContract, PositionRequestContract
 {
     private Client $client;
     private coinex $coinexClient;
@@ -110,5 +115,26 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
         ]);
 
         return new OrderResponseAdapter($data);
+    }
+
+    public function currentPosition(string $symbol): ?PositionResponseContract
+    {
+        $data = $this->coinexClient->v2_private_get_futures_pending_position([
+            'market' => $symbol,
+            'market_type' => 'FUTURES',
+        ]);
+
+        return new PositionResponseAdapter($data);
+    }
+
+    public function closePositionByPositionId(string $positionId, ?string $symbol = null): ?ClosePositionResponseContract
+    {
+        $data = $this->coinexClient->v2_private_post_futures_close_position([
+            'market' => $symbol,
+            'market_type' => 'FUTURES',
+            'client_id' => $positionId
+        ]);
+
+        return new ClosePositionResponseAdapter($data);
     }
 }
