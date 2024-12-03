@@ -5,21 +5,28 @@ namespace App\Services\Exchange\Coinex;
 use App\Services\Exchange\Coinex\Responses\AssetBalanceResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CoinResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\SetLeverageResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TypeEnum;
+use App\Services\Exchange\Repository\Target;
 use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
 use App\Services\Exchange\Requests\CoinsRequestContract;
+use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\CoinsResponseContract;
+use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
+use App\Services\Exchange\Responses\SetOrderResponseContract;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Modules\CCXT\coinex;
 
-class CoineXService implements CandleRequestContract, AssetRequestContract, CoinsRequestContract, SetLeverageRequestContract
+class CoineXService implements CandleRequestContract, AssetRequestContract, CoinsRequestContract, SetLeverageRequestContract, OrderRequestContract
 {
     private Client $client;
     private coinex $coinexClient;
@@ -83,5 +90,25 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
         ]);
 
         return new SetLeverageResponseAdapter($data);
+    }
+
+    public function orders(?string $symbol = null): OrderListResponseContract
+    {
+        // TODO: Implement orders() method.
+    }
+
+    public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null): ?SetOrderResponseContract
+    {
+        $data = $this->coinexClient->v2_private_post_futures_order([
+            'market' => $symbol,
+            'market_type' => 'FUTURES',
+            'side' => Str::of($sideEnum->convertToBuySell())->lower()->toString(),
+            'type' => Str::of($typeEnum->value)->lower()->toString(),
+            'amount' => $amount,
+            'price' => $price,
+            'client_id' => $client_id,
+        ]);
+
+        return new OrderResponseAdapter($data);
     }
 }
