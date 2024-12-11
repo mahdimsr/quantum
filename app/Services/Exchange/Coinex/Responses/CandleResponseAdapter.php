@@ -6,29 +6,11 @@ use App\Services\Exchange\Repository\Candle;
 use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Exchange\Responses\CandleResponseContract;
 
-class CandleResponseAdapter implements CandleResponseContract
+class CandleResponseAdapter extends BaseResponse implements CandleResponseContract
 {
-    private array $response;
-
-    public function __construct(array $response)
-    {
-        $this->response = $response;
-    }
-
-    public function code(): int
-    {
-        return $this->response['code'];
-    }
-
-    public function message(): string
-    {
-        return $this->response['message'];
-    }
-
     public function data(): CandleCollection
     {
         $data = $this->response['data'];
-
 
         $data = collect($data)->map(function ($item) {
 

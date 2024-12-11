@@ -2,74 +2,25 @@
 
 namespace App\Services\Exchange\Coinex\Responses;
 
-use App\Enums\PositionTypeEnum;
-use App\Enums\PriceTypeEnum;
+use App\Services\Exchange\Repository\Position;
 use App\Services\Exchange\Responses\PositionResponseContract;
 
-class PositionResponseAdapter extends ResponseAdapter implements PositionResponseContract
+class PositionResponseAdapter extends BaseResponse implements PositionResponseContract
 {
-    private string|null $symbol;
 
-    public function __construct(array $response, ?string $symbol = null)
+    public function position(): ?Position
     {
-        parent::__construct($response);
+        $data = $this->response['data'];
 
-        $this->symbol = $symbol;
-    }
+        $item = [];
 
-    public function data(): array
-    {
-        if ($this->symbol){
+        $item['positionId'] = $data['position_id'];
+        $item['symbol'] = $data['market'];
+        $item['unrealizedProfit'] = $data['unrealized_pnl'];
+        $item['realizedProfit'] = $data['realized_pnl'];
+        $item['markPrice'] = $data['avg_entry_price'];
+        $item['pnlRatio'] = $data['not calculated'];
 
-            foreach (parent::data() as $item){
-
-                if ($item['market'] == $this->symbol){
-
-                    return $item;
-                }
-            }
-        }
-
-        return parent::data();
-    }
-
-    public function positionId(): mixed
-    {
-        return $this->data()['position_id'];
-    }
-
-    public function symbol(): string
-    {
-        return $this->data()['market'];
-    }
-
-    public function positionType(): PositionTypeEnum
-    {
-        return PositionTypeEnum::fromValue($this->data()['side']);
-    }
-
-    public function stopLossPrice(): mixed
-    {
-        return $this->data()['stop_loss_price'];
-    }
-
-    public function stopLossPriceType(): PriceTypeEnum
-    {
-        return $this->data()['stop_loss_type'] == 'mark_price' ? PriceTypeEnum::MARK : PriceTypeEnum::LATEST;
-    }
-
-    public function takeProfitPrice(): mixed
-    {
-        return $this->data()['take_profit_price'];
-    }
-
-    public function takeProfitPriceType(): PriceTypeEnum
-    {
-        return $this->data()['take_profit_type'] == 'mark_price' ? PriceTypeEnum::MARK : PriceTypeEnum::LATEST;
-    }
-
-    public function averageEntryPrice()
-    {
-        return $this->data()['avg_entry_price'];
+        return Position::create($item);
     }
 }

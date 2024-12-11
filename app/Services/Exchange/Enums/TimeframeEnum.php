@@ -29,4 +29,29 @@ enum TimeframeEnum: string
 
         return $this->value;
     }
+
+    public function toCoineXFormat(): string
+    {
+        if (Str::endsWith($this->value,'m')) {
+
+            return Str::replace('m', 'min', $this->value);
+        }
+
+        if (Str::endsWith($this->value,'H')) {
+
+            return Str::replace('H', 'hour', $this->value);
+        }
+
+        if (Str::endsWith($this->value,'D')) {
+
+            return Str::replace('D', 'day', $this->value);
+        }
+
+        if (Str::endsWith($this->value,'W')) {
+
+            return Str::replace('W', 'week', $this->value);
+        }
+
+        return $this->value;
+    }
 }
