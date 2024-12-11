@@ -80,7 +80,7 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
 
     public function coins(): CoinsResponseContract
     {
-        $data = $this->coinexClient->v2_public_get_futures_ticker();
+        $data = $this->coinexClient->v2_public_get_futures_market();
 
         return new CoinResponseAdapter($data);
     }
