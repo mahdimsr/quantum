@@ -159,5 +159,6 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
             'take_profit_price' => $takeProfitPrice
         ]);
 
-        return new PositionResponseAdapter($data);    }
+        return new PositionResponseAdapter($data);
+    }
 }
