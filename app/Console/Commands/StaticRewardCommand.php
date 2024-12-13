@@ -64,6 +64,7 @@ class StaticRewardCommand extends Command
 
                     $order = Order::query()->create([
                         'symbol' => $coin->symbol('-'),
+                        'exchange' => 'coinex',
                         'coin_name' => $coin->name,
                         'leverage' => $leverage,
                         'side' => SideEnum::BUY,

@@ -28,7 +28,7 @@ class DynamicRewardStrategy extends Command
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');
 
-        if (Order::status(OrderStatusEnum::PENDING)->where('coin_name', $coin->name)->exists()) {
+        if (Order::status(OrderStatusEnum::OPEN)->where('coin_name', $coin->name)->exists()) {
 
             $this->warn('pending order exists...');
 

@@ -24,7 +24,7 @@ class UpdateDynamicRewardOrderCommand extends Command
     {
         $timeframe = $this->option('timeframe');
 
-        $orders = Order::strategy(StrategyEnum::DYNAMIC_REWARD)->status(OrderStatusEnum::PENDING)->get();
+        $orders = Order::strategy(StrategyEnum::DYNAMIC_REWARD)->status(OrderStatusEnum::OPEN)->get();
 
         foreach ($orders as $order) {
 

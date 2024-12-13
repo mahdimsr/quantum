@@ -20,7 +20,7 @@ class ClosePositionCommand extends Command
 
     public function handle(): int
     {
-        $pendingOrders = Order::strategy(StrategyEnum::Static_Profit)->status(OrderStatusEnum::PENDING)->get();
+        $pendingOrders = Order::strategy(StrategyEnum::Static_Profit)->status(OrderStatusEnum::OPEN)->get();
 
         foreach ($pendingOrders as $order) {
 

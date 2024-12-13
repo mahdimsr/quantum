@@ -47,7 +47,7 @@ class OpenStaticRewardOrderListener
             if ($setOrderResponse->isSuccess()) {
 
                 $event->pendingOrder->update([
-                    'status' => OrderStatusEnum::PENDING,
+                    'status' => OrderStatusEnum::OPEN,
                     'exchange_order_id' => $setOrderResponse->order()->getOrderId(),
                     'balance' => $balance,
                 ]);

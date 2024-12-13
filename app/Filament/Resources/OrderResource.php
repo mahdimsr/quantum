@@ -47,14 +47,14 @@ class OrderResource extends Resource
             ])
             ->filters([
                 Tables\Filters\Filter::make('pending')
-                    ->query(fn(Builder $query) => $query->where('status', OrderStatusEnum::PENDING->value))
+                    ->query(fn(Builder $query) => $query->where('status', OrderStatusEnum::OPEN->value))
                     ->default()
             ])
             ->actions([
                 Tables\Actions\Action::make('close')
                     ->requiresConfirmation()
-                    ->visible(fn(Order $order): bool => $order->status == OrderStatusEnum::PENDING)
-                    ->disabled(fn(Order $order): bool => $order->status != OrderStatusEnum::PENDING)
+                    ->visible(fn(Order $order): bool => $order->status == OrderStatusEnum::OPEN)
+                    ->disabled(fn(Order $order): bool => $order->status != OrderStatusEnum::OPEN)
                     ->action(function (Order $order) {
 
                         $bingXService = app(BingXService::class);
