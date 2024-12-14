@@ -29,8 +29,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static SetOrderResponseContract setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null)
  * @method static ClosePositionResponseContract closePosition(string $symbol, string $marketType, string $type, int $price, int $amount, ?string $customId = null)
  * @method static PositionResponseContract currentPosition(string $symbol)
- * @method static ClosePositionResponseContract closePositionByPositionId(string $positionId)
+ * @method static ClosePositionResponseContract closePositionByPositionId(string $positionId, ?string $symbol = null)
  * @method static AssetBalanceContract futuresBalance()
+ * @method static PositionResponseContract setStopLoss(string $symbol, mixed $stopLossPrice, string $stopLossType)
+ * @method static PositionResponseContract setTakeProfit(string $symbol, mixed $takeProfitPrice, string $takeProfitType)
  */
 class Exchange extends Facade
 {
