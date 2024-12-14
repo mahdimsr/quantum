@@ -36,7 +36,14 @@ class DynamicRewardStrategy extends Command
         }
 
         $balance = User::mahdi()->strategyBalance(StrategyEnum::DYNAMIC_REWARD);
+        $staticBalance = User::mahdi()->strategyBalance(StrategyEnum::Static_Profit);
+
         $availableBalance = Exchange::futuresBalance()->availableMargin();
+
+        if ($availableBalance > $staticBalance) {
+
+            $availableBalance = $availableBalance - $staticBalance;
+        }
 
         if ($availableBalance < $balance) {
 
