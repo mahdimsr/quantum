@@ -104,15 +104,26 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
 
     public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null): ?SetOrderResponseContract
     {
-        $data = $this->coinexClient->v2_private_post_futures_order([
+        $side = Str::of($sideEnum->convertToBuySell())->lower()->toString();
+        $type = Str::of($typeEnum->value)->lower()->toString();
+
+        $params = [
             'market' => $symbol,
             'market_type' => 'FUTURES',
-            'side' => Str::of($sideEnum->convertToBuySell())->lower()->toString(),
-            'type' => Str::of($typeEnum->value)->lower()->toString(),
+            'side' => $side,
+            'type' => $type,
             'amount' => $amount,
-            'price' => $price,
             'client_id' => $client_id,
-        ]);
+        ];
+
+        if ($sideEnum == 'sell') {
+
+            $params = array($params, [
+                'price' => $price,
+            ]);
+        }
+
+        $data = $this->coinexClient->v2_private_post_futures_order($params);
 
         return new OrderResponseAdapter($data);
     }
@@ -140,10 +151,10 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
 
     public function setStopLoss(string $symbol, mixed $stopLossPrice, string $stopLossType): ?PositionResponseContract
     {
-        $data = $this->coinexClient->v2_private_get_futures_pending_position([
+        $data = $this->coinexClient->v2_private_post_futures_set_position_stop_loss([
             'market' => $symbol,
             'market_type' => 'FUTURES',
-            'stop_loss_type' => $stopLossType,
+            'stop_loss_type' => 'mark_price',
             'stop_loss_price' => $stopLossPrice
         ]);
 
@@ -152,12 +163,13 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
 
     public function setTakeProfit(string $symbol, mixed $takeProfitPrice, string $takeProfitType): ?PositionResponseContract
     {
-        $data = $this->coinexClient->v2_private_get_futures_pending_position([
+        $data = $this->coinexClient->v2_private_post_futures_set_position_take_profit([
             'market' => $symbol,
             'market_type' => 'FUTURES',
-            'take_profit_type' => $takeProfitType,
+            'take_profit_type' => 'mark_price',
             'take_profit_price' => $takeProfitPrice
         ]);
 
-        return new PositionResponseAdapter($data);    }
+        return new PositionResponseAdapter($data);
+    }
 }
