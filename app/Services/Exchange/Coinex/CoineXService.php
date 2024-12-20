@@ -143,6 +143,7 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
         $data = $this->coinexClient->v2_private_post_futures_close_position([
             'market' => $symbol,
             'market_type' => 'FUTURES',
+            'type' => 'market',
             'client_id' => $positionId
         ]);
 
