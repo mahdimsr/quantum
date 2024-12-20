@@ -19,8 +19,13 @@ class PositionResponseAdapter extends BaseResponse implements PositionResponseCo
         $item['unrealizedProfit'] = $data['unrealized_pnl'];
         $item['realizedProfit'] = $data['realized_pnl'];
         $item['markPrice'] = $data['avg_entry_price'];
-        $item['pnlRatio'] = $data['not calculated'];
+        $item['pnlRatio'] = $this->calculatePnlRation($data['unrealized_pnl'], $data['margin_avbl']);
 
         return Position::create($item);
+    }
+
+    private function calculatePnlRation(mixed $unrealizedPnl, mixed $availableMargin): mixed
+    {
+        return (floatval($unrealizedPnl) / floatval($availableMargin)) * 100;
     }
 }
