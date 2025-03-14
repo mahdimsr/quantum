@@ -18,7 +18,7 @@ class CoinResponseAdapter extends BaseResponse implements CoinsResponseContract
 
         foreach ($data as $item) {
 
-            $name = Str::before($item['market'], 'USDT');
+            $name = $item['base_ccy'];
 
             $coinsArray[] = Coin::create($name);
         }
