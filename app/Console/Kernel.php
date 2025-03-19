@@ -36,9 +36,6 @@ class Kernel extends ConsoleKernel
 
         })->hourlyAt(15);
 
-//        $schedule->command('app:close-position-command --timeBase')->hourlyAt(50)->appendOutputTo(storage_path('logs/commands/close-position.log'));
-
-        $schedule->command('app:close-position-command --percentageBase')->everyThirtyMinutes()->appendOutputTo(storage_path('logs/commands/close-position.log'));
 
         $schedule->call(function () {
 
@@ -51,10 +48,6 @@ class Kernel extends ConsoleKernel
 
         })->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
 
-
-        $schedule->command('app:update-dynamic-reward-order')
-            ->everyTenMinutes()
-            ->appendOutputTo(storage_path('logs/commands/close-dynamic-reward.log'));
 
     }
 
