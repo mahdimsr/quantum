@@ -17,7 +17,7 @@ use Illuminate\Console\Command;
 
 class StaticRewardCommand extends Command
 {
-    protected $signature = 'app:static-reward-strategy {--leverage=10} {timeframe=1h} {--coin=}';
+    protected $signature = 'app:static-reward-strategy {--leverage=5} {timeframe=1hour} {--coin=}';
 
     protected $description = 'Static Reward Strategy';
 
@@ -25,7 +25,7 @@ class StaticRewardCommand extends Command
     public function handle(): int
     {
         $coin = Coin::findByName($this->option('coin'));
-        $leverage = $this->argument('leverage');
+        $leverage = $this->option('leverage');
         $timeframe = $this->argument('timeframe');
 
         $todayOrder = Order::strategy(StrategyEnum::Static_Profit)->whereDate('created_at', today())->exists();
@@ -39,7 +39,7 @@ class StaticRewardCommand extends Command
 
         $balance = User::mahdi()->strategyBalance(StrategyEnum::Static_Profit);
 
-        $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
+        $candlesResponse = Exchange::candles($coin->symbol(), $timeframe, 100);
 
         if ($candlesResponse->isSuccess()) {
 
@@ -83,6 +83,42 @@ class StaticRewardCommand extends Command
             }
 
 
+            if ( $utbotStrategyBig->isBearish() or $utbotStrategySmall->isBearish()) {
+
+                if ($utbotStrategySmall->sellSignal() or $utbotStrategySmall->sellSignal(1) or $utbotStrategyBig->sellSignal() or $utbotStrategyBig->sellSignal(1)) {
+
+                    $this->info('Sell Order');
+
+                    $price = $utbotStrategySmall->collection()->get(0)->getClose();
+
+                    // current trailing-stop or previous open
+
+                    $sl = max(
+                        $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop'),
+                        $utbotStrategyBig->collection()->get(1)->getOpen()
+                    );
+
+                    $order = Order::query()->create([
+                        'symbol' => $coin->symbol(),
+                        'exchange' => 'coinex',
+                        'coin_name' => $coin->name,
+                        'leverage' => $leverage,
+                        'side' => SideEnum::SELL,
+                        'type' => TypeEnum::MARKET,
+                        'status' => OrderStatusEnum::ONLY_CREATED,
+                        'price' => $price,
+                        'sl' => $sl,
+                        'strategy' => StrategyEnum::Static_Profit->value,
+                        'balance' => $balance,
+                    ]);
+
+                    event(new PendingOrderCreated($order));
+
+                    return 1;
+                }
+            }
+
+            return 0;
         }
     }
 }
