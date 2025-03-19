@@ -19,6 +19,8 @@ class CandleResponseAdapter extends BaseResponse implements CandleResponseContra
             return Candle::fromArray($item);
         });
 
-        return CandleCollection::make($data);
+        $reverse = $data->reverse()->values()->all();
+
+        return CandleCollection::make($reverse);
     }
 }
