@@ -116,9 +116,16 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
             'client_id' => $client_id,
         ];
 
+        if (Str::of(TypeEnum::LIMIT->value)->lower()->is($type)) {
+
+            $params = array_merge($params, [
+                'price' => $price,
+            ]);
+        }
+
         if ($sideEnum == 'sell') {
 
-            $params = array($params, [
+            $params = array_merge($params, [
                 'price' => $price,
             ]);
         }
