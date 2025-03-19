@@ -27,7 +27,7 @@ class OpenDynamicRewardOrderListener
             $balance = $event->pendingOrder->balance;
 
             Exchange::setLeverage(
-                $event->pendingOrder->coin->symbol('-'),
+                $event->pendingOrder->coin->symbol(),
                 $event->pendingOrder->side,
                 $event->pendingOrder->leverage
             );
@@ -37,7 +37,7 @@ class OpenDynamicRewardOrderListener
             $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
 
             $setOrderResponse = Exchange::setOrder(
-                $event->pendingOrder->coin->symbol('-'),
+                $event->pendingOrder->coin->symbol(),
                 $event->pendingOrder->type,
                 $event->pendingOrder->side,
                 $event->pendingOrder->side,
