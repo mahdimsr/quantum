@@ -5055,6 +5055,7 @@ class Exchange {
             return;
         }
         if (is_array($exact) && array_key_exists($string, $exact)) {
+            dd($message);
             throw new $exact[$string]($message);
         }
     }
