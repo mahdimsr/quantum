@@ -17,9 +17,9 @@ class OrderResponseAdapter extends BaseResponse implements SetOrderResponseContr
             $data['side'],
             $data['type'],
             $data['price'],
-            $data['27564.87468358'],
+            $data['amount'],
             $data['client_id'],
-            $data['client_id'],
+            $data['order_id'],
         );
     }
 }
