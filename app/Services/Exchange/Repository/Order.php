@@ -4,6 +4,7 @@ namespace App\Services\Exchange\Repository;
 
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
+use Illuminate\Support\Str;
 
 class Order
 {
@@ -24,8 +25,8 @@ class Order
         $order = new self();
 
         $order->symbol = $symbol;
-        $order->side = SideEnum::from($side);
-        $order->type = TypeEnum::from($type);
+        $order->side = SideEnum::from(Str::of($side)->upper()->toString());
+        $order->type = TypeEnum::from(Str::of($type)->upper()->toString());
         $order->price = $price;
         $order->quantity = $quantity;
         $order->client_id = $client_id;
