@@ -17,7 +17,7 @@ use Illuminate\Console\Command;
 
 class DynamicRewardStrategy extends Command
 {
-    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1h} {--leverage=10}';
+    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1hour} {--leverage=10}';
 
     protected $description = 'Dynamic Reward Strategy';
 
@@ -52,7 +52,7 @@ class DynamicRewardStrategy extends Command
         }
 
 
-        $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
+        $candlesResponse = Exchange::candles($coin->symbol(), $timeframe, 100);
 
         if ($candlesResponse->isSuccess()) {
 
@@ -76,8 +76,9 @@ class DynamicRewardStrategy extends Command
                     );
 
                     $order = Order::query()->create([
-                        'symbol' => $coin->symbol('-'),
+                        'symbol' => $coin->symbol(),
                         'coin_name' => $coin->name,
+                        'exchange' => 'coinex',
                         'leverage' => $leverage,
                         'side' => SideEnum::BUY,
                         'type' => TypeEnum::MARKET,
