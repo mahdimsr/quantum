@@ -140,7 +140,7 @@ class LNLTrendCollection extends CandleCollection
 
     private function calculateNotDefinedCloud(CandleCollection $lnlTrendCollection): CandleCollection
     {
-        return $lnlTrendCollection->filter(function (Candle $candle, $key) {
+        return $lnlTrendCollection->each(function (Candle $candle, $key) {
 
             return $candle->getMeta()['lnl-trend-cloud'] == 'not-defined';
 

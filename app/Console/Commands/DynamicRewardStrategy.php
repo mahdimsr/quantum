@@ -59,7 +59,7 @@ class DynamicRewardStrategy extends Command
             if ($lnlTrendStrategy->isBullish() and $utbotStrategySmall->isBullish() and $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop') < $price
                 or Str::of($position)->contains('long')) {
 
-                if ($utbotStrategySmall->buySignal(1) or Str::of($position)->contains('long')) {
+                if ($utbotStrategySmall->buySignal(1) or $utbotStrategyBig->buySignal(1) or Str::of($position)->contains('long')) {
 
                     $this->info('Buy Order');
 
@@ -94,7 +94,7 @@ class DynamicRewardStrategy extends Command
             if ($lnlTrendStrategy->isBearish() and $utbotStrategySmall->isBearish() and $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop') > $price
                 or Str::of($position)->contains('short')) {
 
-                if ($utbotStrategySmall->sellSignal(1) or Str::of($position)->contains('short')) {
+                if ($utbotStrategySmall->sellSignal(1) or $utbotStrategyBig->sellSignal(1) or Str::of($position)->contains('short')) {
 
                     $this->info('Sell Order');
 
