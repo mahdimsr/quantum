@@ -1,6 +1,6 @@
 name: CI/CD
 
-on: 
+on:
   push:
     branches: ["main"]
 
@@ -20,3 +20,4 @@ jobs:
             git reset --hard
             git checkout main
             git pull
+            chmod -R 777 storage/logs/*
