@@ -84,7 +84,7 @@ class OrderResource extends Resource
                     ->disabled(fn(Order $order): bool => isset($order->position_id))
                     ->action(function (Order $order) {
 
-                        $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
+                        $positionResponse = Exchange::currentPosition($order->symbol);
 
 
                         if ($positionResponse->isSuccess()) {
