@@ -7,17 +7,19 @@ use Filament\Support\Contracts\HasColor;
 enum OrderStatusEnum: string implements HasColor
 {
     case ONLY_CREATED = 'ONLY_CREATED';
-    case PENDING = 'PENDING';
+    case OPEN = 'OPEN';
     case CLOSED = 'CLOSED';
     case FAILED = 'FAILED';
+    case UNKNOWN = 'UNKNOWN';
 
     public function getColor(): string|array|null
     {
         return match ($this) {
-          self::ONLY_CREATED => 'gray',
-          self::PENDING => 'info',
-          self::FAILED => 'danger',
-          self::CLOSED => 'success',
+            self::ONLY_CREATED => 'gray',
+            self::OPEN => 'info',
+            self::FAILED => 'danger',
+            self::UNKNOWN => 'warning',
+            self::CLOSED => 'success',
         };
     }
 }

@@ -25,12 +25,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-//        $schedule->command('app:static-reward-strategy')->hourlyAt(15)->appendOutputTo(storage_path('logs/commands/static-reward.log'));
-
-//        $schedule->command('app:close-position-command --timeBase')->hourlyAt(50)->appendOutputTo(storage_path('logs/commands/close-position.log'));
-
-//        $schedule->command('app:close-position-command --percentageBase')->everyMinute()->appendOutputTo(storage_path('logs/commands/close-position.log'));
-
         $schedule->call(function () {
 
             $coins = Coin::withStrategies(StrategyEnum::DYNAMIC_REWARD)->get();
@@ -43,10 +37,7 @@ class Kernel extends ConsoleKernel
         })->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
 
 
-        $schedule->command('app:update-dynamic-reward-order')
-            ->everyFifteenMinutes()
-            ->appendOutputTo(storage_path('logs/commands/close-dynamic-reward.log'));
-
+        $schedule->command('app:update-dynamic-stop-loss-command')->everyThirtyMinutes();
     }
 
     /**

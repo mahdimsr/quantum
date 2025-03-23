@@ -8,6 +8,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Models\Order;
 use App\Services\Exchange\BingX\BingXService;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Facade\Exchange;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -37,6 +38,7 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('coin_name'),
+                Tables\Columns\TextColumn::make('position_id'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge(),
                 Tables\Columns\TextColumn::make('side')
@@ -45,14 +47,14 @@ class OrderResource extends Resource
             ])
             ->filters([
                 Tables\Filters\Filter::make('pending')
-                    ->query(fn(Builder $query) => $query->where('status', OrderStatusEnum::PENDING->value))
+                    ->query(fn(Builder $query) => $query->where('status', OrderStatusEnum::OPEN->value))
                     ->default()
             ])
             ->actions([
                 Tables\Actions\Action::make('close')
                     ->requiresConfirmation()
-                    ->visible(fn(Order $order): bool => $order->status == OrderStatusEnum::PENDING)
-                    ->disabled(fn(Order $order): bool => $order->status != OrderStatusEnum::PENDING)
+                    ->visible(fn(Order $order): bool => $order->status == OrderStatusEnum::OPEN)
+                    ->disabled(fn(Order $order): bool => $order->status != OrderStatusEnum::OPEN)
                     ->action(function (Order $order) {
 
                         $bingXService = app(BingXService::class);
@@ -76,7 +78,37 @@ class OrderResource extends Resource
                                 ->send();
                         }
 
-                    })
+                    }),
+                Tables\Actions\Action::make('update position Id')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->visible(fn(Order $order): bool => ! isset($order->position_id))
+                    ->disabled(fn(Order $order): bool => isset($order->position_id))
+                    ->action(function (Order $order) {
+
+                        $positionResponse = Exchange::currentPosition($order->coin->symbol('-'));
+
+
+                        if ($positionResponse->isSuccess()) {
+
+                            $order->update([
+                                'position_id' => $positionResponse->position()->getPositionId(),
+                            ]);
+
+                            Notification::make()
+                                ->title('Position ID updated')
+                                ->success()
+                                ->send();
+
+                        } else {
+
+                            Notification::make()
+                                ->title('Sth Wrong ...')
+                                ->danger()
+                                ->send();
+                        }
+
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

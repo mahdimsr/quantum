@@ -11,13 +11,14 @@ use App\Models\User;
 use App\Services\Exchange\Enums\SideEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Facade\Exchange;
-use App\Services\Strategy\LNLTrendStrategy;
-use App\Services\Strategy\UTBotAlertStrategy;
+use App\Services\Indicator\Strategy\LNLTrendStrategy;
+use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class DynamicRewardStrategy extends Command
 {
-    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1h} {--leverage=10}';
+    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1hour} {--leverage=5} {--position=}';
 
     protected $description = 'Dynamic Reward Strategy';
 
@@ -27,8 +28,9 @@ class DynamicRewardStrategy extends Command
         $coin = Coin::findByName($this->option('coin'));
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');
+        $position = $this->option('position');
 
-        if (Order::status(OrderStatusEnum::PENDING)->where('coin_name', $coin->name)->exists()) {
+        if (Order::status(OrderStatusEnum::OPEN)->where('coin_name', $coin->name)->exists()) {
 
             $this->warn('pending order exists...');
 
@@ -36,7 +38,8 @@ class DynamicRewardStrategy extends Command
         }
 
         $balance = User::mahdi()->strategyBalance(StrategyEnum::DYNAMIC_REWARD);
-        $availableBalance = Exchange::futuresBalance()->balance();
+
+        $availableBalance = Exchange::futuresBalance()->availableMargin();
 
         if ($availableBalance < $balance) {
 
@@ -44,33 +47,33 @@ class DynamicRewardStrategy extends Command
         }
 
 
-        $candlesResponse = Exchange::candles($coin->symbol('-'), $timeframe, 100);
+        $candlesResponse = Exchange::candles($coin->symbol(), $timeframe, 100);
 
         if ($candlesResponse->isSuccess()) {
 
             $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
             $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
             $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
+            $price = $utbotStrategySmall->collection()->get(0)->getClose();
 
-            if ($lnlTrendStrategy->isBullish()) {
+            if ($lnlTrendStrategy->isBullish() and $utbotStrategySmall->isBullish() and $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop') < $price
+                or Str::of($position)->contains('long')) {
 
-                if (($utbotStrategyBig->isBullish() and $utbotStrategySmall->buySignal(1)) or
-                    ($utbotStrategySmall->isBullish() and $utbotStrategyBig->buySignal(1))) {
+                if ($utbotStrategySmall->buySignal(1) or Str::of($position)->contains('long')) {
 
                     $this->info('Buy Order');
-
-                    $price = $utbotStrategySmall->collection()->get(0)->getClose();
 
                     // current trailing-stop or previous open
 
                     $sl = min(
-                        $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop'),
-                        $utbotStrategyBig->collection()->get(1)->getOpen()
+                        $utbotStrategySmall->collection()->get(0)->getMeta('trailing-stop'),
+                        $utbotStrategySmall->collection()->get(1)->getOpen()
                     );
 
                     $order = Order::query()->create([
-                        'symbol' => $coin->symbol('-'),
+                        'symbol' => $coin->symbol(),
                         'coin_name' => $coin->name,
+                        'exchange' => 'coinex',
                         'leverage' => $leverage,
                         'side' => SideEnum::BUY,
                         'type' => TypeEnum::MARKET,
@@ -88,24 +91,22 @@ class DynamicRewardStrategy extends Command
 
             }
 
-            if ($lnlTrendStrategy->isBearish()) {
+            if ($lnlTrendStrategy->isBearish() and $utbotStrategySmall->isBearish() and $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop') > $price
+                or Str::of($position)->contains('short')) {
 
-                if (($utbotStrategyBig->isBearish() and $utbotStrategySmall->sellSignal(1)) or
-                    ($utbotStrategySmall->isBearish() and $utbotStrategyBig->sellSignal(1))) {
+                if ($utbotStrategySmall->sellSignal(1) or Str::of($position)->contains('short')) {
 
                     $this->info('Sell Order');
-
-                    $price = $utbotStrategySmall->collection()->get(0)->getClose();
 
                     // current trailing-stop or previous open
 
                     $sl = max(
-                        $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop'),
-                        $utbotStrategyBig->collection()->get(1)->getOpen()
+                        $utbotStrategySmall->collection()->get(0)->getMeta('trailing-stop'),
+                        $utbotStrategySmall->collection()->get(1)->getOpen()
                     );
 
                     $order = Order::query()->create([
-                        'symbol' => $coin->symbol('-'),
+                        'symbol' => $coin->symbol(),
                         'coin_name' => $coin->name,
                         'leverage' => $leverage,
                         'side' => SideEnum::SHORT,

@@ -2,7 +2,7 @@
 
 namespace App\Services\Exchange\Coinex\Responses;
 
-abstract class ResponseAdapter
+abstract class BaseResponse
 {
     protected array $response;
 
@@ -21,13 +21,8 @@ abstract class ResponseAdapter
         return $this->response['message'];
     }
 
-    public function data(): mixed
-    {
-        return $this->response['data'];
-    }
-
     public function isSuccess(): bool
     {
-        return $this->code() == 0;
+        return $this->message() == 'OK' or $this->code() == 0;
     }
 }

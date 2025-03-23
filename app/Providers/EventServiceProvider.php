@@ -27,9 +27,9 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         PendingOrderCreated::class => [
-//            OpenStaticRewardOrderListener::class,
+            OpenStaticRewardOrderListener::class,
             OpenDynamicRewardOrderListener::class,
-            OrderOpenedNotifyListener::class,
+//            OrderOpenedNotifyListener::class,
         ],
 
         OrderClosedEvent::class => [

@@ -17,11 +17,21 @@ class AssetResponseAdapter extends BingXResponse implements AssetBalanceContract
     {
         $balanceArray =  $this->data['data']['balance'];
 
-//        $usdtBalance = collect($balanceArray)->filter(fn($item) => $item['asset'] == 'USDT')->first();
-
         if ($balanceArray) {
 
             return $balanceArray['balance'];
+        }
+
+        return null;
+    }
+
+    public function availableMargin(): mixed
+    {
+        $balanceArray =  $this->data['data']['balance'];
+
+        if ($balanceArray) {
+
+            return $balanceArray['availableMargin'];
         }
 
         return null;

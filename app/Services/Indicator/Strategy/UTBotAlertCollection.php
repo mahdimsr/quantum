@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Strategy;
+namespace App\Services\Indicator\Strategy;
 
 use App\Services\Exchange\Repository\Candle;
 use App\Services\Exchange\Repository\CandleCollection;
@@ -52,6 +52,7 @@ class UTBotAlertCollection extends CandleCollection
     {
         $trailingStop = [];
 
+        $prevXATRTrailingStop = 0;
 
         for ($i = $this->candleCollection->count() - 1; $i >= 0 ; $i--) {
 
@@ -81,7 +82,7 @@ class UTBotAlertCollection extends CandleCollection
 
         $trailingStop = array_reverse($trailingStop);
 
-        $this->candleCollection->each(fn(Candle $candle, $key) => $candle-> setMeta(['trailing-stop' => $trailingStop[$key]]));
+        $this->candleCollection->each(fn(Candle $candle, $key) => $candle-> setMeta(['trailing-stop' => $trailingStop[$key], 'xatr' => $prevXATRTrailingStop]));
     }
 
     private function calculatePosition(): void
