@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
         })->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
 
 
-        $schedule->command('app:update-dynamic-stop-loss-command')->everyThirtyMinutes();
+        $schedule->command('app:update-dynamic-stop-loss-command')->everyThirtyMinutes()->appendOutputTo(storage_path('logs/dynamic-stop-loss.log'));
     }
 
     /**
