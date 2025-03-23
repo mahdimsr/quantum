@@ -27,18 +27,6 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-            $coins = Coin::withStrategies(StrategyEnum::Static_Profit)->get();
-
-            foreach ($coins as $coin) {
-
-                Artisan::call('app:static-reward-strategy', ['--coin' => $coin->name, '--leverage' => 10]);
-            }
-
-        })->hourlyAt(15);
-
-
-        $schedule->call(function () {
-
             $coins = Coin::withStrategies(StrategyEnum::DYNAMIC_REWARD)->get();
 
             foreach ($coins as $coin) {
@@ -48,8 +36,8 @@ class Kernel extends ConsoleKernel
 
         })->hourlyAt(30)->appendOutputTo(storage_path('logs/commands/dynamic-reward.log'));
 
-        $schedule->command('app:update-dynamic-stop-loss-command')->everyThirtyMinutes();
 
+        $schedule->command('app:update-dynamic-stop-loss-command')->everyThirtyMinutes();
     }
 
     /**
