@@ -14,10 +14,11 @@ use App\Services\Exchange\Facade\Exchange;
 use App\Services\Indicator\Strategy\LNLTrendStrategy;
 use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class DynamicRewardStrategy extends Command
 {
-    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1hour} {--leverage=10}';
+    protected $signature = 'app:dynamic-reward-strategy {--coin=} {--timeframe=1hour} {--leverage=5} {--position=}';
 
     protected $description = 'Dynamic Reward Strategy';
 
@@ -27,6 +28,7 @@ class DynamicRewardStrategy extends Command
         $coin = Coin::findByName($this->option('coin'));
         $timeframe = $this->option('timeframe');
         $leverage = $this->option('leverage');
+        $position = $this->option('position');
 
         if (Order::status(OrderStatusEnum::OPEN)->where('coin_name', $coin->name)->exists()) {
 
@@ -42,7 +44,6 @@ class DynamicRewardStrategy extends Command
         if ($availableBalance < $balance) {
 
             $balance = $availableBalance;
-            $leverage = $leverage * 2;
         }
 
 
@@ -53,9 +54,9 @@ class DynamicRewardStrategy extends Command
             $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
             $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-            if ($lnlTrendStrategy->isBullish() and $utbotStrategySmall->isBullish()) {
+            if ($lnlTrendStrategy->isBullish() and $utbotStrategySmall->isBullish() or Str::of($position)->contains('long')) {
 
-                if ($utbotStrategySmall->buySignal(1)) {
+                if ($utbotStrategySmall->buySignal(1) or Str::of($position)->contains('long')) {
 
                     $this->info('Buy Order');
 
@@ -89,9 +90,9 @@ class DynamicRewardStrategy extends Command
 
             }
 
-            if ($lnlTrendStrategy->isBearish() and $utbotStrategySmall->isBearish()) {
+            if ($lnlTrendStrategy->isBearish() and $utbotStrategySmall->isBearish() or Str::of($position)->contains('short')) {
 
-                if ($utbotStrategySmall->sellSignal(1)) {
+                if ($utbotStrategySmall->sellSignal(1) or Str::of($position)->contains('short')) {
 
                     $this->info('Sell Order');
 
