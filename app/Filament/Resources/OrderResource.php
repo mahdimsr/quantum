@@ -57,9 +57,7 @@ class OrderResource extends Resource
                     ->disabled(fn(Order $order): bool => $order->status != OrderStatusEnum::OPEN)
                     ->action(function (Order $order) {
 
-                        $bingXService = app(BingXService::class);
-
-                        $closeOrderResponse = $bingXService->closePositionByPositionId($order->position_id);
+                        $closeOrderResponse = Exchange::closePositionByPositionId($order->position_id, $order->symbol);
 
                         if ($closeOrderResponse->isSuccess()) {
 
