@@ -43,8 +43,8 @@ class UpdateDynamicStopLossCommand extends Command
 
             $candlesResponse = Exchange::candles($order->coin->symbol(), $timeframe, 100);
 
-            $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
-            $sl = $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop');
+            $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
+            $sl = $utbotStrategySmall->collection()->get(0)->getMeta('trailing-stop');
 
             $stopLossResponse = Exchange::setStopLoss($order->coin->symbol(), $sl,'something');
 

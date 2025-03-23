@@ -36,14 +36,8 @@ class DynamicRewardStrategy extends Command
         }
 
         $balance = User::mahdi()->strategyBalance(StrategyEnum::DYNAMIC_REWARD);
-        $staticBalance = User::mahdi()->strategyBalance(StrategyEnum::Static_Profit);
 
         $availableBalance = Exchange::futuresBalance()->availableMargin();
-
-        if ($availableBalance > $staticBalance) {
-
-            $availableBalance = $availableBalance - $staticBalance;
-        }
 
         if ($availableBalance < $balance) {
 
@@ -57,12 +51,11 @@ class DynamicRewardStrategy extends Command
         if ($candlesResponse->isSuccess()) {
 
             $utbotStrategySmall = new UTBotAlertStrategy($candlesResponse->data(), 1, 2);
-            $utbotStrategyBig = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
             $lnlTrendStrategy = new LNLTrendStrategy($candlesResponse->data());
 
-            if ($lnlTrendStrategy->isBullish() and ($utbotStrategyBig->isBullish() or $utbotStrategySmall->isBullish())) {
+            if ($lnlTrendStrategy->isBullish() and $utbotStrategySmall->isBullish()) {
 
-                if ($utbotStrategySmall->buySignal() or $utbotStrategySmall->buySignal(1) or $utbotStrategyBig->buySignal() or $utbotStrategyBig->buySignal(1)) {
+                if ($utbotStrategySmall->buySignal(1)) {
 
                     $this->info('Buy Order');
 
@@ -71,8 +64,8 @@ class DynamicRewardStrategy extends Command
                     // current trailing-stop or previous open
 
                     $sl = min(
-                        $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop'),
-                        $utbotStrategyBig->collection()->get(1)->getOpen()
+                        $utbotStrategySmall->collection()->get(0)->getMeta('trailing-stop'),
+                        $utbotStrategySmall->collection()->get(1)->getOpen()
                     );
 
                     $order = Order::query()->create([
@@ -96,9 +89,9 @@ class DynamicRewardStrategy extends Command
 
             }
 
-            if ($lnlTrendStrategy->isBearish() and ($utbotStrategyBig->isBearish() or $utbotStrategySmall->isBearish())) {
+            if ($lnlTrendStrategy->isBearish() and $utbotStrategySmall->isBearish()) {
 
-                if ($utbotStrategySmall->sellSignal() or $utbotStrategySmall->sellSignal(1) or $utbotStrategyBig->sellSignal() or $utbotStrategyBig->sellSignal(1)) {
+                if ($utbotStrategySmall->sellSignal(1)) {
 
                     $this->info('Sell Order');
 
@@ -107,12 +100,12 @@ class DynamicRewardStrategy extends Command
                     // current trailing-stop or previous open
 
                     $sl = max(
-                        $utbotStrategyBig->collection()->get(0)->getMeta('trailing-stop'),
-                        $utbotStrategyBig->collection()->get(1)->getOpen()
+                        $utbotStrategySmall->collection()->get(0)->getMeta('trailing-stop'),
+                        $utbotStrategySmall->collection()->get(1)->getOpen()
                     );
 
                     $order = Order::query()->create([
-                        'symbol' => $coin->symbol('-'),
+                        'symbol' => $coin->symbol(),
                         'coin_name' => $coin->name,
                         'leverage' => $leverage,
                         'side' => SideEnum::SHORT,
