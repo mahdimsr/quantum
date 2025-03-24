@@ -43,7 +43,9 @@ class DynamicRewardStrategy extends Command
 
         if ($availableBalance < $balance) {
 
-            $balance = $availableBalance;
+            $this->warn('available balance is less than config balance...');
+
+            return 0;
         }
 
 
