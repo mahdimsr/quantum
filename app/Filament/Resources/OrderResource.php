@@ -107,11 +107,10 @@ class OrderResource extends Resource
                         }
 
                     }),
+                Tables\Actions\DeleteAction::make('delete')
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+
             ]);
     }
 
@@ -126,8 +125,6 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            'create' => Pages\CreateOrder::route('/create'),
-            'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 }
