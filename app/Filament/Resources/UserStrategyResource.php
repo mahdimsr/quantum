@@ -67,9 +67,7 @@ class UserStrategyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUserStrategies::route('/'),
-            'create' => Pages\CreateUserStrategy::route('/create'),
-            'edit' => Pages\EditUserStrategy::route('/{record}/edit'),
+            'index' => Pages\ListUserStrategies::route('/')
         ];
     }
 }

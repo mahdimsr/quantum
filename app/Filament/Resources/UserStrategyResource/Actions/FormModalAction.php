@@ -21,7 +21,7 @@ class FormModalAction extends Action
                                    ->required(),
                              Select::make('name')
                                    ->label('Strategy Name')
-                                   ->options(StrategyEnum::class)
+                                   ->options(StrategyEnum::optionCases())
                                    ->required(),
                              TextInput::make('balance')
                                       ->label('Balance')

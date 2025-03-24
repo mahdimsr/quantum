@@ -10,7 +10,7 @@ trait OptionValues
 
         foreach (self::cases() as $case){
 
-            $optionCases[$case->value] = $case->name;
+            $optionCases[$case->value] = $case->value;
         }
 
         return $optionCases;
