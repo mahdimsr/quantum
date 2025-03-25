@@ -10,6 +10,10 @@ class PositionResponseAdapter extends BaseResponse implements PositionResponseCo
 
     public function position(): ?Position
     {
+        if (count($this->response['data']) == 0){
+            return null;
+        }
+
         $data = $this->response['data'][0];
 
         $item = [];

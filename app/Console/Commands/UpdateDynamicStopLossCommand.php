@@ -28,7 +28,7 @@ class UpdateDynamicStopLossCommand extends Command
 
             $currentPositionResponse = Exchange::currentPosition($order->coin->symbol());
 
-            if ($currentPositionResponse->isSuccess()) {
+            if ($currentPositionResponse->isSuccess() and $currentPositionResponse->position()) {
 
                 $order->update([
                     'position_id' => $currentPositionResponse->position()->getPositionId()
