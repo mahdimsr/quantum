@@ -9,7 +9,9 @@ use App\Filament\Resources\OrderResource;
 use App\Models\Coin;
 use App\Models\Order;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TimeframeEnum;
 use App\Services\Exchange\Enums\TypeEnum;
+use App\Services\Exchange\Facade\Exchange;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
@@ -60,6 +62,11 @@ class ListOrders extends ListRecords
                     $side = SideEnum::from($data['position']);
                     $sl = $data['sl'];
 
+                    $candlesResponse = Exchange::candles($coin->symbol(),TimeframeEnum::EVERY_HOUR->toCoineXFormat());
+
+                    $price = $candlesResponse->data()->get(0)->getClose();
+
+
                     $order = Order::query()->create([
                         'symbol' => $coin->symbol(),
                         'coin_name' => $coin->name,
@@ -68,7 +75,7 @@ class ListOrders extends ListRecords
                         'side' => $side,
                         'type' => TypeEnum::MARKET,
                         'status' => OrderStatusEnum::MANUAL_CREATED,
-                        'price' => 0,
+                        'price' => $price,
                         'sl' => $sl,
                         'strategy' => StrategyEnum::DYNAMIC_REWARD,
                         'balance' => $balance,
