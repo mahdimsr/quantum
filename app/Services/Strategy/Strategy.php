@@ -70,12 +70,12 @@ class Strategy
         });
     }
 
-    public function isShort(): bool
+    public function hasShortEntry(): bool
     {
         return $this->shortSignals > 0 and $this->shortSignals == count($this->algorithms);
     }
 
-    public function isLong(): bool
+    public function hasLongEntry(): bool
     {
         return $this->longSignals > 0 and $this->longSignals == count($this->algorithms);
     }
