@@ -7,7 +7,7 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-        \App\Settings\AppSetting::class,
+        \App\Settings\MandaStrategySetting::class,
     ],
 
     /*
