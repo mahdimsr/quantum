@@ -2,7 +2,9 @@
 
 namespace App\Services\Strategy\Defaults;
 
+use App\Enums\PositionTypeEnum;
 use App\Services\Exchange\Repository\CandleCollection;
+use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 use App\Services\Strategy\LNLTrendAlgorithm;
 use App\Services\Strategy\SmallUtBotAlgorithm;
 use App\Services\Strategy\Strategy;
@@ -10,29 +12,35 @@ use App\Settings\OrbitalStrategySetting;
 
 class OrbitalStrategy
 {
-    private CandleCollection $candlesCollection;
-    private Strategy $strategy;
     private OrbitalStrategySetting $setting;
 
-    public function __construct(CandleCollection $candlesCollection)
+    public function __construct()
     {
-        $this->candlesCollection = $candlesCollection;
         $this->setting = app(OrbitalStrategySetting::class);
-        $this->strategy = new Strategy();
-        $this->strategy->send($this->candlesCollection)->through([
+    }
+
+    public function name(): string
+    {
+        return 'orbital';
+    }
+
+    public function signal(CandleCollection $candleCollection): ?PositionTypeEnum
+    {
+        $strategy = new Strategy();
+        $strategy->send($candleCollection)->through([
             LNLTrendAlgorithm::class,
             SmallUtBotAlgorithm::class
         ])->run();
-    }
 
-    public function short(): bool
-    {
-        return $this->strategy->hasShortEntry();
-    }
+        if ($strategy->hasShortEntry()) {
+            return PositionTypeEnum::SHORT;
+        }
 
-    public function long(): bool
-    {
-        return $this->strategy->hasLongEntry();
+        if ($strategy->hasLongEntry()) {
+            return PositionTypeEnum::LONG;
+        }
+
+        return null;
     }
 
     public function active(): bool

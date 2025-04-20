@@ -62,12 +62,12 @@ class OrbitalStrategySettingPage extends SettingsPage
                                 ->inline()
                                 ->required()
                                 ->options([
-                                    'low-risk' => 'Low Risk',
-                                    'high-risk' => 'High Risk',
+                                    'large-utbot' => 'Large UTBot',
+                                    'last-candle' => 'Last candle',
                                 ])
                                 ->descriptions([
-                                    'low-risk' => 'now on the value is base on utbot 2,3 config',
-                                    'high-risk' => 'now on the value is base on utbot 1,2 config',
+                                    'large-utbot' => 'the trailing value of utbot 3,2',
+                                    'last-candle' => 'the max value between high and low of last candle',
                                 ]),
                             Checkbox::make('autoClose'),
                         ]),
