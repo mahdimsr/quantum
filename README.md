@@ -11,19 +11,12 @@ which have been developed with a win rate of 70%.
 
 ## Features
 
-### Admin Panel ( Filament )
-- **assign strategies to users**
-- **assign strategies to coins**
-- **assign balance assets in USDT for each coin strategy**
+- ### Admin Panel ( Filament )
 
-### Strategies
-
-- **(Static Reward Strategy) trading strategy with at least on percent profit per day**
-- **(Dynamic Reward Strategy) trading strategy with dynamic stop-loss (detect trend and try to take profit from whole trend)**
+- ### Strategies
+  - **Orbital Strategy** (It check if trend start and then enter position)
 
 
 ## Exchanges
 
-- [x] Bingx
 - [x] Coinex
-- [ ] Mexc
