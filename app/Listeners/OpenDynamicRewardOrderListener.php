@@ -21,46 +21,43 @@ class OpenDynamicRewardOrderListener
 
     public function handle(PendingOrderCreated $event): void
     {
-        if ($event->pendingOrder->strategy == StrategyEnum::DYNAMIC_REWARD) {
+        $currentPrice = $event->pendingOrder->price;
+        $balance = $event->pendingOrder->balance;
 
-            $currentPrice = $event->pendingOrder->price;
-            $balance = $event->pendingOrder->balance;
+        Exchange::setLeverage(
+            $event->pendingOrder->coin->symbol(),
+            $event->pendingOrder->side,
+            $event->pendingOrder->leverage
+        );
 
-            Exchange::setLeverage(
-                $event->pendingOrder->coin->symbol(),
-                $event->pendingOrder->side,
-                $event->pendingOrder->leverage
-            );
+        $quantity =  Calculate::quantity($balance, $currentPrice, $event->pendingOrder->leverage);
 
-            $quantity =  Calculate::quantity($balance, $currentPrice, $event->pendingOrder->leverage);
+        $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
 
-            $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
+        $setOrderResponse = Exchange::setOrder(
+            $event->pendingOrder->coin->symbol(),
+            $event->pendingOrder->type,
+            $event->pendingOrder->side,
+            $event->pendingOrder->side,
+            $quantity,
+            $event->pendingOrder->price,
+            $event->pendingOrder->client_id,
+            null,
+            $slTarget,
+        );
 
-            $setOrderResponse = Exchange::setOrder(
-                $event->pendingOrder->coin->symbol(),
-                $event->pendingOrder->type,
-                $event->pendingOrder->side,
-                $event->pendingOrder->side,
-                $quantity,
-                $event->pendingOrder->price,
-                $event->pendingOrder->client_id,
-                null,
-                $slTarget,
-            );
+        if ($setOrderResponse->isSuccess()) {
 
-            if ($setOrderResponse->isSuccess()) {
+            $event->pendingOrder->update([
+                'status' => OrderStatusEnum::OPEN,
+                'exchange_order_id' => $setOrderResponse->order()->getOrderId()
+            ]);
 
-                $event->pendingOrder->update([
-                    'status' => OrderStatusEnum::OPEN,
-                    'exchange_order_id' => $setOrderResponse->order()->getOrderId()
-                ]);
+        } else {
 
-            } else {
-
-                $event->pendingOrder->update([
-                    'status' => OrderStatusEnum::FAILED,
-                ]);
-            }
+            $event->pendingOrder->update([
+                'status' => OrderStatusEnum::FAILED,
+            ]);
         }
     }
 }
