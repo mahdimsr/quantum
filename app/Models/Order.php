@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string balance
  * @property string tp
  * @property string sl
- * @property StrategyEnum strategy
+ * @property string strategy
  *
  * @property Coin coin
  *
@@ -40,8 +40,7 @@ class Order extends Model
     protected $casts = [
         'side' => SideEnum::class,
         'type' => TypeEnum::class,
-        'status' => OrderStatusEnum::class,
-        'strategy' => StrategyEnum::class,
+        'status' => OrderStatusEnum::class
     ];
 
     protected static function booted(): void
