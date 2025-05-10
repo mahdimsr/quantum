@@ -50,6 +50,11 @@ class ListOrders extends ListRecords
                                     SideEnum::SHORT->name => SideEnum::SHORT->value,
                                 ])
                                 ->columnSpan(1),
+                            Radio::make('strategy')
+                                ->options([
+                                    'orbital'
+                                ])
+                                ->columnSpan(1),
                             TextInput::make('sl')
                                 ->numeric()
                                 ->columnSpan(1),
@@ -61,6 +66,7 @@ class ListOrders extends ListRecords
                     $balance = $data['margin'];
                     $side = SideEnum::from($data['position']);
                     $sl = $data['sl'];
+                    $strategy = $data['strategy'];
 
                     $candlesResponse = Exchange::candles($coin->symbol(),TimeframeEnum::EVERY_HOUR->toCoineXFormat());
 
@@ -77,7 +83,7 @@ class ListOrders extends ListRecords
                         'status' => OrderStatusEnum::MANUAL_CREATED,
                         'price' => $price,
                         'sl' => $sl,
-                        'strategy' => StrategyEnum::DYNAMIC_REWARD,
+                        'strategy' => $strategy,
                         'balance' => $balance,
                     ]);
 
