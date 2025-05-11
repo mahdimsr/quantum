@@ -52,7 +52,7 @@ class ListOrders extends ListRecords
                                 ->columnSpan(1),
                             Radio::make('strategy')
                                 ->options([
-                                    'orbital'
+                                    'orbital' => 'orbital'
                                 ])
                                 ->columnSpan(1),
                             TextInput::make('sl')
@@ -71,7 +71,6 @@ class ListOrders extends ListRecords
                     $candlesResponse = Exchange::candles($coin->symbol(),TimeframeEnum::EVERY_HOUR->toCoineXFormat());
 
                     $price = $candlesResponse->data()->get(0)->getClose();
-
 
                     $order = Order::query()->create([
                         'symbol' => $coin->symbol(),

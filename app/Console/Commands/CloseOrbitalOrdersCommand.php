@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\OrderStatusEnum;
 use App\Events\OrderClosedEvent;
 use App\Models\Order;
 use App\Services\Exchange\Enums\SideEnum;
@@ -21,7 +22,7 @@ class CloseOrbitalOrdersCommand extends Command
     {
         $orbitalStrategy = app(OrbitalStrategy::class);
 
-        $orders = Order::strategy('orbital')->get();
+        $orders = Order::strategy('orbital')->where('status', OrderStatusEnum::OPEN->value)->get();
 
         if ($orders->isEmpty()) {
             $this->error('No orbital orders found');
@@ -52,6 +53,8 @@ class CloseOrbitalOrdersCommand extends Command
                         event(new OrderClosedEvent($order));
                     }
                 }
+
+                return self::SUCCESS;
             }
 
             if ($orbitalStrategy->stopLossType() == 'large-utbot') {
