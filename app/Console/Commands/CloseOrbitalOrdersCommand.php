@@ -42,6 +42,7 @@ class CloseOrbitalOrdersCommand extends Command
                     if ($closeOrderResponse->isSuccess()) {
 
                         event(new OrderClosedEvent($order));
+                        return self::SUCCESS;
                     }
                 }
 
@@ -51,10 +52,10 @@ class CloseOrbitalOrdersCommand extends Command
                     if ($closeOrderResponse->isSuccess()) {
 
                         event(new OrderClosedEvent($order));
+                        return self::SUCCESS;
                     }
                 }
 
-                return self::SUCCESS;
             }
 
             if ($orbitalStrategy->stopLossType() == 'large-utbot') {
