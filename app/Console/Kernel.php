@@ -3,6 +3,9 @@
 namespace App\Console;
 
 use App\Console\Commands\CloseOrbitalOrdersCommand;
+use App\Console\Commands\HarmonyPositionsCommand;
+use App\Console\Commands\HarmonyStrategyCommand;
+use App\Console\Commands\HarmonyTakeProfitCommand;
 use App\Console\Commands\OrbitalStrategyCommand;
 use App\Console\Commands\UpdateOrderPositionIdCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -19,6 +22,11 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(OrbitalStrategyCommand::class)->everyThirtyMinutes();
         $schedule->command(CloseOrbitalOrdersCommand::class)->everyThirtyMinutes();
+
+        // harmony
+        $schedule->command(HarmonyStrategyCommand::class)->everyThirtyMinutes();
+        $schedule->command(HarmonyTakeProfitCommand::class)->everyFiveMinutes();
+        $schedule->command(HarmonyPositionsCommand::class)->hourlyAt([20, 50]);
 
     }
 
