@@ -11,13 +11,13 @@ class UpdateOrderPositionIdCommand extends Command
 {
     protected $signature = 'app:update-order-position-id';
 
-    protected $description = 'This command updates order position id or what other action do you think dummy?';
+    protected $description = 'This command updates order position id if order doesnt have one';
 
     public function handle()
     {
         $orders = Order::query()
             ->whereNull('position_id')
-            ->where('status', '!=', OrderStatusEnum::UNKNOWN)
+            ->where('status', OrderStatusEnum::OPEN)
             ->get();
 
         foreach ($orders as $order) {
