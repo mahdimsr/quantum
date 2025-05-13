@@ -40,6 +40,11 @@ class PendingOrderListener
         $quantity = Calculate::quantity($balance, $currentPrice, $event->pendingOrder->leverage);
 
         $slTarget = Target::create(TypeEnum::STOP->value, $event->pendingOrder->sl, $event->pendingOrder->sl);
+        $tpTarget = null;
+
+        if ($event->pendingOrder->tp) {
+            $tpTarget = Target::create(TypeEnum::TAKE_PROFIT->value, $event->pendingOrder->tp, $event->pendingOrder->tp);
+        }
 
         $setOrderResponse = Exchange::setOrder(
             $event->pendingOrder->coin->symbol(),
@@ -49,7 +54,7 @@ class PendingOrderListener
             $quantity,
             $event->pendingOrder->price,
             $event->pendingOrder->client_id,
-            null,
+            $tpTarget,
             $slTarget,
         );
 
