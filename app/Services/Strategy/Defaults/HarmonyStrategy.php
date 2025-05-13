@@ -76,4 +76,16 @@ class HarmonyStrategy
     {
         return $this->setting->take_profit_percentage;
     }
+
+    public function compound(): ?bool
+    {
+        return $this->setting->compound;
+    }
+
+    public function addToMargin(float $value): void
+    {
+        $margin = $this->setting->margin;
+        $this->setting->margin = $margin + $value;
+        $this->setting->save();
+    }
 }
