@@ -11,4 +11,5 @@ interface PositionRequestContract
     public function closePositionByPositionId(string $positionId, ?string $symbol = null): ?ClosePositionResponseContract;
     public function setStopLoss(string $symbol, mixed $stopLossPrice, string $stopLossType): ?PositionResponseContract;
     public function setTakeProfit(string $symbol, mixed $takeProfitPrice, string $takeProfitType): ?PositionResponseContract;
+    public function positionHistory(string $symbol, string $positonId): ?PositionResponseContract;
 }

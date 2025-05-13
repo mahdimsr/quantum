@@ -33,6 +33,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static AssetBalanceContract futuresBalance()
  * @method static PositionResponseContract setStopLoss(string $symbol, mixed $stopLossPrice, string $stopLossType)
  * @method static PositionResponseContract setTakeProfit(string $symbol, mixed $takeProfitPrice, string $takeProfitType)
+ * @method static OrderListResponseContract orders(?string $symbol = null, ?array $orderIds = null)
+ * @method static PositionResponseContract positionHistory(string $symbol, string $positonId)
  */
 class Exchange extends Facade
 {

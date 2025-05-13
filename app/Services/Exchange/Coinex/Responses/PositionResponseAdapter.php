@@ -16,20 +16,30 @@ class PositionResponseAdapter extends BaseResponse implements PositionResponseCo
 
         $data = $this->response['data'][0];
 
-        $item = [];
-
-        $item['positionId'] = $data['position_id'];
-        $item['symbol'] = $data['market'];
-        $item['unrealizedProfit'] = $data['unrealized_pnl'];
-        $item['realizedProfit'] = $data['realized_pnl'];
-        $item['markPrice'] = $data['avg_entry_price'];
-        $item['pnlRatio'] = $this->calculatePnlRation($data['unrealized_pnl'], $data['margin_avbl']);
+        $item = $this->convertDataToDTO($data);
 
         return Position::create($item);
     }
 
+    protected function convertDataToDTO(array $positonResponseItem): array
+    {
+        $item = [];
+
+        $item['positionId'] = $positonResponseItem['position_id'];
+        $item['symbol'] = $positonResponseItem['market'];
+        $item['unrealizedProfit'] = $positonResponseItem['unrealized_pnl'];
+        $item['realizedProfit'] = $positonResponseItem['realized_pnl'];
+        $item['markPrice'] = $positonResponseItem['avg_entry_price'];
+        $item['pnlRatio'] = $this->calculatePnlRation($positonResponseItem['unrealized_pnl'], $positonResponseItem['margin_avbl']);
+
+        return $item;
+    }
+
     private function calculatePnlRation(mixed $unrealizedPnl, mixed $availableMargin): mixed
     {
+        if ($availableMargin == 0){
+            return 0;
+        }
         return (floatval($unrealizedPnl) / floatval($availableMargin)) * 100;
     }
 }

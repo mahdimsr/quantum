@@ -7,6 +7,7 @@ use App\Services\Exchange\Coinex\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\ClosePositionResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\CoinResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\OrderResponseAdapter;
+use App\Services\Exchange\Coinex\Responses\PositionHistoryResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\PositionResponseAdapter;
 use App\Services\Exchange\Coinex\Responses\SetLeverageResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
@@ -97,9 +98,16 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
         return new SetLeverageResponseAdapter($data);
     }
 
-    public function orders(?string $symbol = null): OrderListResponseContract
+    public function orders(?string $symbol = null, ?array $orderIds = null): OrderListResponseContract
     {
-        // TODO: Implement orders() method.
+        $params = [
+            'market' => $symbol,
+            'order_id' => $orderIds[0],
+        ];
+
+       $data = $this->coinexClient->v2_private_get_futures_order_status($params);
+
+       dd($data);
     }
 
     public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null): ?SetOrderResponseContract
@@ -179,5 +187,15 @@ class CoineXService implements CandleRequestContract, AssetRequestContract, Coin
         ]);
 
         return new PositionResponseAdapter($data);
+    }
+
+    public function positionHistory(string $symbol, string $positonId): ?PositionResponseContract
+    {
+        $data = $this->coinexClient->v2_private_get_futures_finished_position([
+            'market_type' => 'FUTURES',
+            'symbol' => $symbol
+        ]);
+
+        return new PositionHistoryResponseAdapter($data, $positonId);
     }
 }
