@@ -15,6 +15,7 @@ which have been developed with a win rate of 70%.
 
 - ### Strategies
   - **Orbital Strategy** (It check if trend start and then enter position)
+  - **Harmony Strategy** (It set TP for position and add the realized pnl to margin)
 
 
 ## Exchanges
