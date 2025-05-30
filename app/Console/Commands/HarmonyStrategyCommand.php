@@ -70,5 +70,7 @@ class HarmonyStrategyCommand extends Command
                 event(new PendingOrderCreated($order));
             }
         }
+
+        return self::SUCCESS;
     }
 }
