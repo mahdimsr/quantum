@@ -57,11 +57,6 @@ class HarmonyStrategy
         return $this->setting->leverage;
     }
 
-    public function timeframe(): ?string
-    {
-        return $this->setting->timeframe;
-    }
-
     public function coins(): ?array
     {
         return $this->setting->coins;
@@ -74,7 +69,7 @@ class HarmonyStrategy
 
     public function takeProfitPercentage(): ?int
     {
-        return $this->setting->take_profit_percentage;
+        return $this->setting->tp_percent;
     }
 
     public function compound(): ?bool
