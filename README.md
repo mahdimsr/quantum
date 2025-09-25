@@ -21,3 +21,5 @@ which have been developed with a win rate of 70%.
 ## Exchanges
 
 - [x] Coinex
+- [x] BingX
+- [ ] Bitunix
