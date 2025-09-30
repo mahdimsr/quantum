@@ -16,6 +16,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "mahdimsr/laravel-bitunix-api": "^1.0",
         "rawilk/filament-password-input": "^2.0"
     },
     "require-dev": {
