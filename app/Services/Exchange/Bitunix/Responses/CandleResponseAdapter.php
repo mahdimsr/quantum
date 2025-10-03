@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Exchange\Bitunix\Response;
+namespace App\Services\Exchange\Bitunix\Responses;
 
 use App\Services\Exchange\Repository\Candle;
 use App\Services\Exchange\Repository\CandleCollection;
