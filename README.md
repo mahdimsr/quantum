@@ -23,3 +23,7 @@ which have been developed with a win rate of 70%.
 - [x] Coinex
 - [x] BingX
 - [x] Bitunix
+
+## Exchange Architecture Documentation
+
+For detailed information about the exchange services, contract requests, and adapter responses, see: [Exchange Architecture Documentation](docs/EXCHANGE-ARCHITECTURE.md)
