@@ -27,3 +27,7 @@ which have been developed with a win rate of 70%.
 ## Exchange Architecture Documentation
 
 For detailed information about the exchange services, contract requests, and adapter responses, see: [Exchange Architecture Documentation](docs/EXCHANGE-ARCHITECTURE.md)
+
+## Trading Strategies Documentation
+
+For comprehensive information about trading strategies, algorithm development, and strategy implementation, see: [Trading Strategies Documentation](docs/TRADING-STRATEGIES.md)
