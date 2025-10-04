@@ -22,4 +22,4 @@ which have been developed with a win rate of 70%.
 
 - [x] Coinex
 - [x] BingX
-- [ ] Bitunix
+- [x] Bitunix
