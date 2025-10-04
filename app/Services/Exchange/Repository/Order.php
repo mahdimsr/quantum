@@ -8,25 +8,25 @@ use Illuminate\Support\Str;
 
 class Order
 {
-    protected mixed $order_id;
-    protected mixed $client_id;
-    protected string $symbol;
-    protected SideEnum $side;
-    protected TypeEnum $type;
-    protected mixed $price;
-    protected mixed $quantity;
+    protected mixed $order_id = null;
+    protected mixed $client_id = null;
+    protected ?string $symbol = null;
+    protected ?SideEnum $side = null;
+    protected ?TypeEnum $type = null;
+    protected mixed $price = null;
+    protected mixed $quantity = null;
 
     private function __construct()
     {
     }
 
-    public static function create(string $symbol, string $side, string $type, mixed $price, mixed $quantity, mixed $client_id = null, mixed $order_id = null): Order
+    public static function create(?string $symbol, ?string $side, ?string $type, mixed $price, mixed $quantity, mixed $client_id = null, mixed $order_id = null): Order
     {
         $order = new self();
 
         $order->symbol = $symbol;
-        $order->side = SideEnum::from(Str::of($side)->upper()->toString());
-        $order->type = TypeEnum::from(Str::of($type)->upper()->toString());
+        $order->side = $side ? SideEnum::from(Str::of($side)->upper()->toString()) : null;
+        $order->type = $type ? TypeEnum::from(Str::of($type)->upper()->toString()) : null;
         $order->price = $price;
         $order->quantity = $quantity;
         $order->client_id = $client_id;

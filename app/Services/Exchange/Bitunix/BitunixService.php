@@ -5,22 +5,30 @@ namespace App\Services\Exchange\Bitunix;
 use App\Services\Exchange\Bitunix\Responses\AssetBalanceResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\ClosePositionResponseAdapter;
+use App\Services\Exchange\Bitunix\Responses\OrderListResponseAdapter;
+use App\Services\Exchange\Bitunix\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\PositionHistoryResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\PositionResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\SetLeverageResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TypeEnum;
+use App\Services\Exchange\Repository\Target;
 use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
+use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
+use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\PositionResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
+use App\Services\Exchange\Responses\SetOrderResponseContract;
+use Illuminate\Support\Str;
 use Msr\LaravelBitunixApi\Facades\LaravelBitunixApi;
 
-class BitunixService implements CandleRequestContract, AssetRequestContract, SetLeverageRequestContract, PositionRequestContract
+class BitunixService implements CandleRequestContract, AssetRequestContract, SetLeverageRequestContract, PositionRequestContract, OrderRequestContract
 {
 
     /**
@@ -164,5 +172,55 @@ class BitunixService implements CandleRequestContract, AssetRequestContract, Set
         $data = json_decode($response->getBody()->getContents(), true);
 
         return new PositionHistoryResponseAdapter($data, $positionId);
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    public function orders(?string $symbol = null, ?array $orderIds = null): OrderListResponseContract
+    {
+        $response = LaravelBitunixApi::getPendingPositions($symbol);
+
+        throw_if($response->getStatusCode() != 200, 'No success response');
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        return new OrderListResponseAdapter($data);
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    public function setOrder(string $symbol, TypeEnum $typeEnum, SideEnum $sideEnum, SideEnum $positionSide, float $amount, float $price, mixed $client_id = null, ?Target $takeProfit = null, ?Target $stopLoss = null): ?SetOrderResponseContract
+    {
+        $side = Str::of($sideEnum->convertToBuySell())->upper()->toString();
+        $orderType = Str::of($typeEnum->value)->upper()->toString();
+
+        $response = LaravelBitunixApi::placeOrder(
+            $symbol,
+            (string) $amount,
+            $side,
+            'OPEN',
+            $orderType,
+            $price,
+            null, // positionId
+            null, // effect
+            $client_id,
+            null, // reduceOnly
+            $takeProfit?->getPrice(), // tpPrice
+            $takeProfit? 'LAST_PRICE' : null, // tpStopType
+            $takeProfit ? 'LIMIT' : null, // tpOrderType
+            $takeProfit?->getPrice(), // tpPrice
+            $stopLoss?->getPrice(), // slPrice
+            'MARK_PRICE', // slStopType
+            'MARKET', // slOrderType
+            $stopLoss?->getPrice(), // slPrice
+        );
+
+        throw_if($response->getStatusCode() != 200, 'No success response');
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        return new OrderResponseAdapter($data);
     }
 }

@@ -27,6 +27,26 @@ class Target
         return $target;
     }
 
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getStopPrice(): mixed
+    {
+        return $this->stopPrice;
+    }
+
+    public function getWorkingType(): ?string
+    {
+        return $this->workingType;
+    }
+
+    public function getPrice(): mixed
+    {
+        return $this->price;
+    }
+
     public function toArray(): array
     {
         return [
