@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7d95e0c0970f5f8b5d77296da681200",
+    "content-hash": "fa626c9dfb3622c84e248cda9d78b31e",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3719,6 +3719,84 @@
                 }
             ],
             "time": "2025-03-12T20:24:15+00:00"
+        },
+        {
+            "name": "mahdimsr/laravel-bitunix-api",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mahdimsr/laravel-bitunix-api.git",
+                "reference": "4eca234d85388d120708f48c33cb8d2aa999cc99"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mahdimsr/laravel-bitunix-api/zipball/4eca234d85388d120708f48c33cb8d2aa999cc99",
+                "reference": "4eca234d85388d120708f48c33cb8d2aa999cc99",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^11.0||^12.0||^10.0",
+                "php": "^8.4",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.14",
+                "nunomaduro/collision": "^8.8",
+                "orchestra/testbench": "^10.0.0||^9.0.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-arch": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LaravelBitunixApi": "Msr\\LaravelBitunixApi\\Facades\\LaravelBitunixApi"
+                    },
+                    "providers": [
+                        "Msr\\LaravelBitunixApi\\LaravelBitunixApiServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Msr\\LaravelBitunixApi\\": "src/",
+                    "Msr\\LaravelBitunixApi\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mahdi mansouri",
+                    "email": "mahdi.msr4@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "composer package for using bitunix api trading",
+            "homepage": "https://github.com/mahdimsr/laravel-bitunix-api",
+            "keywords": [
+                "laravel",
+                "laravel-bitunix-api",
+                "msr"
+            ],
+            "support": {
+                "issues": "https://github.com/mahdimsr/laravel-bitunix-api/issues",
+                "source": "https://github.com/mahdimsr/laravel-bitunix-api/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/msr",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-09-29T00:17:15+00:00"
         },
         {
             "name": "masterminds/html5",
