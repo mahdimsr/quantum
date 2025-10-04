@@ -2,6 +2,11 @@
 
 # <p align='center'>Qauntum</p>
 
+<div align="center">
+
+**Version:** 2.2.0 | **Current Exchange:** Bitunix
+
+</div>
 
 ## About Quantum
 
