@@ -9,12 +9,15 @@ use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 class SmallUtBotAlgorithm extends AlgorithmAbstract
 {
     private UTBotAlertStrategy $utBotAlertSmall;
+    private string $groupName;
 
     public function __construct(CandleCollection $candleCollection)
     {
         parent::__construct($candleCollection);
+        $this->groupName = 'small';
 
-        $this->utBotAlertSmall = new UTBotAlertStrategy($this->candleCollection, 1, 2);
+
+        $this->utBotAlertSmall = new UTBotAlertStrategy($this->candleCollection, 1, 2, $this->groupName);
     }
 
     public function signal(): ?PositionTypeEnum

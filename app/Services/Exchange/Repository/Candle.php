@@ -177,7 +177,7 @@ class Candle
 
     public function setMeta(array $meta): void
     {
-        $this->meta = array_merge($meta, $this->meta);
+        $this->meta = array_replace_recursive($meta, $this->meta);
     }
 
     public function resetMeta(string $key, mixed $value): void

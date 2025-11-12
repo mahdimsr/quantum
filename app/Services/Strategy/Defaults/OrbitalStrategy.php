@@ -29,7 +29,7 @@ class OrbitalStrategy
         $strategy = new Strategy();
         $strategy->send($candleCollection)->through([
             LNLTrendAlgorithm::class,
-            SmallUtBotAlgorithm::class
+            SmallUtBotAlgorithm::class,
         ])->run();
 
         if ($strategy->hasShortEntry()) {
