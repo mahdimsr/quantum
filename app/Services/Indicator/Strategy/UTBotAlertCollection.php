@@ -38,6 +38,11 @@ class UTBotAlertCollection extends CandleCollection
         return $this->candleCollection->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()[$this->group]))->first();
     }
 
+    public function signals()
+    {
+        return $this->candleCollection->filter(fn(Candle $candle) => array_key_exists('signal', $candle->getMeta()[$this->group]));
+    }
+
     private function calculateAverageTrueRange(): void
     {
         $highs = $this->candleCollection->highs()->toArray();
@@ -124,7 +129,7 @@ class UTBotAlertCollection extends CandleCollection
 
             if ($currentCandle->getMeta()[$this->group]['ema-1'] > $currentCandle->getMeta()[$this->group]['trailing-stop'] and $preCandle->getMeta()[$this->group]['ema-1'] < $preCandle->getMeta()[$this->group]['trailing-stop']) {
 
-                $currentCandle->setMeta(['cross-over' => 'above']);
+                $currentCandle->setMeta([$this->group => ['cross-over' => 'above']]);
 
             } elseif ($currentCandle->getMeta()[$this->group]['ema-1'] < $currentCandle->getMeta()[$this->group]['trailing-stop'] and $preCandle->getMeta()[$this->group]['ema-1'] > $preCandle->getMeta()[$this->group]['trailing-stop']) {
 
@@ -133,7 +138,7 @@ class UTBotAlertCollection extends CandleCollection
         }
     }
 
-    private function crossOvers(): CandleCollection
+    public function crossOvers(): CandleCollection
     {
         return $this->candleCollection->filter(fn(Candle $candle) => array_key_exists('cross-over', $candle->getMeta()[$this->group]));
     }
