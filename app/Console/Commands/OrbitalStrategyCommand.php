@@ -25,16 +25,16 @@ class OrbitalStrategyCommand extends Command
     {
         $orbitalStrategy = app(OrbitalStrategy::class);
 
-        /*if (!$orbitalStrategy->active()) {
+        if (!$orbitalStrategy->active()) {
              $this->error('The orbital strategy is not active');
              return 0;
-        }*/
+        }
 
-        foreach (['BTC'] as $coinName) {
+        foreach ($orbitalStrategy->coins() as $coinName) {
 
             $coin = Coin::findByName($coinName);
-            $timeframe = TimeframeEnum::EVERY_FOUR_HOURS->toBitUniixFormat();
-            $candleResponse  = Exchange::candles($coin->symbol(), $timeframe, 20);
+            $timeframe = TimeframeEnum::from($orbitalStrategy->timeframe())->toCoineXFormat();
+            $candleResponse  = Exchange::candles($coin->symbol(), $timeframe, 100);
             $positionType = $orbitalStrategy->signal($candleResponse->data());
 
             if (!is_null($positionType)) {
