@@ -28,7 +28,7 @@ class Candle
 
         $candle = new Candle();
         $candle->setTime($data['time']);
-        $candle->setDateTimeString(Carbon::createFromTimestampMs($data['time'])->toDateTimeString());
+        $candle->setDateTimeString(Carbon::createFromTimestampMs($data['time'], config('app.timezone'))->toDateTimeString());
         $candle->setOpen($data['open']);
         $candle->setHigh($data['high']);
         $candle->setLow($data['low']);
