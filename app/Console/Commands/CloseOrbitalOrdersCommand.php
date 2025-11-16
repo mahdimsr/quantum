@@ -32,7 +32,7 @@ class CloseOrbitalOrdersCommand extends Command
 
         foreach ($orders as $order) {
 
-            $timeframe = TimeframeEnum::EVERY_FIFTEEN_MINUTES->toBitUniixFormat();
+            $timeframe = Exchange::convertedTimeframe(TimeframeEnum::EVERY_FIFTEEN_MINUTES);
             $candlesResponse = Exchange::candles($order->coin->symbol(), $timeframe, 100);
             $candleCollection = $candlesResponse->data();
 

@@ -10,7 +10,9 @@ use App\Services\Exchange\Bitunix\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\PositionHistoryResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\PositionResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\SetLeverageResponseAdapter;
+use App\Services\Exchange\Contracts\TimeframeContract;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TimeframeEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Target;
 use App\Services\Exchange\Requests\AssetRequestContract;
@@ -28,7 +30,7 @@ use App\Services\Exchange\Responses\SetOrderResponseContract;
 use Illuminate\Support\Str;
 use Msr\LaravelBitunixApi\Facades\LaravelBitunixApi;
 
-class BitunixService implements CandleRequestContract, AssetRequestContract, SetLeverageRequestContract, PositionRequestContract, OrderRequestContract
+class BitunixService implements CandleRequestContract, AssetRequestContract, SetLeverageRequestContract, PositionRequestContract, OrderRequestContract, TimeframeContract
 {
 
     /**
@@ -222,5 +224,10 @@ class BitunixService implements CandleRequestContract, AssetRequestContract, Set
         $data = json_decode($response->getBody()->getContents(), true);
 
         return new OrderResponseAdapter($data);
+    }
+
+    public function convertedTimeframe(TimeframeEnum $timeframe): string
+    {
+        return $timeframe->toBitUniixFormat();
     }
 }
