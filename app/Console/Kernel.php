@@ -28,7 +28,6 @@ class Kernel extends ConsoleKernel
         $schedule->command(HarmonyStrategyCommand::class)->everyThirtyMinutes()->appendOutputTo('logs/harmony/strategy.log');
         $schedule->command(HarmonyTakeProfitCommand::class)->everyFiveMinutes()->appendOutputTo('logs/harmony/tp.log');
         $schedule->command(HarmonyPositionsCommand::class)->hourlyAt([20, 50])->appendOutputTo('logs/harmony/position.log');
-
     }
 
     /**
