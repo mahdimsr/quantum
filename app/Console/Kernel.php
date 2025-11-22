@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command(UpdateOrderPositionIdCommand::class)->everyMinute();
 
+        // orbital
         $schedule->command(OrbitalStrategyCommand::class)->everyThirtyMinutes();
         $schedule->command(CloseOrbitalOrdersCommand::class)->everyThirtyMinutes();
 
