@@ -28,7 +28,7 @@ class Candle
 
         $candle = new Candle();
         $candle->setTime($data['time']);
-        $candle->setDateTimeString(Carbon::createFromTimestampMs($data['time'])->toDateTimeString());
+        $candle->setDateTimeString(Carbon::createFromTimestampMs($data['time'], config('app.timezone'))->toDateTimeString());
         $candle->setOpen($data['open']);
         $candle->setHigh($data['high']);
         $candle->setLow($data['low']);
@@ -177,7 +177,7 @@ class Candle
 
     public function setMeta(array $meta): void
     {
-        $this->meta = array_merge($meta, $this->meta);
+        $this->meta = array_replace_recursive($meta, $this->meta);
     }
 
     public function resetMeta(string $key, mixed $value): void

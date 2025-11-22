@@ -2,6 +2,11 @@
 
 # <p align='center'>Qauntum</p>
 
+<div align="center">
+
+**Version:** 2.2.0 | **Current Exchange:** Bitunix
+
+</div>
 
 ## About Quantum
 
@@ -22,4 +27,12 @@ which have been developed with a win rate of 70%.
 
 - [x] Coinex
 - [x] BingX
-- [ ] Bitunix
+- [x] Bitunix
+
+## Exchange Architecture Documentation
+
+For detailed information about the exchange services, contract requests, and adapter responses, see: [Exchange Architecture Documentation](docs/EXCHANGE-ARCHITECTURE.md)
+
+## Trading Strategies Documentation
+
+For comprehensive information about trading strategies, algorithm development, and strategy implementation, see: [Trading Strategies Documentation](docs/TRADING-STRATEGIES.md)

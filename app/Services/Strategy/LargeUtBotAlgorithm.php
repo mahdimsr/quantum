@@ -6,27 +6,27 @@ use App\Enums\PositionTypeEnum;
 use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Indicator\Strategy\UTBotAlertStrategy;
 
-class SmallUtBotAlgorithm extends AlgorithmAbstract
+class LargeUtBotAlgorithm extends AlgorithmAbstract
 {
-    private UTBotAlertStrategy $utBotAlertSmall;
+    private UTBotAlertStrategy $utBotAlertLarge;
     private string $groupName;
 
     public function __construct(CandleCollection $candleCollection)
     {
         parent::__construct($candleCollection);
-        $this->groupName = 'small';
+        $this->groupName = 'large';
 
 
-        $this->utBotAlertSmall = new UTBotAlertStrategy($this->candleCollection, 1, 2, $this->groupName);
+        $this->utBotAlertLarge = new UTBotAlertStrategy($this->candleCollection, 2, 3, $this->groupName);
     }
 
     public function signal(): ?PositionTypeEnum
     {
-        if ($this->utBotAlertSmall->sellSignal(1)) {
+        if ($this->utBotAlertLarge->sellSignal(1)) {
             return PositionTypeEnum::SHORT;
         }
 
-        if ($this->utBotAlertSmall->buySignal(1)) {
+        if ($this->utBotAlertLarge->buySignal(1)) {
             return PositionTypeEnum::LONG;
         }
 

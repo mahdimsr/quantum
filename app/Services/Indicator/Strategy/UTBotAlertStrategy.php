@@ -12,12 +12,14 @@ class UTBotAlertStrategy implements StrategyContract
     private ?UTBotAlertCollection $UTBotAlertCollection;
     private int $sensitivity;
     private int $atrPeriod;
+    private string $group;
 
-    public function __construct(CandleCollection $candles, int $sensitivity = 1, int $atrPeriod = 10)
+    public function __construct(CandleCollection $candles, int $sensitivity = 1, int $atrPeriod = 10, string $group = 'default')
     {
         $this->candles = $candles;
         $this->sensitivity = $sensitivity;
         $this->atrPeriod = $atrPeriod;
+        $this->group = $group;
 
         $this->UTBotAlertCollection = $this->collection();
     }
@@ -29,18 +31,18 @@ class UTBotAlertStrategy implements StrategyContract
             return $this->UTBotAlertCollection;
         }
 
-        return new UTBotAlertCollection($this->candles, $this->sensitivity, $this->atrPeriod);
+        return new UTBotAlertCollection($this->candles, $this->sensitivity, $this->atrPeriod, $this->group);
     }
 
     private function signalExists(int $candleIndex, string $signal): bool
     {
         $candle = $this->collection()->get($candleIndex);
 
-        if ($candle and array_key_exists('signal', $candle->getMeta())) {
+        if ($candle and array_key_exists('signal', $candle->getMeta()[$this->group])) {
 
 
             $lowerSignal = Str::lower($signal);
-            $lowerCandleSignal = Str::lower($candle->getMeta()['signal']);
+            $lowerCandleSignal = Str::lower($candle->getMeta()[$this->group]['signal']);
 
             return $lowerCandleSignal == $lowerSignal;
         }
@@ -55,7 +57,7 @@ class UTBotAlertStrategy implements StrategyContract
 
     public function isBullish(): bool
     {
-        return $this->lastSignalCandle()->getMeta()['signal'] == 'buy';
+        return $this->lastSignalCandle()->getMeta()[$this->group]['signal'] == 'buy';
     }
 
     public function buySignal(?int $candleIndex = 0): bool
@@ -65,7 +67,7 @@ class UTBotAlertStrategy implements StrategyContract
 
     public function isBearish(): bool
     {
-        return $this->lastSignalCandle()->getMeta()['signal'] == 'sell';
+        return $this->lastSignalCandle()->getMeta()[$this->group]['signal'] == 'sell';
     }
 
     public function sellSignal(?int $candleIndex = 0): bool

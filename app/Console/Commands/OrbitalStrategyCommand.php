@@ -33,7 +33,7 @@ class OrbitalStrategyCommand extends Command
         foreach ($orbitalStrategy->coins() as $coinName) {
 
             $coin = Coin::findByName($coinName);
-            $timeframe = TimeframeEnum::from($orbitalStrategy->timeframe())->toCoineXFormat();
+            $timeframe = Exchange::convertedTimeframe(TimeframeEnum::from($orbitalStrategy->timeframe()));
             $candleResponse  = Exchange::candles($coin->symbol(), $timeframe, 100);
             $positionType = $orbitalStrategy->signal($candleResponse->data());
 

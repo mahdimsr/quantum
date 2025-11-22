@@ -22,7 +22,7 @@ enum TimeframeEnum: string
 
     public function toBingXFormat(): string
     {
-        if (Str::endsWith($this->value,'H')) {
+        if (Str::endsWith($this->value, 'H')) {
 
             return Str::replace('H', 'h', $this->value);
         }
@@ -32,24 +32,44 @@ enum TimeframeEnum: string
 
     public function toCoineXFormat(): string
     {
-        if (Str::endsWith($this->value,'m')) {
+        if (Str::endsWith($this->value, 'm')) {
 
             return Str::replace('m', 'min', $this->value);
         }
 
-        if (Str::endsWith($this->value,'H')) {
+        if (Str::endsWith($this->value, 'H')) {
 
             return Str::replace('H', 'hour', $this->value);
         }
 
-        if (Str::endsWith($this->value,'D')) {
+        if (Str::endsWith($this->value, 'D')) {
 
             return Str::replace('D', 'day', $this->value);
         }
 
-        if (Str::endsWith($this->value,'W')) {
+        if (Str::endsWith($this->value, 'W')) {
 
             return Str::replace('W', 'week', $this->value);
+        }
+
+        return $this->value;
+    }
+
+    public function toBitUniixFormat(): string
+    {
+        if (Str::endsWith($this->value, 'H')) {
+
+            return Str::replace('H', 'h', $this->value);
+        }
+
+        if (Str::endsWith($this->value, 'D')) {
+
+            return Str::replace('D', 'd', $this->value);
+        }
+
+        if (Str::endsWith($this->value, 'W')) {
+
+            return Str::replace('W', 'w', $this->value);
         }
 
         return $this->value;

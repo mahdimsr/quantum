@@ -4,9 +4,11 @@ namespace App\Services\Exchange\Facade;
 
 use App\Enums\PriceTypeEnum;
 use App\Services\Exchange\BingX\BingXService;
+use App\Services\Exchange\Bitunix\BitunixService;
 use App\Services\Exchange\Coinex\CoineXService;
 use App\Services\Exchange\Coinex\Responses\OrderListResponseAdapter;
 use App\Services\Exchange\Enums\SideEnum;
+use App\Services\Exchange\Enums\TimeframeEnum;
 use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Order;
 use App\Services\Exchange\Repository\PositionLevelCollection;
@@ -35,11 +37,12 @@ use Illuminate\Support\Facades\Facade;
  * @method static PositionResponseContract setTakeProfit(string $symbol, mixed $takeProfitPrice, string $takeProfitType)
  * @method static OrderListResponseContract orders(?string $symbol = null, ?array $orderIds = null)
  * @method static PositionResponseContract positionHistory(string $symbol, string $positonId)
+ * @method static string convertedTimeframe(TimeframeEnum $timeframe)
  */
 class Exchange extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return CoineXService::class;
+        return BitunixService::class;
     }
 }
