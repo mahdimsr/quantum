@@ -68,7 +68,7 @@ class ListOrders extends ListRecords
                     $sl = $data['sl'];
                     $strategy = $data['strategy'];
 
-                    $candlesResponse = Exchange::candles($coin->symbol(),TimeframeEnum::EVERY_HOUR->toCoineXFormat());
+                    $candlesResponse = Exchange::candles($coin->symbol(),Exchange::convertedTimeframe(TimeframeEnum::EVERY_HOUR));
 
                     $price = $candlesResponse->data()->get(0)->getClose();
 
