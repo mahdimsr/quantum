@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24c56dc884e7b4221588becbe29b5945",
+    "content-hash": "aa78944195a05bd55194df2844402729",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3545,16 +3545,16 @@
         },
         {
             "name": "mahdimsr/laravel-bitunix-api",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mahdimsr/laravel-bitunix-api.git",
-                "reference": "4eca234d85388d120708f48c33cb8d2aa999cc99"
+                "reference": "21e94df5ff89270227c3b4488efb6f1f79379773"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mahdimsr/laravel-bitunix-api/zipball/4eca234d85388d120708f48c33cb8d2aa999cc99",
-                "reference": "4eca234d85388d120708f48c33cb8d2aa999cc99",
+                "url": "https://api.github.com/repos/mahdimsr/laravel-bitunix-api/zipball/21e94df5ff89270227c3b4488efb6f1f79379773",
+                "reference": "21e94df5ff89270227c3b4488efb6f1f79379773",
                 "shasum": ""
             },
             "require": {
@@ -3611,7 +3611,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mahdimsr/laravel-bitunix-api/issues",
-                "source": "https://github.com/mahdimsr/laravel-bitunix-api/tree/1.0.0"
+                "source": "https://github.com/mahdimsr/laravel-bitunix-api/tree/1.1.0"
             },
             "funding": [
                 {
@@ -3619,7 +3619,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-29T00:17:15+00:00"
+            "time": "2025-11-23T12:37:53+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -11223,12 +11223,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
