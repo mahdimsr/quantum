@@ -18,6 +18,8 @@ class PendingOrderCreated
     public Order $pendingOrder;
     public function __construct(Order $pendingOrder)
     {
+        logs()->info('CALLED BY ...');
+
          $this->pendingOrder = $pendingOrder;
     }
 

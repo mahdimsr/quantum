@@ -2,11 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\OrderClosedEvent;
-use App\Events\PendingOrderCreated;
-use App\Listeners\ChangeClosedOrderStatusListener;
-use App\Listeners\OrderClosedNotifyListener;
-use App\Listeners\PendingOrderListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,15 +17,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-
-        PendingOrderCreated::class => [
-            PendingOrderListener::class,
-        ],
-
-        OrderClosedEvent::class => [
-            ChangeClosedOrderStatusListener::class,
-            OrderClosedNotifyListener::class,
-        ]
     ];
 
     /**
