@@ -230,4 +230,9 @@ class BitunixService implements CandleRequestContract, AssetRequestContract, Set
     {
         return $timeframe->toBitUniixFormat();
     }
+
+    public function exchangeName(): string
+    {
+        return 'bitunix';
+    }
 }
