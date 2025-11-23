@@ -58,6 +58,9 @@ class PendingOrderListener
             $slTarget,
         );
 
+        logs()->error('RESPONSE IS SUCCESS: ' . $setOrderResponse->isSuccess());
+        logs()->error('RESPONSE MESSAGE: ' . $setOrderResponse->message());
+
         if ($setOrderResponse->isSuccess()) {
 
             $event->pendingOrder->update([
