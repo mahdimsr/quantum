@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static OrderListResponseContract orders(?string $symbol = null, ?array $orderIds = null)
  * @method static PositionResponseContract positionHistory(string $symbol, string $positonId)
  * @method static string convertedTimeframe(TimeframeEnum $timeframe)
+ * @method static string exchangeName()
  */
 class Exchange extends Facade
 {

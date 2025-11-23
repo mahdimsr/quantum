@@ -47,7 +47,7 @@ class OrbitalStrategyCommand extends Command
                 $order = Order::query()->create([
                     'symbol' => $coin->symbol(),
                     'coin_name' => $coin->name,
-                    'exchange' => 'coinex',
+                    'exchange' => Exchange::exchangeName(),
                     'leverage' => $orbitalStrategy->leverage(),
                     'side' => $side,
                     'type' => TypeEnum::MARKET,

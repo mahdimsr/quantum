@@ -75,7 +75,7 @@ class ListOrders extends ListRecords
                     $order = Order::query()->create([
                         'symbol' => $coin->symbol(),
                         'coin_name' => $coin->name,
-                        'exchange' => 'coinex',
+                        'exchange' => Exchange::exchangeName(),
                         'leverage' => $leverage,
                         'side' => $side,
                         'type' => TypeEnum::MARKET,
