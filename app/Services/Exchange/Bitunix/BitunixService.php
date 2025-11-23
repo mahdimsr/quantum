@@ -5,6 +5,7 @@ namespace App\Services\Exchange\Bitunix;
 use App\Services\Exchange\Bitunix\Responses\AssetBalanceResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\CandleResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\ClosePositionResponseAdapter;
+use App\Services\Exchange\Bitunix\Responses\CoinResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\OrderListResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\OrderResponseAdapter;
 use App\Services\Exchange\Bitunix\Responses\PositionHistoryResponseAdapter;
@@ -17,12 +18,14 @@ use App\Services\Exchange\Enums\TypeEnum;
 use App\Services\Exchange\Repository\Target;
 use App\Services\Exchange\Requests\AssetRequestContract;
 use App\Services\Exchange\Requests\CandleRequestContract;
+use App\Services\Exchange\Requests\CoinsRequestContract;
 use App\Services\Exchange\Requests\OrderRequestContract;
 use App\Services\Exchange\Requests\PositionRequestContract;
 use App\Services\Exchange\Requests\SetLeverageRequestContract;
 use App\Services\Exchange\Responses\AssetBalanceContract;
 use App\Services\Exchange\Responses\CandleResponseContract;
 use App\Services\Exchange\Responses\ClosePositionResponseContract;
+use App\Services\Exchange\Responses\CoinsResponseContract;
 use App\Services\Exchange\Responses\OrderListResponseContract;
 use App\Services\Exchange\Responses\PositionResponseContract;
 use App\Services\Exchange\Responses\SetLeverageResponseContract;
@@ -30,7 +33,7 @@ use App\Services\Exchange\Responses\SetOrderResponseContract;
 use Illuminate\Support\Str;
 use Msr\LaravelBitunixApi\Facades\LaravelBitunixApi;
 
-class BitunixService implements CandleRequestContract, AssetRequestContract, SetLeverageRequestContract, PositionRequestContract, OrderRequestContract, TimeframeContract
+class BitunixService implements CandleRequestContract, AssetRequestContract, SetLeverageRequestContract, PositionRequestContract, OrderRequestContract, TimeframeContract, CoinsRequestContract
 {
 
     /**
@@ -234,5 +237,19 @@ class BitunixService implements CandleRequestContract, AssetRequestContract, Set
     public function exchangeName(): string
     {
         return 'bitunix';
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    public function coins(): CoinsResponseContract
+    {
+        $response = LaravelBitunixApi::getTradingPairs();
+
+        throw_if($response->getStatusCode() != 200, 'No success response');
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        return new CoinResponseAdapter($data);
     }
 }
