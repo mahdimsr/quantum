@@ -22,5 +22,5 @@ jobs:
             git pull
             chmod -R 777 storage/logs/*
             php artisan optimize:clear
-            php artisan migrate
+            php artisan migrate --force
             systemctl restart supervisor.service

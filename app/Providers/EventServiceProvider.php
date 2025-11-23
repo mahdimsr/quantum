@@ -29,7 +29,7 @@ class EventServiceProvider extends ServiceProvider
 
         OrderClosedEvent::class => [
             ChangeClosedOrderStatusListener::class,
-//            OrderClosedNotifyListener::class,
+            OrderClosedNotifyListener::class,
         ]
     ];
 
