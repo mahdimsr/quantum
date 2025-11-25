@@ -64,7 +64,7 @@ class CloseOrbitalOrdersCommand extends Command
 
             if ($orbitalStrategy->stopLossType() == 'large-utbot') {
                 $largeUtbot = new UTBotAlertStrategy($candlesResponse->data(), 2, 3);
-                $sl = $largeUtbot->collection()->get(0)->getMeta('trailing-stop');
+                $sl = $largeUtbot->collection()->get(0)->getMeta()['default']['trailing-stop'];
                 $stopLossResponse = Exchange::setStopLoss($order->coin->symbol(), $sl, 'something');
                 if ($stopLossResponse->isSuccess()) {
                     $order->update([
