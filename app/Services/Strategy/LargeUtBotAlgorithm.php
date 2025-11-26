@@ -22,11 +22,11 @@ class LargeUtBotAlgorithm extends AlgorithmAbstract
 
     public function signal(): ?PositionTypeEnum
     {
-        if ($this->utBotAlertLarge->sellSignal(1)) {
+        if ($this->utBotAlertLarge->isBearish()) {
             return PositionTypeEnum::SHORT;
         }
 
-        if ($this->utBotAlertLarge->buySignal(1)) {
+        if ($this->utBotAlertLarge->isBullish()) {
             return PositionTypeEnum::LONG;
         }
 
