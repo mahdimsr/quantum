@@ -1,7 +1,14 @@
 <?php
 
+use App\Console\Commands\CloseOrbitalOrdersCommand;
+use App\Console\Commands\HarmonyPositionsCommand;
+use App\Console\Commands\HarmonyStrategyCommand;
+use App\Console\Commands\HarmonyTakeProfitCommand;
+use App\Console\Commands\OrbitalStrategyCommand;
+use App\Console\Commands\UpdateOrderPositionIdCommand;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +21,11 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Schedule::command(UpdateOrderPositionIdCommand::class)->everyMinute();
+
+Schedule::command(OrbitalStrategyCommand::class)->everyThirtyMinutes();
+Schedule::command(CloseOrbitalOrdersCommand::class)->everyThirtyMinutes();
+
+Schedule::command(HarmonyStrategyCommand::class)->everyThirtyMinutes()->appendOutputTo('logs/harmony/strategy.log');
+Schedule::command(HarmonyTakeProfitCommand::class)->everyFiveMinutes()->appendOutputTo('logs/harmony/tp.log');
+Schedule::command(HarmonyPositionsCommand::class)->hourlyAt([20, 50])->appendOutputTo('logs/harmony/position.log');
