@@ -22,11 +22,11 @@ class SmallUtBotAlgorithm extends AlgorithmAbstract
 
     public function signal(): ?PositionTypeEnum
     {
-        if ($this->utBotAlertSmall->sellSignal(1)) {
+        if ($this->utBotAlertSmall->sellSignal() or $this->utBotAlertSmall->sellSignal(1)) {
             return PositionTypeEnum::SHORT;
         }
 
-        if ($this->utBotAlertSmall->buySignal(1)) {
+        if ($this->utBotAlertSmall->buySignal() or $this->utBotAlertSmall->buySignal(1)) {
             return PositionTypeEnum::LONG;
         }
 
