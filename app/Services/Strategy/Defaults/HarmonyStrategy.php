@@ -4,6 +4,7 @@ namespace App\Services\Strategy\Defaults;
 
 use App\Enums\PositionTypeEnum;
 use App\Services\Exchange\Repository\CandleCollection;
+use App\Services\Strategy\LargeUtBotAlgorithm;
 use App\Services\Strategy\LNLTrendAlgorithm;
 use App\Services\Strategy\SmallUtBotAlgorithm;
 use App\Services\Strategy\Strategy;
@@ -28,7 +29,8 @@ class HarmonyStrategy
         $strategy = new Strategy();
         $strategy->send($candleCollection)->through([
             LNLTrendAlgorithm::class,
-            SmallUtBotAlgorithm::class
+            SmallUtBotAlgorithm::class,
+            LargeUtBotAlgorithm::class,
         ])->run();
 
         if ($strategy->hasShortEntry()) {
