@@ -42,7 +42,7 @@ class HarmonyStrategyCommand extends Command
 
         foreach ($harmonyStrategy->coins() as $coinName) {
             $coin = Coin::findByName($coinName);
-            $timeframe = Exchange::convertedTimeframe(TimeframeEnum::from($harmonyStrategy->timeframe()));
+            $timeframe = Exchange::convertedTimeframe(TimeframeEnum::EVERY_FIFTEEN_MINUTES);
             $candleResponse  = Exchange::candles($coin->symbol(), $timeframe, 100);
             $positionType = $harmonyStrategy->signal($candleResponse->data());
 
