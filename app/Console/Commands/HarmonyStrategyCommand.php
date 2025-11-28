@@ -43,14 +43,22 @@ class HarmonyStrategyCommand extends Command
         foreach ($harmonyStrategy->coins() as $coinName) {
             $coin = Coin::findByName($coinName);
             $timeframe = Exchange::convertedTimeframe(TimeframeEnum::EVERY_FIFTEEN_MINUTES);
-            $candleResponse  = Exchange::candles($coin->symbol(), $timeframe, 100);
+            $candleResponse = Exchange::candles($coin->symbol(), $timeframe, 100);
             $positionType = $harmonyStrategy->signal($candleResponse->data());
 
             if (!is_null($positionType)) {
                 $price = $candleResponse->data()->get(0)->getClose();
-                $side = $positionType == PositionTypeEnum::SHORT ? SideEnum::SHORT : SideEnum::LONG;
-                $tp = Calculate::target($price, $harmonyStrategy->takeProfitPercentage());
-                $sl = Calculate::target($price, -$harmonyStrategy->takeProfitPercentage());
+
+                if ($positionType == PositionTypeEnum::LONG) {
+                    $side = SideEnum::LONG;
+                    $tp = Calculate::target($price, $harmonyStrategy->takeProfitPercentage());
+                    $sl = Calculate::target($price, -$harmonyStrategy->takeProfitPercentage());
+                } else {
+                    $side = SideEnum::SHORT;
+                    $tp = Calculate::target($price, -$harmonyStrategy->takeProfitPercentage());
+                    $sl = Calculate::target($price, $harmonyStrategy->takeProfitPercentage());
+                }
+
 
                 $order = Order::query()->create([
                     'symbol' => $coin->symbol(),
