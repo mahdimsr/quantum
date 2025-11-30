@@ -26,6 +26,6 @@ Schedule::command(UpdateOrderPositionIdCommand::class)->everyMinute();
 Schedule::command(OrbitalStrategyCommand::class)->everyThirtyMinutes();
 Schedule::command(CloseOrbitalOrdersCommand::class)->everyThirtyMinutes();
 
-Schedule::command(HarmonyStrategyCommand::class)->everyFiveMinutes()->appendOutputTo('logs/harmony/strategy.log');
-Schedule::command(HarmonyTakeProfitCommand::class)->everyFiveMinutes()->appendOutputTo('logs/harmony/tp.log');
-Schedule::command(HarmonyPositionsCommand::class)->hourlyAt([20, 50])->appendOutputTo('logs/harmony/position.log');
+Schedule::command(HarmonyStrategyCommand::class)->hourlyAt([5, 20, 35, 50]);
+Schedule::command(HarmonyTakeProfitCommand::class)->everyFiveMinutes();
+Schedule::command(HarmonyPositionsCommand::class)->hourlyAt([20, 50]);
