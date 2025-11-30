@@ -274,7 +274,7 @@ namespace App\Services\Strategy\Defaults;
 
 use App\Enums\PositionTypeEnum;
 use App\Services\Exchange\Repository\CandleCollection;
-use App\Services\Strategy\Strategy;
+use App\Services\Strategy\StrategyPipeline;
 
 class MyCustomStrategy
 {
@@ -285,7 +285,7 @@ class MyCustomStrategy
 
     public function signal(CandleCollection $candleCollection): ?PositionTypeEnum
     {
-        $strategy = new Strategy();
+        $strategy = new StrategyPipeline();
         $strategy->send($candleCollection)->through([
             // Add your algorithms here
             MyCustomAlgorithm::class,
@@ -466,7 +466,7 @@ $signal = $strategy->signal($liveCandleData);
 
 if ($signal) {
     // Log signal for analysis
-    Log::info('Strategy signal generated', ['signal' => $signal]);
+    Log::info('StrategyPipeline signal generated', ['signal' => $signal]);
 }
 ```
 
@@ -499,7 +499,7 @@ if ($signal) {
 
 1. **Enable Logging**
    ```php
-   Log::info('Strategy execution', [
+   Log::info('StrategyPipeline execution', [
        'algorithms' => $algorithms,
        'signals' => $signals,
        'consensus' => $consensus

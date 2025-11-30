@@ -6,7 +6,7 @@ use App\Enums\PositionTypeEnum;
 use App\Services\Exchange\Repository\CandleCollection;
 use http\Exception\InvalidArgumentException;
 
-class Strategy
+class StrategyPipeline
 {
     protected CandleCollection $candleCollection;
     protected array $algorithms;

@@ -7,7 +7,7 @@ use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Strategy\LargeUtBotAlgorithm;
 use App\Services\Strategy\LNLTrendAlgorithm;
 use App\Services\Strategy\SmallUtBotAlgorithm;
-use App\Services\Strategy\Strategy;
+use App\Services\Strategy\StrategyPipeline;
 use App\Settings\OrbitalStrategySetting;
 
 class OrbitalStrategy
@@ -26,7 +26,7 @@ class OrbitalStrategy
 
     public function signal(CandleCollection $candleCollection): ?PositionTypeEnum
     {
-        $strategy = new Strategy();
+        $strategy = new StrategyPipeline();
         $strategy->send($candleCollection)->through([
             LNLTrendAlgorithm::class,
             SmallUtBotAlgorithm::class,
