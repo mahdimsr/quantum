@@ -7,10 +7,11 @@ use App\Services\Exchange\Repository\CandleCollection;
 use App\Services\Strategy\LargeUtBotAlgorithm;
 use App\Services\Strategy\LNLTrendAlgorithm;
 use App\Services\Strategy\SmallUtBotAlgorithm;
+use App\Services\Strategy\StrategyContract;
 use App\Services\Strategy\StrategyPipeline;
 use App\Settings\HarmonySetting;
 
-class HarmonyStrategy
+class HarmonyStrategy implements StrategyContract
 {
     private HarmonySetting $setting;
 
